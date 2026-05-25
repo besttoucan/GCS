@@ -68,11 +68,19 @@
 
 <main id="main">
 
-  <section class="page-head">
-    <div class="container">
+  <section class="page-head" style="position:relative;overflow:hidden;">
+    <span class="hero-blob b1" aria-hidden="true" style="width:380px;height:380px;"></span>
+    <span class="hero-blob b2" aria-hidden="true" style="width:300px;height:300px;"></span>
+    <div class="container" style="position:relative;z-index:1;">
       <span class="eyebrow"><span class="eyebrow-dot"></span>Solutions</span>
       <h1>Empowering Community Banks with <span class="grad" style="background:linear-gradient(135deg,var(--brand),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent;">Innovative Solutions</span></h1>
       <p class="lead">At Genesis Core Systems, we understand that cost management is critical for community banks. Our solutions deliver competitive capability that rivals the major industry players — at a fraction of the price.</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-top:2.5rem;max-width:720px;margin-inline:auto;">
+        <div class="stat-tile" style="text-align:center;"><div class="stat-label">Modules</div><div class="stat-value" style="justify-content:center;"><span class="counter" data-count="12">0</span></div></div>
+        <div class="stat-tile" style="text-align:center;"><div class="stat-label">Uptime</div><div class="stat-value" style="justify-content:center;"><span class="counter" data-count="99.99" data-decimals="2" data-suffix="%">0</span></div></div>
+        <div class="stat-tile" style="text-align:center;"><div class="stat-label">Latency</div><div class="stat-value" style="justify-content:center;"><span class="counter" data-count="62" data-suffix="ms">0</span></div></div>
+        <div class="stat-tile" style="text-align:center;"><div class="stat-label">TCO ↓</div><div class="stat-value" style="justify-content:center;"><span class="counter" data-count="42" data-suffix="%">0</span></div></div>
+      </div>
     </div>
   </section>
 
@@ -118,18 +126,49 @@
             <li>Native support for ACH, wire, real-time payments, and card rails</li>
           </ul>
         </div>
-        <div class="feature-visual reveal">
-          <div class="dash-card lead-card">
-            <div class="dash-row"><span>Avg. transaction latency</span><strong>62ms</strong></div>
-            <div class="dash-bar"><i style="width:88%"></i></div>
+        <div class="dashboard-panel reveal">
+          <div class="dash-header">
+            <div class="dash-title"><span class="live-dot"></span>Core Banking · Live Metrics</div>
+            <span style="font-size:.78rem;color:var(--fg-faint);">last 24h</span>
           </div>
-          <div class="dash-card" style="margin-top:.8rem;">
-            <div class="dash-row"><span>Daily volume</span><strong>2.1M</strong></div>
-            <div class="dash-bar" style="background:var(--bg);"><i style="width:74%;background:linear-gradient(90deg,var(--brand-2),var(--accent));"></i></div>
+          <div class="stat-grid">
+            <div class="stat-tile">
+              <div class="stat-label">Avg. latency</div>
+              <div class="stat-value"><span class="counter" data-count="62" data-drift="3" data-drift-base="62">0</span><small>ms</small></div>
+              <div class="stat-delta up">▲ within SLA</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">Daily volume</div>
+              <div class="stat-value"><span class="counter" data-count="2.1" data-decimals="1">0</span><small>M</small></div>
+              <div class="stat-delta up">▲ 4.2%</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">API calls/sec</div>
+              <div class="stat-value"><span class="counter" data-count="4823" data-drift="40" data-drift-base="4823">0</span></div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">Posting time</div>
+              <div class="stat-value">&lt;<span class="counter" data-count="1" data-suffix="s">0</span></div>
+            </div>
           </div>
-          <div class="dash-card" style="margin-top:.8rem;">
-            <div class="dash-row"><span>API calls / sec</span><strong>4,800</strong></div>
-            <div class="dash-bar" style="background:var(--bg);"><i style="width:81%;background:linear-gradient(90deg,var(--accent),var(--accent-2));"></i></div>
+          <div class="chart-card" style="margin-bottom:0;">
+            <div class="chart-head"><h4>Real-time posting · past 24h</h4><span class="chart-value">2.1M</span></div>
+            <svg class="chart-svg" viewBox="0 0 300 80" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="sArea" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#2F4DAB" stop-opacity="0.32"/>
+                  <stop offset="100%" stop-color="#2F4DAB" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="sLine" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#1B265F"/>
+                  <stop offset="60%" stop-color="#2F4DAB"/>
+                  <stop offset="100%" stop-color="#F47A1F"/>
+                </linearGradient>
+              </defs>
+              <path class="area-fill" d="M0,58 L20,55 L40,50 L60,52 L80,44 L100,46 L120,38 L140,36 L160,30 L180,28 L200,22 L220,24 L240,15 L260,18 L280,10 L300,5 L300,80 L0,80 Z" fill="url(#sArea)"/>
+              <path class="line-path" d="M0,58 L20,55 L40,50 L60,52 L80,44 L100,46 L120,38 L140,36 L160,30 L180,28 L200,22 L220,24 L240,15 L260,18 L280,10 L300,5" stroke="url(#sLine)"/>
+              <circle class="dot" cx="300" cy="5" r="4" fill="#F47A1F"/>
+            </svg>
           </div>
         </div>
       </div>
