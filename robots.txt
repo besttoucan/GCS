@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /tmp/
 
-Sitemap: /sitemap.xml
+Sitemap: https://genesiscoresystems.com/sitemap.xml
