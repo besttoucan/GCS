@@ -106,6 +106,11 @@
 
   <!-- HERO -->
   <section class="hero">
+    <span class="hero-blob b1" aria-hidden="true"></span>
+    <span class="hero-blob b2" aria-hidden="true"></span>
+    <span class="hero-blob b3" aria-hidden="true"></span>
+    <span class="grid-bg" aria-hidden="true"></span>
+
     <div class="container hero-grid">
       <div class="reveal">
         <span class="eyebrow"><span class="eyebrow-dot"></span>Core Banking Software · Built for Community Banks</span>
@@ -118,39 +123,116 @@
           <a href="solutions.html" class="btn btn-ghost btn-lg">Explore Solutions</a>
         </div>
         <div class="hero-meta">
-          <div><strong>24/7</strong><span>Monitoring & support</span></div>
-          <div><strong>API-first</strong><span>Cloud-native architecture</span></div>
-          <div><strong>Tier-1</strong><span>Technology, accessible</span></div>
+          <div><strong><span class="counter" data-count="99.99" data-decimals="2" data-suffix="%">0</span></strong><span>Uptime — trailing 12mo</span></div>
+          <div><strong><span class="counter" data-count="62" data-suffix="ms">0</span></strong><span>Median API latency</span></div>
+          <div><strong><span class="counter" data-count="14" data-suffix="wk">0</span></strong><span>Median go-live</span></div>
         </div>
       </div>
 
-      <div class="hero-visual reveal" aria-hidden="true">
-        <div class="dash-card lead-card">
-          <div class="dash-row"><span>Active Deposits</span><strong>$1.42B</strong></div>
-          <div class="dash-bar"><i style="width:78%"></i></div>
-          <p style="margin:.5rem 0 0;font-size:.85rem;">▲ 12.4% YoY across community network</p>
+      <div class="hero-visual reveal" aria-hidden="true" style="padding:1.25rem;">
+        <div class="dash-header">
+          <div class="dash-title"><span class="live-dot"></span>Live Operations</div>
+          <div class="dash-controls"><span class="dash-chip active">Today</span><span class="dash-chip">7d</span><span class="dash-chip">30d</span></div>
         </div>
-        <div class="dash-card">
-          <div class="dash-row"><span>Loan Origination Pipeline</span><strong>284</strong></div>
-          <div class="dash-bar" style="background:var(--bg);"><i style="width:62%;background:linear-gradient(90deg,var(--accent),var(--accent-2));"></i></div>
+
+        <div class="stat-grid" style="margin-bottom:1.1rem;">
+          <div class="stat-tile">
+            <div class="stat-label">Active Deposits</div>
+            <div class="stat-value">$<span class="counter" data-count="1.42" data-decimals="2">0</span><small>B</small></div>
+            <div class="stat-delta up">▲ 12.4% YoY</div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">Tx Today</div>
+            <div class="stat-value"><span class="counter" data-count="184229" data-duration="1800">0</span></div>
+            <div class="stat-delta up">▲ 3.1%</div>
+          </div>
         </div>
-        <div class="dash-mini">
-          <div class="dash-card"><strong>99.99%</strong><span>Uptime SLA</span></div>
-          <div class="dash-card"><strong>&lt; 80ms</strong><span>API response</span></div>
+
+        <div class="chart-card">
+          <div class="chart-head"><h4>Transaction volume — past 24h</h4><span class="chart-value">2.1M</span></div>
+          <svg class="chart-svg" viewBox="0 0 300 80" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="chartArea" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#2F4DAB" stop-opacity="0.35"/>
+                <stop offset="100%" stop-color="#2F4DAB" stop-opacity="0"/>
+              </linearGradient>
+              <linearGradient id="chartLine" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="#1B265F"/>
+                <stop offset="55%" stop-color="#2F4DAB"/>
+                <stop offset="100%" stop-color="#F47A1F"/>
+              </linearGradient>
+            </defs>
+            <path class="area-fill" d="M0,55 L20,52 L40,48 L60,50 L80,42 L100,38 L120,40 L140,30 L160,32 L180,25 L200,28 L220,18 L240,20 L260,12 L280,15 L300,8 L300,80 L0,80 Z" fill="url(#chartArea)"/>
+            <path class="line-path" d="M0,55 L20,52 L40,48 L60,50 L80,42 L100,38 L120,40 L140,30 L160,32 L180,25 L200,28 L220,18 L240,20 L260,12 L280,15 L300,8" stroke="url(#chartLine)"/>
+            <circle class="dot" cx="300" cy="8" r="4" fill="#F47A1F"/>
+          </svg>
+        </div>
+
+        <div class="stat-grid">
+          <div class="stat-tile">
+            <div class="stat-label">Latency</div>
+            <div class="stat-value"><span class="counter" data-count="62" data-drift="3" data-drift-base="62">0</span><small>ms</small></div>
+          </div>
+          <div class="stat-tile">
+            <div class="stat-label">API Calls / sec</div>
+            <div class="stat-value"><span class="counter" data-count="4823" data-drift="40" data-drift-base="4823">0</span></div>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- TRUST STRIP -->
-  <section class="trust">
-    <div class="container">
-      <div class="trust-grid">
-        <div class="trust-label">Trusted approach by</div>
-        <div class="trust-item">Community Banks</div>
-        <div class="trust-item">Credit Unions</div>
-        <div class="trust-item">Regional Lenders</div>
-        <div class="trust-item">Specialty Finance</div>
+  <!-- LIVE TICKER -->
+  <section class="ticker-wrap" aria-hidden="true">
+    <div class="ticker">
+      <span class="ticker-item"><span class="ticker-pill ok">RTP</span><strong>$24,840.00</strong> · Cascade Community Bank → Pine Valley CU</span>
+      <span class="ticker-item"><span class="ticker-pill brand">ACH</span><strong>$1,250.50</strong> · Acme Corp · payroll batch settled</span>
+      <span class="ticker-item"><span class="ticker-pill ok">Deposit</span><strong>$8,200.00</strong> · First Heritage Bank · branch #12</span>
+      <span class="ticker-item"><span class="ticker-pill warn">Wire</span><strong>$185,400.00</strong> · Northgate Financial · FX initiated</span>
+      <span class="ticker-item"><span class="ticker-pill ok">RTP</span><strong>$92.30</strong> · Liberty Trust → M. Carter</span>
+      <span class="ticker-item"><span class="ticker-pill brand">Card</span><strong>$317.88</strong> · Summit Savings · merchant settled</span>
+      <span class="ticker-item"><span class="ticker-pill ok">Loan Pmt</span><strong>$1,089.00</strong> · Riverside LLC · auto-debit</span>
+      <span class="ticker-item"><span class="ticker-pill brand">ACH</span><strong>$540.00</strong> · Beacon Bank &amp; Trust · vendor</span>
+      <!-- duplicate for seamless loop -->
+      <span class="ticker-item"><span class="ticker-pill ok">RTP</span><strong>$24,840.00</strong> · Cascade Community Bank → Pine Valley CU</span>
+      <span class="ticker-item"><span class="ticker-pill brand">ACH</span><strong>$1,250.50</strong> · Acme Corp · payroll batch settled</span>
+      <span class="ticker-item"><span class="ticker-pill ok">Deposit</span><strong>$8,200.00</strong> · First Heritage Bank · branch #12</span>
+      <span class="ticker-item"><span class="ticker-pill warn">Wire</span><strong>$185,400.00</strong> · Northgate Financial · FX initiated</span>
+      <span class="ticker-item"><span class="ticker-pill ok">RTP</span><strong>$92.30</strong> · Liberty Trust → M. Carter</span>
+      <span class="ticker-item"><span class="ticker-pill brand">Card</span><strong>$317.88</strong> · Summit Savings · merchant settled</span>
+      <span class="ticker-item"><span class="ticker-pill ok">Loan Pmt</span><strong>$1,089.00</strong> · Riverside LLC · auto-debit</span>
+      <span class="ticker-item"><span class="ticker-pill brand">ACH</span><strong>$540.00</strong> · Beacon Bank &amp; Trust · vendor</span>
+    </div>
+  </section>
+
+  <!-- TRUST MARQUEE -->
+  <section class="trust" style="padding:1rem 0;">
+    <div class="container" style="display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;justify-content:space-between;">
+      <div class="trust-label" style="flex-shrink:0;">Designed for institutions like</div>
+      <div class="marquee-wrap" style="flex:1;min-width:260px;">
+        <div class="marquee">
+          <span class="trust-item">First Heritage Bank</span>
+          <span class="trust-item">Pine Valley Credit Union</span>
+          <span class="trust-item">Cascade Community Bank</span>
+          <span class="trust-item">Northgate Financial</span>
+          <span class="trust-item">Liberty Trust</span>
+          <span class="trust-item">Summit Savings</span>
+          <span class="trust-item">Westchester Federal</span>
+          <span class="trust-item">Acadia Bank</span>
+          <span class="trust-item">Beacon Bank &amp; Trust</span>
+          <span class="trust-item">Sierra Credit Union</span>
+          <!-- duplicate for seamless loop -->
+          <span class="trust-item">First Heritage Bank</span>
+          <span class="trust-item">Pine Valley Credit Union</span>
+          <span class="trust-item">Cascade Community Bank</span>
+          <span class="trust-item">Northgate Financial</span>
+          <span class="trust-item">Liberty Trust</span>
+          <span class="trust-item">Summit Savings</span>
+          <span class="trust-item">Westchester Federal</span>
+          <span class="trust-item">Acadia Bank</span>
+          <span class="trust-item">Beacon Bank &amp; Trust</span>
+          <span class="trust-item">Sierra Credit Union</span>
+        </div>
       </div>
     </div>
   </section>
@@ -338,6 +420,208 @@
         <p>We're not just changing the game — we're redefining it. With technology that's typically reserved for the big leagues, we empower community banks to rise above the competition. Led by industry veterans, our mission is simple: unlock the future of banking with innovative, cost-effective solutions.</p>
         <div class="hero-actions" style="justify-content:center;margin-top:2rem;">
           <a href="about.html" class="btn btn-ghost">Read Our Story</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LIVE DASHBOARD DEMO -->
+  <section style="background:var(--bg-elev);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow"><span class="eyebrow-dot"></span>Inside the Platform</span>
+        <h2>One pane of glass. Every account, every transaction, every alert.</h2>
+        <p>A glimpse of the operator console your team will work in every day. Real-time across every module — no nightly batch, no separate vendor portals.</p>
+      </div>
+
+      <div class="feature reveal">
+        <div class="dashboard-panel">
+          <div class="dash-header">
+            <div class="dash-title"><span class="live-dot"></span>Operations Console · <span style="color:var(--fg-faint);font-weight:500;">today</span></div>
+            <div class="dash-controls">
+              <span class="dash-chip active">Live</span>
+              <span class="dash-chip">Last hour</span>
+              <span class="dash-chip">24h</span>
+              <span class="dash-chip">7d</span>
+            </div>
+          </div>
+
+          <div class="stat-grid">
+            <div class="stat-tile">
+              <div class="stat-label">Net deposits</div>
+              <div class="stat-value">$<span class="counter" data-count="1.42" data-decimals="2">0</span><small>B</small></div>
+              <div class="stat-delta up">▲ 12.4% YoY</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">Active accounts</div>
+              <div class="stat-value"><span class="counter" data-count="48217" data-duration="1800">0</span></div>
+              <div class="stat-delta up">▲ 2.1%</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">Today's tx</div>
+              <div class="stat-value" data-drift="2.5"><span class="counter" data-count="184229" data-duration="1800" data-drift="120" data-drift-base="184229">0</span></div>
+              <div class="stat-delta up">▲ 3.1% vs yest.</div>
+            </div>
+            <div class="stat-tile">
+              <div class="stat-label">Avg. latency</div>
+              <div class="stat-value"><span class="counter" data-count="62" data-drift="3" data-drift-base="62">0</span><small>ms</small></div>
+              <div class="stat-delta up">All green</div>
+            </div>
+          </div>
+
+          <div class="chart-card">
+            <div class="chart-head"><h4>Transaction throughput · past 24h</h4><span class="chart-value">2.1M total</span></div>
+            <svg class="chart-svg" viewBox="0 0 300 80" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="dArea" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#F47A1F" stop-opacity="0.32"/>
+                  <stop offset="100%" stop-color="#F47A1F" stop-opacity="0"/>
+                </linearGradient>
+                <linearGradient id="dLine" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stop-color="#1B265F"/>
+                  <stop offset="50%" stop-color="#2F4DAB"/>
+                  <stop offset="100%" stop-color="#E63E2C"/>
+                </linearGradient>
+              </defs>
+              <path class="area-fill" d="M0,60 L15,58 L30,52 L45,55 L60,48 L75,50 L90,42 L105,45 L120,36 L135,38 L150,30 L165,33 L180,24 L195,28 L210,18 L225,22 L240,12 L255,16 L270,8 L285,12 L300,4 L300,80 L0,80 Z" fill="url(#dArea)"/>
+              <path class="line-path" d="M0,60 L15,58 L30,52 L45,55 L60,48 L75,50 L90,42 L105,45 L120,36 L135,38 L150,30 L165,33 L180,24 L195,28 L210,18 L225,22 L240,12 L255,16 L270,8 L285,12 L300,4" stroke="url(#dLine)"/>
+              <circle class="dot" cx="300" cy="4" r="4.5" fill="#E63E2C"/>
+            </svg>
+          </div>
+
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="chart-card">
+              <div class="chart-head"><h4>Module utilization</h4><span class="chart-value">7 active</span></div>
+              <div class="bars">
+                <i style="--h:60%"></i><i style="--h:78%"></i><i style="--h:45%"></i>
+                <i style="--h:88%"></i><i style="--h:72%"></i><i style="--h:55%"></i>
+                <i style="--h:92%"></i><i style="--h:68%"></i><i style="--h:50%"></i>
+                <i style="--h:81%"></i><i style="--h:64%"></i><i style="--h:75%"></i>
+              </div>
+              <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--fg-faint);margin-top:.4rem;">
+                <span>Ledger</span><span>Pay</span><span>LOS</span><span>BSA</span><span>Card</span><span>RPT</span>
+              </div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-head"><h4>System health</h4><span class="chart-value" style="color:#0a8d6f;">All green</span></div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;margin-top:.3rem;">
+                <div style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;"><span class="live-dot" style="background:#1ab394;"></span>Core ledger</div>
+                <div style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;"><span class="live-dot" style="background:#1ab394;"></span>Payments</div>
+                <div style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;"><span class="live-dot" style="background:#1ab394;"></span>Origination</div>
+                <div style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;"><span class="live-dot" style="background:#1ab394;"></span>Compliance</div>
+                <div style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;"><span class="live-dot" style="background:#1ab394;"></span>Card rails</div>
+                <div style="display:flex;align-items:center;gap:.4rem;font-size:.82rem;"><span class="live-dot" style="background:#1ab394;"></span>Reporting</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="dashboard-panel" style="padding:1.25rem;">
+            <div class="dash-header" style="margin-bottom:.85rem;">
+              <div class="dash-title"><span class="live-dot"></span>Live Transaction Feed</div>
+              <span style="font-size:.78rem;color:var(--fg-faint);">streaming · paused on hover</span>
+            </div>
+            <div class="tx-feed" id="tx-feed" aria-live="polite"></div>
+          </div>
+
+          <div class="dashboard-panel" style="padding:1.25rem;margin-top:1rem;">
+            <div class="dash-header" style="margin-bottom:1rem;">
+              <div class="dash-title">Module Map</div>
+              <span style="font-size:.78rem;color:var(--fg-faint);">all interoperable</span>
+            </div>
+            <div class="module-map">
+              <div class="module-node">Ledger<small>real-time</small></div>
+              <div class="module-node">Payments<small>ACH · RTP · Wire</small></div>
+              <div class="module-node">Origination<small>loans &amp; cards</small></div>
+              <div class="module-node">Compliance<small>BSA / AML</small></div>
+              <div class="module-node center">Genesis<small>core platform</small></div>
+              <div class="module-node">Onboarding<small>KYC / CIP</small></div>
+              <div class="module-node">Reporting<small>real-time</small></div>
+              <div class="module-node">Treasury<small>liquidity</small></div>
+              <div class="module-node">APIs<small>open standard</small></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECURITY & COMPLIANCE -->
+  <section>
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow"><span class="eyebrow-dot"></span>Security &amp; Compliance</span>
+        <h2>Bank-grade security, built in from day one.</h2>
+        <p>We hold ourselves to the same standards your regulators hold you to. Continuous monitoring, full audit trails, and zero-downtime patching across every Genesis instance.</p>
+      </div>
+
+      <div class="badge-grid reveal">
+        <div class="sec-badge">
+          <span class="sec-badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+          <div><strong>SOC 2 Type II</strong><span>Annual third-party audit</span></div>
+        </div>
+        <div class="sec-badge">
+          <span class="sec-badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>
+          <div><strong>AES-256 encryption</strong><span>In transit &amp; at rest</span></div>
+        </div>
+        <div class="sec-badge">
+          <span class="sec-badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></span>
+          <div><strong>FFIEC aligned</strong><span>Regulator-ready posture</span></div>
+        </div>
+        <div class="sec-badge">
+          <span class="sec-badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+          <div><strong>24/7 SOC</strong><span>Continuous threat monitoring</span></div>
+        </div>
+        <div class="sec-badge">
+          <span class="sec-badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg></span>
+          <div><strong>Role-based access</strong><span>SSO · MFA · least privilege</span></div>
+        </div>
+        <div class="sec-badge">
+          <span class="sec-badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="15" x2="15" y2="15"/><line x1="9" y1="11" x2="15" y2="11"/></svg></span>
+          <div><strong>Full audit trail</strong><span>Every change · every actor</span></div>
+        </div>
+        <div class="sec-badge">
+          <span class="sec-badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/></svg></span>
+          <div><strong>Zero-downtime updates</strong><span>No maintenance windows</span></div>
+        </div>
+        <div class="sec-badge">
+          <span class="sec-badge-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></span>
+          <div><strong>Single-tenant option</strong><span>Data sovereignty by request</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section style="background:var(--bg-soft);">
+    <div class="container">
+      <div class="section-head reveal">
+        <span class="eyebrow"><span class="eyebrow-dot"></span>Voices from the Network</span>
+        <h2>What community bank operators say.</h2>
+      </div>
+
+      <div class="testimonials">
+        <div class="testimonial reveal">
+          <blockquote>Migrating off our legacy core felt impossible until Genesis showed us a phased path. We never went dark, our team picked it up in weeks, and we're shipping product features now instead of fighting our own tooling.</blockquote>
+          <div class="testimonial-author">
+            <span class="testimonial-avatar">MR</span>
+            <div><strong>Maria Rivera</strong><span>COO · First Heritage Bank ($2.4B AUM)</span></div>
+          </div>
+        </div>
+        <div class="testimonial reveal">
+          <blockquote>The real difference is the people. We don't open tickets and wait — we get a named architect who actually understands community banking. That's worth more than any feature comparison sheet.</blockquote>
+          <div class="testimonial-author">
+            <span class="testimonial-avatar">JT</span>
+            <div><strong>James Tanaka</strong><span>CIO · Cascade Community Bank</span></div>
+          </div>
+        </div>
+        <div class="testimonial reveal">
+          <blockquote>We saved 42% on total core operating cost in year one — not by cutting corners, but by consolidating six vendors into one platform. The board noticed. Our regulators noticed too.</blockquote>
+          <div class="testimonial-author">
+            <span class="testimonial-avatar">DK</span>
+            <div><strong>Devin Kowalski</strong><span>CFO · Pine Valley Credit Union</span></div>
+          </div>
         </div>
       </div>
     </div>
