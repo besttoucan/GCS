@@ -63,4 +63,14 @@
 
   // ---- Year ----
   document.querySelectorAll("[data-year]").forEach((y) => y.textContent = new Date().getFullYear());
+
+  // ---- Scroll-aware header (transparent over cinema hero, frosts in on scroll) ----
+  if (document.body.classList.contains("page-home")) {
+    const setScrolled = () => {
+      const y = window.scrollY || window.pageYOffset;
+      document.body.classList.toggle("is-scrolled", y > 40);
+    };
+    setScrolled();
+    window.addEventListener("scroll", setScrolled, { passive: true });
+  }
 })();
