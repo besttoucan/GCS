@@ -11,11 +11,10 @@
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link rel="preconnect" href="https://www.youtube-nocookie.com" />
-<link rel="preconnect" href="https://i.ytimg.com" crossorigin />
-<link rel="dns-prefetch" href="https://www.youtube.com" />
-<link rel="dns-prefetch" href="https://yt3.ggpht.com" />
-<link rel="preload" as="image" href="https://i.ytimg.com/vi_webp/AjOGH249l3c/maxresdefault.webp" imagesrcset="https://i.ytimg.com/vi_webp/AjOGH249l3c/maxresdefault.webp 1280w, https://i.ytimg.com/vi/AjOGH249l3c/maxresdefault.jpg 1280w" />
+<link rel="preconnect" href="https://videos.pexels.com" crossorigin />
+<link rel="preconnect" href="https://images.pexels.com" crossorigin />
+<link rel="preload" as="image" href="https://images.pexels.com/videos/12122308/free-video-12122308.jpg" />
+<link rel="preload" as="video" href="https://videos.pexels.com/video-files/12122308/12122308-uhd_2732_1440_24fps.mp4" type="video/mp4" />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
 <link rel="stylesheet" href="assets/styles.css" />
 <meta property="og:type" content="website" />
@@ -80,14 +79,20 @@
   <!-- HERO. Cinematic NYC video background. -->
   <section class="hero hero-cinema" aria-label="Genesis Core Systems, core banking for community banks">
     <div class="hero-video-wrap" aria-hidden="true">
-      <iframe
-        src="https://www.youtube-nocookie.com/embed/AjOGH249l3c?autoplay=1&mute=1&controls=0&loop=1&playlist=AjOGH249l3c&playsinline=1&modestbranding=1&rel=0&showinfo=0&disablekb=1&iv_load_policy=3&fs=0&enablejsapi=1&start=35"
-        title="New York City aerial backdrop"
-        allow="autoplay; encrypted-media; picture-in-picture"
-        allowfullscreen
-        loading="eager"
-        referrerpolicy="strict-origin-when-cross-origin"
-        tabindex="-1"></iframe>
+      <video
+        class="hero-video"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="auto"
+        poster="https://images.pexels.com/videos/12122308/free-video-12122308.jpg"
+        disablepictureinpicture
+        disableremoteplayback>
+        <source src="https://videos.pexels.com/video-files/12122308/12122308-uhd_2732_1440_24fps.mp4" type="video/mp4" />
+        <source src="https://videos.pexels.com/video-files/12122308/12122308-hd_1920_1080_24fps.mp4" type="video/mp4" />
+        <source src="https://videos.pexels.com/video-files/12122308/12122308-uhd_3840_2160_24fps.mp4" type="video/mp4" />
+      </video>
     </div>
     <div class="hero-overlay" aria-hidden="true"></div>
     <div class="hero-curtain" aria-hidden="true"></div>

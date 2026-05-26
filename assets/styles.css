@@ -35,7 +35,7 @@
 * { box-sizing: border-box; }
 html {
   scroll-behavior: smooth;
-  scrollbar-color: rgba(27, 38, 95, 0.45) transparent;
+  scrollbar-color: rgba(27, 38, 95, 0.35) transparent;
   scrollbar-width: thin;
 }
 body {
@@ -51,18 +51,16 @@ body {
   overscroll-behavior-y: none;
 }
 
-/* Custom scrollbar (WebKit / Chromium) */
-::-webkit-scrollbar { width: 11px; height: 11px; }
+/* Slim, subtle scrollbar (Chromium / Safari). Thumb gets a touch of brand. */
+::-webkit-scrollbar { width: 8px; height: 8px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, rgba(27, 38, 95, 0.55), rgba(47, 77, 171, 0.55));
-  border: 3px solid var(--bg);
+  background: rgba(27, 38, 95, 0.28);
   border-radius: 999px;
   transition: background .2s var(--ease);
 }
-::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, var(--brand), var(--brand-2));
-}
+::-webkit-scrollbar-thumb:hover { background: rgba(27, 38, 95, 0.55); }
+::-webkit-scrollbar-thumb:active { background: var(--brand); }
 ::-webkit-scrollbar-corner { background: transparent; }
 
 img, svg { max-width: 100%; display: block; }
@@ -750,14 +748,38 @@ body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border
 }
 
 /* ============================================================
-   Reveal animation — subtle
+   Reveal animation. Default: gentle rise. Numbered items: alternating swipe.
    ============================================================ */
 .reveal {
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity .6s var(--ease), transform .6s var(--ease);
+  transform: translateY(28px);
+  transition: opacity .85s var(--ease), transform .85s var(--ease);
+  will-change: opacity, transform;
 }
 .reveal.visible { opacity: 1; transform: none; }
+
+/* Numbered items (Solutions, Services, Partnership, Articles): swipe from the
+   side in alternation so they read like cards landing into place. */
+.numbered .numbered-item.reveal { opacity: 0; transform: translate(-44px, 18px); }
+.numbered .numbered-item.reveal:nth-child(even) { transform: translate(44px, 18px); }
+.numbered .numbered-item.reveal.visible { opacity: 1; transform: translate(0, 0); }
+.numbered .numbered-item.reveal { transition: opacity .9s var(--ease), transform .95s var(--ease); }
+
+/* Feature-grid cards stagger from below with a small scale-up. */
+.feature-grid.reveal .feature-item,
+.articles-grid.reveal .article-card {
+  opacity: 0;
+  transform: translateY(26px) scale(0.985);
+  transition: opacity .8s var(--ease), transform .85s var(--ease);
+}
+.feature-grid.reveal.visible .feature-item,
+.articles-grid.reveal.visible .article-card { opacity: 1; transform: none; }
+.feature-grid.reveal.visible .feature-item:nth-child(2),
+.articles-grid.reveal.visible .article-card:nth-child(2) { transition-delay: .08s; }
+.feature-grid.reveal.visible .feature-item:nth-child(3),
+.articles-grid.reveal.visible .article-card:nth-child(3) { transition-delay: .16s; }
+.feature-grid.reveal.visible .feature-item:nth-child(4),
+.articles-grid.reveal.visible .article-card:nth-child(4) { transition-delay: .24s; }
 
 /* ============================================================
    Misc
@@ -841,19 +863,21 @@ body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border
   inset: 0;
   overflow: hidden;
   z-index: 0;
-  background-image: url("https://i.ytimg.com/vi_webp/AjOGH249l3c/maxresdefault.webp"), url("https://i.ytimg.com/vi/AjOGH249l3c/maxresdefault.jpg");
+  background-image: url("https://images.pexels.com/videos/12122308/free-video-12122308.jpg");
   background-size: cover;
   background-position: center;
   background-color: #07091c;
 }
-.hero-cinema .hero-video-wrap iframe {
+.hero-cinema .hero-video {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: max(100vw, calc(100vh * 16/9));
-  height: max(56.25vw, 100vh);
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
   transform: translate(-50%, -50%);
-  border: 0;
+  object-fit: cover;
   pointer-events: none;
 }
 .hero-cinema .hero-overlay {
@@ -875,9 +899,8 @@ body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border
   background-color: #07091c;
   background-image:
     linear-gradient(180deg, rgba(7,9,28,0.55) 0%, rgba(7,9,28,0.35) 55%, rgba(7,9,28,0.85) 100%),
-    url("https://i.ytimg.com/vi_webp/AjOGH249l3c/maxresdefault.webp"),
-    url("https://i.ytimg.com/vi/AjOGH249l3c/maxresdefault.jpg");
-  background-size: cover, cover, cover;
+    url("https://images.pexels.com/videos/12122308/free-video-12122308.jpg");
+  background-size: cover, cover;
   background-position: center;
   opacity: 1;
   pointer-events: none;
