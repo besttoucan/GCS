@@ -73,4 +73,47 @@
     setScrolled();
     window.addEventListener("scroll", setScrolled, { passive: true });
   }
+
+  // ---- Hero video curtain: hide YouTube UI / play button until playback starts ----
+  const heroFrame = document.querySelector(".hero-cinema iframe");
+  const heroCurtain = document.querySelector(".hero-cinema .hero-curtain");
+  if (heroFrame && heroCurtain) {
+    let lifted = false;
+    const lift = () => {
+      if (lifted) return;
+      lifted = true;
+      heroCurtain.classList.add("fade-out");
+      setTimeout(() => { heroCurtain.style.display = "none"; }, 1600);
+    };
+
+    // Ask the YouTube player to start sending state updates.
+    const startListening = () => {
+      try {
+        heroFrame.contentWindow.postMessage(
+          JSON.stringify({ event: "listening", id: 1, channel: "widget" }),
+          "*"
+        );
+      } catch (e) {}
+    };
+    heroFrame.addEventListener("load", () => {
+      startListening();
+      setTimeout(startListening, 800);
+    });
+
+    // Lift the curtain once the player reports PLAYING (state code 1).
+    window.addEventListener("message", (e) => {
+      const o = e.origin || "";
+      if (!/youtube(-nocookie)?\.com$/i.test(o.replace(/^https?:\/\//, "").split("/")[0] || "")) return;
+      let data = e.data;
+      if (typeof data === "string") {
+        try { data = JSON.parse(data); } catch { return; }
+      }
+      const info = data && data.info;
+      const state = info && (info.playerState ?? info.currentTime !== undefined ? info.playerState : null);
+      if (state === 1) lift();
+    });
+
+    // Failsafe in case message events don't arrive (privacy extensions, etc).
+    setTimeout(lift, 4500);
+  }
 })();
