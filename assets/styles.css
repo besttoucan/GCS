@@ -33,7 +33,11 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  scrollbar-color: rgba(27, 38, 95, 0.35) transparent;
+  scrollbar-width: thin;
+}
 body {
   margin: 0;
   font-family: var(--font);
@@ -44,7 +48,20 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  overscroll-behavior-y: none;
 }
+
+/* Slim, subtle scrollbar (Chromium / Safari). Thumb gets a touch of brand. */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(27, 38, 95, 0.28);
+  border-radius: 999px;
+  transition: background .2s var(--ease);
+}
+::-webkit-scrollbar-thumb:hover { background: rgba(27, 38, 95, 0.55); }
+::-webkit-scrollbar-thumb:active { background: var(--brand); }
+::-webkit-scrollbar-corner { background: transparent; }
 
 img, svg { max-width: 100%; display: block; }
 a {
@@ -104,7 +121,23 @@ section { padding: clamp(4rem, 8vw, 7rem) 0; }
   backdrop-filter: saturate(160%) blur(12px);
   -webkit-backdrop-filter: saturate(160%) blur(12px);
   border-bottom: 1px solid var(--border);
+  transition: background .25s var(--ease), border-color .25s var(--ease);
 }
+
+/* Transparent header over the cinema hero on the homepage (top of page only). */
+body.page-home:not(.is-scrolled) .site-header {
+  background: linear-gradient(180deg, rgba(7,9,28,0.55) 0%, rgba(7,9,28,0) 100%);
+  border-bottom-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+body.page-home:not(.is-scrolled) .site-header .brand { color: white; }
+body.page-home:not(.is-scrolled) .site-header .nav-links a { color: rgba(255,255,255,0.85); }
+body.page-home:not(.is-scrolled) .site-header .nav-links a:hover,
+body.page-home:not(.is-scrolled) .site-header .nav-links a.active { color: white; }
+body.page-home:not(.is-scrolled) .site-header .nav-cta .btn-primary { background: var(--orange); color: white; }
+body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border-color: rgba(255,255,255,0.3); }
+
 .nav {
   display: flex;
   align-items: center;
@@ -125,11 +158,29 @@ section { padding: clamp(4rem, 8vw, 7rem) 0; }
 }
 .brand:hover { color: var(--brand); }
 .brand-mark {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   flex-shrink: 0;
+  position: relative;
+  display: inline-block;
 }
 .brand-mark svg { width: 100%; height: 100%; }
+.brand-mark-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity .25s var(--ease);
+}
+/* Default (light page contexts): show the light-bg logo, blend out the white. */
+.brand-mark-light { mix-blend-mode: multiply; opacity: 1; }
+.brand-mark-dark  { mix-blend-mode: screen;   opacity: 0; }
+/* Dark contexts: footer always, and the transparent-over-hero homepage header. */
+.site-footer .brand-mark-light,
+body.page-home:not(.is-scrolled) .site-header .brand-mark-light { opacity: 0; }
+.site-footer .brand-mark-dark,
+body.page-home:not(.is-scrolled) .site-header .brand-mark-dark { opacity: 1; }
 
 .nav-links {
   display: flex;
@@ -715,14 +766,38 @@ section { padding: clamp(4rem, 8vw, 7rem) 0; }
 }
 
 /* ============================================================
-   Reveal animation — subtle
+   Reveal animation. Default: gentle rise. Numbered items: alternating swipe.
    ============================================================ */
 .reveal {
   opacity: 0;
-  transform: translateY(12px);
-  transition: opacity .6s var(--ease), transform .6s var(--ease);
+  transform: translateY(28px);
+  transition: opacity .85s var(--ease), transform .85s var(--ease);
+  will-change: opacity, transform;
 }
 .reveal.visible { opacity: 1; transform: none; }
+
+/* Numbered items (Solutions, Services, Partnership, Articles): swipe from the
+   side in alternation so they read like cards landing into place. */
+.numbered .numbered-item.reveal { opacity: 0; transform: translate(-44px, 18px); }
+.numbered .numbered-item.reveal:nth-child(even) { transform: translate(44px, 18px); }
+.numbered .numbered-item.reveal.visible { opacity: 1; transform: translate(0, 0); }
+.numbered .numbered-item.reveal { transition: opacity .9s var(--ease), transform .95s var(--ease); }
+
+/* Feature-grid cards stagger from below with a small scale-up. */
+.feature-grid.reveal .feature-item,
+.articles-grid.reveal .article-card {
+  opacity: 0;
+  transform: translateY(26px) scale(0.985);
+  transition: opacity .8s var(--ease), transform .85s var(--ease);
+}
+.feature-grid.reveal.visible .feature-item,
+.articles-grid.reveal.visible .article-card { opacity: 1; transform: none; }
+.feature-grid.reveal.visible .feature-item:nth-child(2),
+.articles-grid.reveal.visible .article-card:nth-child(2) { transition-delay: .08s; }
+.feature-grid.reveal.visible .feature-item:nth-child(3),
+.articles-grid.reveal.visible .article-card:nth-child(3) { transition-delay: .16s; }
+.feature-grid.reveal.visible .feature-item:nth-child(4),
+.articles-grid.reveal.visible .article-card:nth-child(4) { transition-delay: .24s; }
 
 /* ============================================================
    Misc
@@ -788,3 +863,211 @@ section { padding: clamp(4rem, 8vw, 7rem) 0; }
   }
   .reveal { opacity: 1; transform: none; }
 }
+
+/* ============================================================
+   Cinematic video hero (NYC YouTube background)
+   ============================================================ */
+.hero-cinema {
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(620px, 88vh, 880px);
+  padding: 0;
+  color: white;
+  isolation: isolate;
+  background: #07091c;
+}
+.hero-cinema .hero-video-wrap {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(47, 77, 171, 0.25), transparent 60%),
+    radial-gradient(circle at 75% 70%, rgba(244, 122, 31, 0.18), transparent 65%),
+    #07091c;
+}
+.hero-cinema .hero-video {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  object-fit: cover;
+  pointer-events: none;
+}
+.hero-cinema .hero-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background:
+    radial-gradient(circle at 50% 50%, rgba(7,9,28,0.5) 0%, rgba(7,9,28,0.2) 28%, rgba(7,9,28,0) 55%),
+    radial-gradient(ellipse at 22% 38%, rgba(27,38,95,0.45) 0%, rgba(0,0,0,0) 60%),
+    linear-gradient(180deg, rgba(7,9,28,0.7) 0%, rgba(7,9,28,0.35) 42%, rgba(7,9,28,0.85) 100%);
+}
+
+/* Curtain: opaque poster layer covering the iframe during initial load so the
+   YouTube play button is never visible. Fades out once playback has started. */
+.hero-cinema .hero-curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(180deg, rgba(7,9,28,0.55) 0%, rgba(7,9,28,0.35) 55%, rgba(7,9,28,0.85) 100%),
+    radial-gradient(circle at 30% 40%, rgba(47, 77, 171, 0.25), transparent 60%),
+    radial-gradient(circle at 75% 70%, rgba(244, 122, 31, 0.18), transparent 65%),
+    #07091c;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 1.4s var(--ease);
+}
+.hero-cinema .hero-curtain.fade-out { opacity: 0; }
+.hero-cinema .hero-content,
+.hero-cinema .hero-meta { z-index: 3; }
+.hero-cinema .hero-content {
+  position: relative;
+  z-index: 2;
+  min-height: inherit;
+  display: flex;
+  align-items: center;
+  padding: clamp(6rem, 12vw, 9rem) 0 clamp(4rem, 8vw, 6rem);
+}
+.hero-cinema .hero-content .container { width: 100%; }
+.hero-cinema .eyebrow {
+  color: #FFB774;
+  letter-spacing: 0.18em;
+}
+.hero-cinema h1 {
+  color: white;
+  max-width: 18ch;
+  font-size: clamp(2.6rem, 6vw, 5rem);
+  line-height: 1.05;
+  text-shadow: 0 4px 28px rgba(0,0,0,0.35);
+}
+.hero-cinema .lead {
+  color: rgba(255,255,255,0.86);
+  max-width: 60ch;
+  font-size: clamp(1.1rem, 1.4vw, 1.3rem);
+  text-shadow: 0 2px 14px rgba(0,0,0,0.35);
+}
+.hero-cinema .hero-actions .btn-text {
+  color: white;
+}
+.hero-cinema .hero-actions .btn-text:hover { color: var(--orange); }
+.hero-cinema .hero-meta {
+  position: absolute;
+  left: 0; right: 0; bottom: 1.4rem;
+  z-index: 2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.6);
+  padding: 0 1.5rem;
+  max-width: var(--maxw);
+  margin: 0 auto;
+}
+.hero-cinema .hero-meta::before,
+.hero-cinema .hero-meta::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, rgba(255,255,255,0.0), rgba(255,255,255,0.25), rgba(255,255,255,0.0));
+}
+@media (max-width: 680px) {
+  .hero-cinema { min-height: 560px; }
+  .hero-cinema .hero-meta { font-size: 0.7rem; gap: 0.75rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-cinema .hero-video-wrap { display: none; }
+  .hero-cinema { background: linear-gradient(135deg, #0d1330 0%, #1B265F 60%, #2F4DAB 100%); }
+}
+
+/* ============================================================
+   Long-form article / legal pages (Privacy, Terms)
+   ============================================================ */
+.prose {
+  max-width: 760px;
+  margin: 0 auto;
+  font-size: 1.04rem;
+  line-height: 1.75;
+  color: var(--fg);
+}
+.prose h2 {
+  font-size: 1.55rem;
+  margin: 2.4rem 0 0.9rem;
+  color: var(--brand);
+}
+.prose h3 {
+  font-size: 1.18rem;
+  margin: 1.8rem 0 0.6rem;
+  color: var(--brand);
+}
+.prose p { color: var(--fg); margin: 0 0 1.1em; }
+.prose ul, .prose ol { padding-left: 1.3rem; margin: 0 0 1.2rem; color: var(--fg); }
+.prose li { margin: 0.35rem 0; }
+.prose strong { color: var(--brand); }
+.prose a { color: var(--orange); text-decoration: underline; text-underline-offset: 3px; }
+.prose .meta-row {
+  font-size: 0.88rem;
+  color: var(--fg-faint);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1.2rem;
+  margin-bottom: 2rem;
+  letter-spacing: 0.03em;
+}
+.prose blockquote {
+  border-left: 3px solid var(--orange);
+  margin: 1.6rem 0;
+  padding: 0.3rem 0 0.3rem 1.2rem;
+  color: var(--fg-muted);
+  font-style: italic;
+}
+
+/* Footer micro-links row */
+.footer-microlinks {
+  display: flex;
+  gap: 1.2rem;
+  flex-wrap: wrap;
+  font-size: 0.82rem;
+  color: var(--fg-faint);
+}
+.footer-microlinks a { color: rgba(255,255,255,0.6); }
+.footer-microlinks a:hover { color: var(--orange); }
+
+/* Illustration frame for the "core system you can count on" section */
+.illustration-frame {
+  position: relative;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: linear-gradient(135deg, #f4f1ea 0%, #eee7d7 100%);
+  padding: 1.5rem;
+  box-shadow: 0 30px 70px -30px rgba(27, 38, 95, 0.25);
+}
+.illustration-frame img {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: calc(var(--radius-lg) - 4px);
+}
+@media (max-width: 680px) {
+  .illustration-frame { padding: 1rem; }
+}
+
+/* Footer "any questions" tagline, matching the original site footer */
+.footer-help {
+  color: rgba(255,255,255,0.75);
+  font-size: 0.95rem;
+  margin: 0.5rem 0 1.2rem;
+}
+.footer-help a {
+  color: var(--orange);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.footer-help a:hover { color: var(--orange-deep); }
