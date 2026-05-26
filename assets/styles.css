@@ -33,7 +33,11 @@
 }
 
 * { box-sizing: border-box; }
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  scrollbar-color: rgba(27, 38, 95, 0.45) transparent;
+  scrollbar-width: thin;
+}
 body {
   margin: 0;
   font-family: var(--font);
@@ -44,7 +48,22 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  overscroll-behavior-y: none;
 }
+
+/* Custom scrollbar (WebKit / Chromium) */
+::-webkit-scrollbar { width: 11px; height: 11px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(27, 38, 95, 0.55), rgba(47, 77, 171, 0.55));
+  border: 3px solid var(--bg);
+  border-radius: 999px;
+  transition: background .2s var(--ease);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--brand), var(--brand-2));
+}
+::-webkit-scrollbar-corner { background: transparent; }
 
 img, svg { max-width: 100%; display: block; }
 a {
@@ -842,10 +861,31 @@ body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border
   inset: 0;
   z-index: 1;
   background:
-    radial-gradient(circle at 50% 50%, rgba(7,9,28,0.62) 0%, rgba(7,9,28,0.15) 36%, rgba(7,9,28,0) 60%),
-    radial-gradient(ellipse at 25% 35%, rgba(27,38,95,0.4) 0%, rgba(0,0,0,0) 65%),
-    linear-gradient(180deg, rgba(7,9,28,0.65) 0%, rgba(7,9,28,0.35) 40%, rgba(7,9,28,0.85) 100%);
+    radial-gradient(circle at 50% 50%, rgba(7,9,28,0.5) 0%, rgba(7,9,28,0.2) 28%, rgba(7,9,28,0) 55%),
+    radial-gradient(ellipse at 22% 38%, rgba(27,38,95,0.45) 0%, rgba(0,0,0,0) 60%),
+    linear-gradient(180deg, rgba(7,9,28,0.7) 0%, rgba(7,9,28,0.35) 42%, rgba(7,9,28,0.85) 100%);
 }
+
+/* Curtain: opaque poster layer covering the iframe during initial load so the
+   YouTube play button is never visible. Fades out once playback has started. */
+.hero-cinema .hero-curtain {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background-color: #07091c;
+  background-image:
+    linear-gradient(180deg, rgba(7,9,28,0.55) 0%, rgba(7,9,28,0.35) 55%, rgba(7,9,28,0.85) 100%),
+    url("https://i.ytimg.com/vi_webp/AjOGH249l3c/maxresdefault.webp"),
+    url("https://i.ytimg.com/vi/AjOGH249l3c/maxresdefault.jpg");
+  background-size: cover, cover, cover;
+  background-position: center;
+  opacity: 1;
+  pointer-events: none;
+  transition: opacity 1.4s var(--ease);
+}
+.hero-cinema .hero-curtain.fade-out { opacity: 0; }
+.hero-cinema .hero-content,
+.hero-cinema .hero-meta { z-index: 3; }
 .hero-cinema .hero-content {
   position: relative;
   z-index: 2;
