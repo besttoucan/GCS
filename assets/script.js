@@ -63,4 +63,33 @@
 
   // ---- Year ----
   document.querySelectorAll("[data-year]").forEach((y) => y.textContent = new Date().getFullYear());
+
+  // ---- Scroll-aware header (transparent over cinema hero, frosts in on scroll) ----
+  if (document.body.classList.contains("page-home")) {
+    const setScrolled = () => {
+      const y = window.scrollY || window.pageYOffset;
+      document.body.classList.toggle("is-scrolled", y > 40);
+    };
+    setScrolled();
+    window.addEventListener("scroll", setScrolled, { passive: true });
+  }
+
+  // ---- Hero video curtain: lift when the HTML5 video actually starts playing ----
+  const heroVid = document.querySelector(".hero-cinema .hero-video");
+  const heroCurtain = document.querySelector(".hero-cinema .hero-curtain");
+  if (heroVid && heroCurtain) {
+    let lifted = false;
+    const lift = () => {
+      if (lifted) return;
+      lifted = true;
+      heroCurtain.classList.add("fade-out");
+      setTimeout(() => { heroCurtain.style.display = "none"; }, 1600);
+    };
+    heroVid.addEventListener("playing", lift, { once: true });
+    heroVid.addEventListener("canplay", () => {
+      heroVid.play().catch(() => {});
+    }, { once: true });
+    // Failsafe.
+    setTimeout(lift, 5000);
+  }
 })();
