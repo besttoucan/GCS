@@ -159,7 +159,6 @@
   const heroVideo = document.getElementById("hero-video");
   if (heroVideo) {
     const skipVideo =
-      window.innerWidth < 800 ||
       matchMedia("(prefers-reduced-data: reduce)").matches ||
       matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (skipVideo) {
