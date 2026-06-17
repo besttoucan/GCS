@@ -1599,6 +1599,12 @@ body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border
     transform: none;
     background: #07091c;
   }
+  .hero-cinema .hero-skyline img,
+  .hero-cinema .hero-skyline video {
+    transform: none;
+    -webkit-backface-visibility: visible;
+    backface-visibility: visible;
+  }
   .hero-cinema .hero-meta {
     height: 52px;
     font-size: 0.68rem;
