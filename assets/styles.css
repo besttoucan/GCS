@@ -5,23 +5,28 @@
    ============================================================ */
 
 :root {
-  --bg: #fbfaf7;              /* warm off-white */
+  /* Color scheme v2 — cooler, more "tech-forward fintech." Brand navy + orange
+     (sampled from the logo) untouched. Backgrounds, text-mutes, and borders
+     shifted from warm cream/brown toward cool off-white/blue-gray for a
+     Stripe/Linear-style read. Easy to revert: swap to the values in the
+     `/* warm original */` comments below. */
+  --bg: #fafbfd;              /* cool off-white (warm original: #fbfaf7) */
   --bg-elev: #ffffff;
-  --bg-soft: #f4f1ea;          /* warm tinted */
-  --bg-dark: #0d1330;          /* deep ink for dark sections */
+  --bg-soft: #eff2f7;          /* cool tinted (warm original: #f4f1ea) */
+  --bg-dark: #080d22;          /* deeper, blacker navy (warm original: #0d1330) */
 
-  --fg: #0d1330;               /* near-black with navy hint */
-  --fg-muted: #4a5266;
-  --fg-faint: #8a8f9f;
+  --fg: #0f1530;               /* near-black with navy hint (warm original: #0d1330) */
+  --fg-muted: #4a5366;          /* slightly cooler (warm original: #4a5266) */
+  --fg-faint: #8c93a3;          /* cool-toned faint (warm original: #8a8f9f) */
 
-  --brand: #1B265F;            /* deep navy from logo */
-  --brand-2: #2F4DAB;          /* royal blue from logo */
-  --orange: #F47A1F;           /* primary accent — orange from logo */
-  --orange-deep: #E63E2C;      /* deep red-orange */
-  --orange-light: #FDEBD8;     /* soft orange tint background */
+  --brand: #131A40;            /* deeper navy (logo original: #1B265F) */
+  --brand-2: #2F4DAB;          /* royal blue from logo — unchanged */
+  --orange: #F47A1F;           /* primary accent — orange from logo — unchanged */
+  --orange-deep: #E63E2C;      /* deep red-orange — unchanged */
+  --orange-light: #FDEFDB;     /* soft orange tint (warm original: #FDEBD8) */
 
-  --border: #e8e3d8;           /* warm border */
-  --border-strong: #d4cdbe;
+  --border: #E1E5EE;           /* cool light gray (warm original: #e8e3d8) */
+  --border-strong: #C8CFDB;    /* cool gray (warm original: #d4cdbe) */
 
   --maxw: 1180px;
   --radius: 6px;
@@ -35,8 +40,9 @@
 * { box-sizing: border-box; }
 html {
   scroll-behavior: smooth;
-  scrollbar-color: rgba(27, 38, 95, 0.35) transparent;
-  scrollbar-width: thin;
+  /* Hide the native scrollbar — we render our own rail on the right edge. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 body {
   margin: 0;
@@ -51,17 +57,98 @@ body {
   overscroll-behavior-y: none;
 }
 
-/* Slim, subtle scrollbar (Chromium / Safari). Thumb gets a touch of brand. */
-::-webkit-scrollbar { width: 8px; height: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb {
-  background: rgba(27, 38, 95, 0.28);
-  border-radius: 999px;
+/* Suppress native scrollbar on WebKit so the custom rail is the only one shown. */
+html::-webkit-scrollbar,
+body::-webkit-scrollbar { width: 0; height: 0; display: none; }
+
+/* ------------------------------------------------------------
+   Custom scroll rail. A fixed vertical track on the right edge
+   with a thumb sized to the viewport-to-document ratio and
+   positioned in proportion to scrollY. Driven by --scroll-pos
+   and --scroll-thumb-h from script.js.
+   ------------------------------------------------------------ */
+.scroll-rail {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 22px;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .35s var(--ease);
+}
+.scroll-rail.ready { opacity: 1; }
+.scroll-rail .scroll-rail-track {
+  position: absolute;
+  top: 14px;
+  bottom: 14px;
+  right: 0;
+  width: 22px;
+  border-radius: 2px;
+  pointer-events: auto;
+  cursor: pointer;
+}
+.scroll-rail .scroll-rail-track::before {
+  content: "";
+  position: absolute;
+  top: 0; bottom: 0;
+  right: 9px;
+  width: 4px;
+  background: rgba(27, 38, 95, 0.12);
+  border-radius: 2px;
   transition: background .2s var(--ease);
 }
-::-webkit-scrollbar-thumb:hover { background: rgba(27, 38, 95, 0.55); }
-::-webkit-scrollbar-thumb:active { background: var(--brand); }
-::-webkit-scrollbar-corner { background: transparent; }
+.scroll-rail:hover .scroll-rail-track::before { background: rgba(27, 38, 95, 0.20); }
+.scroll-rail .scroll-rail-thumb {
+  position: absolute;
+  right: 5px;
+  width: 12px;
+  height: var(--scroll-thumb-h, 80px);
+  top: var(--scroll-pos, 0px);
+  background: linear-gradient(180deg, var(--brand) 0%, var(--brand-2) 60%, var(--orange) 100%);
+  border-radius: 999px;
+  box-shadow: 0 2px 14px rgba(27, 38, 95, 0.25);
+  pointer-events: auto;
+  cursor: grab;
+  transition: width .15s var(--ease), right .15s var(--ease), box-shadow .15s var(--ease);
+  /* No transitions on top/height — drag must feel instant. */
+}
+.scroll-rail:hover .scroll-rail-thumb,
+.scroll-rail.dragging .scroll-rail-thumb {
+  width: 14px;
+  right: 4px;
+  box-shadow: 0 3px 18px rgba(27, 38, 95, 0.35);
+}
+.scroll-rail .scroll-rail-thumb,
+.scroll-rail .scroll-rail-track {
+  touch-action: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.scroll-rail.dragging .scroll-rail-thumb { cursor: grabbing; transition: none; }
+/* While dragging, kill the document smooth-scroll behavior so the thumb tracks
+   the cursor instantly. We toggle this with .is-rail-dragging on <html>. */
+html.is-rail-dragging { scroll-behavior: auto; }
+html.is-rail-dragging body { -webkit-user-select: none; user-select: none; }
+
+/* Over the cinema hero, brighten the rail so it reads on dark video. */
+body.page-home:not(.is-scrolled) .scroll-rail .scroll-rail-track::before {
+  background: rgba(255, 255, 255, 0.22);
+}
+body.page-home:not(.is-scrolled) .scroll-rail .scroll-rail-thumb {
+  background: linear-gradient(180deg, #ffffff 0%, var(--orange) 100%);
+  box-shadow: 0 2px 18px rgba(244, 122, 31, 0.45);
+}
+
+@media (max-width: 680px) {
+  /* On touch devices, hide the custom rail — native gesture scroll is the right UX. */
+  .scroll-rail { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-rail { transition: none; }
+  .scroll-rail .scroll-rail-thumb { transition: none; }
+}
 
 img, svg { max-width: 100%; display: block; }
 a {
@@ -131,7 +218,19 @@ body.page-home:not(.is-scrolled) .site-header {
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
-body.page-home:not(.is-scrolled) .site-header .brand { color: white; }
+body.page-home:not(.is-scrolled) .site-header .brand {
+  color: white;
+  font-size: 1.5rem;
+  letter-spacing: -0.02em;
+}
+body.page-home:not(.is-scrolled) .site-header .brand-mark {
+  width: 46px;
+  height: 46px;
+}
+body.page-home:not(.is-scrolled) .nav { height: 86px; }
+.site-header .brand,
+.site-header .brand-mark,
+.site-header.nav { transition: font-size .25s var(--ease), width .25s var(--ease), height .25s var(--ease); }
 body.page-home:not(.is-scrolled) .site-header .nav-links a { color: rgba(255,255,255,0.85); }
 body.page-home:not(.is-scrolled) .site-header .nav-links a:hover,
 body.page-home:not(.is-scrolled) .site-header .nav-links a.active { color: white; }
@@ -171,16 +270,7 @@ body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border
   width: 100%;
   height: 100%;
   object-fit: contain;
-  transition: opacity .25s var(--ease);
 }
-/* Default (light page contexts): show the light-bg logo, blend out the white. */
-.brand-mark-light { mix-blend-mode: multiply; opacity: 1; }
-.brand-mark-dark  { mix-blend-mode: screen;   opacity: 0; }
-/* Dark contexts: footer always, and the transparent-over-hero homepage header. */
-.site-footer .brand-mark-light,
-body.page-home:not(.is-scrolled) .site-header .brand-mark-light { opacity: 0; }
-.site-footer .brand-mark-dark,
-body.page-home:not(.is-scrolled) .site-header .brand-mark-dark { opacity: 1; }
 
 .nav-links {
   display: flex;
@@ -509,6 +599,61 @@ body.page-home:not(.is-scrolled) .site-header .brand-mark-dark { opacity: 1; }
 }
 
 /* ============================================================
+   Backed-by band
+   Thin trust band, sits below the hero. Centered on desktop, stacks
+   on mobile. Brand-colored wordmark on a neutral background — reads
+   as an actual disclosure, not a "logo soup."
+   ============================================================ */
+.backers {
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: clamp(1.3rem, 2.4vw, 1.8rem) 0;
+}
+.backers .container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(1rem, 3vw, 2rem);
+  flex-wrap: wrap;
+}
+.backers-label {
+  font-size: 0.78rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  font-weight: 600;
+}
+.backers-logo {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  filter: grayscale(0%);
+  opacity: 0.85;
+  transition: opacity .15s var(--ease), transform .15s var(--ease);
+}
+.backers-logo:hover { opacity: 1; transform: translateY(-1px); }
+.backers-logo img { display: block; max-height: clamp(28px, 3.5vw, 38px); width: auto; }
+.backers-wordmark {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.35rem, 2.1vw, 1.7rem);
+  color: #007CC3;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+.backers-wordmark sup {
+  font-size: 0.45em;
+  vertical-align: super;
+  margin-left: 0.1em;
+  color: var(--fg-faint);
+  font-weight: 600;
+}
+@media (max-width: 540px) {
+  .backers .container { flex-direction: column; gap: 0.65rem; }
+}
+
+/* ============================================================
    Page header (interior pages)
    ============================================================ */
 .page-head {
@@ -518,6 +663,173 @@ body.page-home:not(.is-scrolled) .site-header .brand-mark-dark { opacity: 1; }
 }
 .page-head h1 { margin-bottom: 1.2rem; max-width: 18ch; }
 .page-head .lead { max-width: 56ch; }
+
+/* About — asymmetric grid with a thin orange accent rule on the left edge.
+   Heading lives in a tall left column; the lead drops into a narrower right
+   column separated by a hairline rule. Reads as a manifesto opener instead
+   of a brochure cover. */
+.page-head-about {
+  padding-top: clamp(5rem, 9vw, 7rem);
+  padding-bottom: clamp(3.5rem, 6vw, 5rem);
+}
+.page-head-about .page-head-about-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: clamp(2.5rem, 5vw, 4rem);
+  align-items: end;
+  position: relative;
+  padding-left: clamp(1.25rem, 2.5vw, 2rem);
+}
+.page-head-about .page-head-about-grid::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.4rem;
+  bottom: 0.4rem;
+  width: 2px;
+  background: linear-gradient(180deg, var(--orange) 0%, var(--orange) 60%, transparent 100%);
+  border-radius: 1px;
+}
+.page-head-about h1 {
+  font-size: clamp(2.4rem, 5.2vw, 4rem);
+  max-width: 20ch;
+  margin-bottom: 0;
+  line-height: 1.08;
+}
+.page-head-about .lead {
+  font-size: 1.05rem;
+  align-self: end;
+  padding-left: clamp(1.5rem, 3vw, 2.5rem);
+  border-left: 1px solid var(--border);
+  margin-bottom: 0.2rem;
+}
+@media (max-width: 800px) {
+  .page-head-about .page-head-about-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding-left: 1rem;
+  }
+  .page-head-about .lead { border-left: none; padding-left: 0; }
+}
+
+/* Articles — editorial masthead. A two-up meta row at the top with the
+   section label on the left and an orange "Issue No." marker on the right,
+   under a hairline divider. Visually reads like a journal cover. */
+.page-head-editorial { padding-bottom: clamp(3rem, 5vw, 4rem); }
+.page-head-editorial .editorial-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 1.1rem;
+  margin-bottom: clamp(2rem, 3.5vw, 2.8rem);
+  border-bottom: 1px solid var(--border);
+  font-size: 0.76rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  font-weight: 600;
+}
+.page-head-editorial .editorial-meta-accent { color: var(--orange); }
+.page-head-editorial h1 {
+  font-size: clamp(2.6rem, 5.5vw, 4rem);
+  max-width: 22ch;
+  margin-bottom: 1.4rem;
+  line-height: 1.06;
+}
+.page-head-editorial .lead {
+  max-width: 60ch;
+  font-size: 1.12rem;
+}
+
+
+/* FAQ page header — split layout. Heading on the left, a row of jump
+   chips on the right that anchor down to specific FAQ items. Distinct
+   from every other page-head and functional: visitors can skip straight
+   to the topic they're actually here for. */
+.page-head-faq .page-head-faq-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: clamp(2.5rem, 5vw, 4rem);
+  align-items: end;
+}
+.page-head-faq .page-head-faq-intro h1 { max-width: 16ch; }
+.page-head-faq .page-head-faq-intro .lead { max-width: 48ch; }
+.page-head-faq .faq-jumps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-content: end;
+  justify-content: flex-start;
+}
+.page-head-faq .faq-jumps-label {
+  display: block;
+  width: 100%;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-faint);
+  margin-bottom: 0.5rem;
+}
+.page-head-faq .faq-jumps a {
+  display: inline-block;
+  padding: 0.55rem 1.05rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--fg);
+  background: var(--bg-elev);
+  text-decoration: none;
+  transition: border-color .15s var(--ease), color .15s var(--ease),
+              background .15s var(--ease), transform .15s var(--ease);
+}
+.page-head-faq .faq-jumps a:hover {
+  border-color: var(--orange);
+  color: var(--orange);
+  transform: translateY(-1px);
+}
+
+/* When a FAQ item is the jump target, pulse-highlight it so the visitor
+   can see where they landed, then fade back to neutral. A short-lived
+   tint + left edge indicator + summary tint that all decay over ~2.4s. */
+@keyframes faq-target-pulse {
+  0% {
+    background-color: rgba(244, 122, 31, 0.16);
+    box-shadow: inset 3px 0 0 var(--orange);
+  }
+  20% {
+    background-color: rgba(244, 122, 31, 0.18);
+    box-shadow: inset 3px 0 0 var(--orange);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: inset 0 0 0 transparent;
+  }
+}
+.faq-item.is-jump-target,
+.faq-item:target {
+  animation: faq-target-pulse 2.4s var(--ease) 0.15s 1 both;
+  border-top-color: var(--orange);
+  scroll-margin-top: 100px; /* keeps native :target scroll clear of sticky header */
+}
+.faq-item.is-jump-target summary,
+.faq-item:target summary {
+  color: var(--orange-deep);
+  transition: color .3s var(--ease);
+}
+
+@media (max-width: 800px) {
+  .page-head-faq .page-head-faq-grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+  /* Bigger tap targets on touch — chips need ~44px to feel right with a finger. */
+  .page-head-faq .faq-jumps a {
+    padding: 0.75rem 1.15rem;
+    font-size: 0.95rem;
+  }
+}
 
 /* ============================================================
    Article cards (used on articles page)
@@ -686,17 +998,26 @@ body.page-home:not(.is-scrolled) .site-header .brand-mark-dark { opacity: 1; }
   color: var(--fg-faint);
   margin-top: 1rem;
 }
-.success-msg {
+.success-msg,
+.error-msg {
   display: none;
   padding: 1rem 1.2rem;
-  background: var(--orange-light);
-  color: var(--orange-deep);
   border-radius: var(--radius);
   margin-bottom: 1rem;
   font-weight: 600;
   font-size: 0.95rem;
 }
-.success-msg.show { display: block; }
+.success-msg {
+  background: var(--orange-light);
+  color: var(--orange-deep);
+}
+.error-msg {
+  background: #fdecec;
+  color: #9a1b1b;
+}
+.error-msg a { color: inherit; text-decoration: underline; }
+.success-msg.show,
+.error-msg.show { display: block; }
 
 /* ============================================================
    Footer
@@ -768,20 +1089,40 @@ body.page-home:not(.is-scrolled) .site-header .brand-mark-dark { opacity: 1; }
 /* ============================================================
    Reveal animation. Default: gentle rise. Numbered items: alternating swipe.
    ============================================================ */
+/* .reveal default state is VISIBLE — so content above the fold paints in its
+   final position on first frame, with no fade-in delay. JS adds .reveal-pending
+   to elements that are below the fold on load (which the user can't see yet);
+   the IntersectionObserver removes that class as they scroll into view, and
+   the transition then runs as you'd expect. This is the fix for the "blank
+   bottom on page open" issue — the pullquote section is just below the hero,
+   so most viewports show its top edge on load; it used to sit at opacity 0
+   for ~1s before fading in. Now it's just visible. */
 .reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition: opacity .85s var(--ease), transform .85s var(--ease);
+  transition: opacity .9s var(--ease), transform .95s var(--ease);
   will-change: opacity, transform;
+}
+.reveal.reveal-pending {
+  opacity: 0;
+  transform: translateY(36px);
 }
 .reveal.visible { opacity: 1; transform: none; }
 
-/* Numbered items (Solutions, Services, Partnership, Articles): swipe from the
-   side in alternation so they read like cards landing into place. */
-.numbered .numbered-item.reveal { opacity: 0; transform: translate(-44px, 18px); }
-.numbered .numbered-item.reveal:nth-child(even) { transform: translate(44px, 18px); }
-.numbered .numbered-item.reveal.visible { opacity: 1; transform: translate(0, 0); }
-.numbered .numbered-item.reveal { transition: opacity .9s var(--ease), transform .95s var(--ease); }
+/* Numbered items: parent is the .reveal target; rows rise gently in sequence.
+   No alternating left/right — the list is being read top-to-bottom, so the
+   eye should travel down, not zig-zag. */
+.numbered.reveal { opacity: 1; transform: none; transition: none; }
+.numbered.reveal .numbered-item {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity .9s var(--ease), transform .95s var(--ease);
+  will-change: opacity, transform;
+}
+.numbered.reveal.visible .numbered-item { opacity: 1; transform: none; }
+.numbered.reveal.visible .numbered-item:nth-child(1) { transition-delay: .00s; }
+.numbered.reveal.visible .numbered-item:nth-child(2) { transition-delay: .07s; }
+.numbered.reveal.visible .numbered-item:nth-child(3) { transition-delay: .14s; }
+.numbered.reveal.visible .numbered-item:nth-child(4) { transition-delay: .21s; }
+.numbered.reveal.visible .numbered-item:nth-child(5) { transition-delay: .28s; }
 
 /* Feature-grid cards stagger from below with a small scale-up. */
 .feature-grid.reveal .feature-item,
@@ -814,6 +1155,60 @@ body.page-home:not(.is-scrolled) .site-header .brand-mark-dark { opacity: 1; }
 .skip-link:focus { left: 0; color: white; }
 
 ::selection { background: var(--orange); color: white; }
+
+/* ============================================================
+   Keyboard focus rings.
+   Banks audit accessibility before procurement. A consistent, visible
+   focus indicator on every interactive element matters for both WCAG
+   2.4.7 (focus visible) and 2.4.11 (focus appearance).
+   Uses :focus-visible so mouse clicks don't show the ring.
+   ============================================================ */
+:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.btn:focus-visible { outline-offset: 4px; }
+.faq-jumps a:focus-visible,
+.nav-links a:focus-visible { outline-offset: 4px; }
+/* Form fields already have a stronger focus state via box-shadow; suppress
+   the outline there to avoid double-rings. */
+.field input:focus-visible,
+.field textarea:focus-visible,
+.field select:focus-visible { outline: none; }
+
+/* ============================================================
+   Subtle component polish on the new cool palette.
+   ============================================================ */
+.btn-primary {
+  box-shadow: 0 1px 0 rgba(13, 19, 48, 0.04);
+}
+.btn-primary:hover {
+  box-shadow: 0 4px 16px -4px rgba(244, 122, 31, 0.4);
+  transform: translateY(-1px);
+}
+.btn-primary:active { transform: translateY(0); }
+.btn-ghost {
+  transition: background .18s var(--ease), border-color .18s var(--ease),
+              transform .15s var(--ease);
+}
+.btn-ghost:hover { transform: translateY(-1px); }
+
+.article-card {
+  box-shadow: 0 1px 0 rgba(13, 19, 48, 0.02);
+}
+.article-card:hover {
+  box-shadow: 0 12px 28px -12px rgba(13, 19, 48, 0.18);
+}
+.stack-card {
+  transition: transform .25s var(--ease), border-color .25s var(--ease),
+              box-shadow .25s var(--ease);
+}
+.stack-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+  box-shadow: 0 12px 28px -16px rgba(13, 19, 48, 0.18);
+}
 
 /* ============================================================
    Responsive
@@ -855,6 +1250,173 @@ body.page-home:not(.is-scrolled) .site-header .brand-mark-dark { opacity: 1; }
   .footer-bottom { justify-content: center; text-align: center; }
 }
 
+/* ============================================================
+   Scroll-triggered word stagger on big headings.
+   Each <span class="word"> rises and fades in, sequenced left-to-right.
+   ============================================================ */
+.section-head h2 .word,
+.page-head h1 .word,
+.hero-cinema h1 .word,
+.cta-band h2 .word,
+.pullquote .word {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(0.6em);
+  transition: opacity .7s var(--ease), transform .8s var(--ease);
+}
+/* These overrides must match or beat the specificity of the initial-state
+   selectors above — otherwise (0,2,1) beats (0,2,0) and the headings stay
+   permanently invisible (which is exactly the page-head h1 bug). */
+.section-head h2.words-in .word,
+.page-head h1.words-in .word,
+.hero-cinema h1.words-in .word,
+.cta-band h2.words-in .word,
+.pullquote.words-in .word { opacity: 1; transform: none; }
+.words-in .word:nth-child(1)  { transition-delay: .00s; }
+.words-in .word:nth-child(3)  { transition-delay: .06s; }
+.words-in .word:nth-child(5)  { transition-delay: .12s; }
+.words-in .word:nth-child(7)  { transition-delay: .18s; }
+.words-in .word:nth-child(9)  { transition-delay: .24s; }
+.words-in .word:nth-child(11) { transition-delay: .30s; }
+.words-in .word:nth-child(13) { transition-delay: .36s; }
+.words-in .word:nth-child(15) { transition-delay: .42s; }
+.words-in .word:nth-child(17) { transition-delay: .48s; }
+.words-in .word:nth-child(19) { transition-delay: .54s; }
+.words-in .word:nth-child(21) { transition-delay: .60s; }
+
+/* Eyebrow gets a draw-in underline accent on reveal. */
+.section-head .eyebrow,
+.page-head .eyebrow,
+.split-row .eyebrow {
+  position: relative;
+}
+.section-head .eyebrow::after,
+.page-head .eyebrow::after,
+.split-row .eyebrow::after {
+  content: "";
+  display: block;
+  margin-top: 0.55rem;
+  height: 2px;
+  width: 0;
+  background: var(--orange);
+  transition: width .9s var(--ease) .15s;
+}
+.reveal.visible .eyebrow::after,
+.section-head.visible .eyebrow::after,
+.page-head .eyebrow::after { width: 28px; }
+.split-row.visible .eyebrow::after { width: 28px; }
+
+/* Illustration frame: settles in with a soft scale + lift. */
+.illustration-frame {
+  opacity: 0;
+  transform: translateY(20px) scale(.97);
+  transition: opacity .9s var(--ease), transform 1s var(--ease);
+}
+.split-row.visible .illustration-frame,
+.reveal.visible .illustration-frame { opacity: 1; transform: none; }
+
+/* Stack-list cards stagger up. */
+.stack-list .stack-card {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity .7s var(--ease), transform .75s var(--ease);
+}
+.split-row.visible .stack-list .stack-card:nth-child(1),
+.reveal.visible .stack-list .stack-card:nth-child(1) { opacity: 1; transform: none; transition-delay: .05s; }
+.split-row.visible .stack-list .stack-card:nth-child(2),
+.reveal.visible .stack-list .stack-card:nth-child(2) { opacity: 1; transform: none; transition-delay: .15s; }
+.split-row.visible .stack-list .stack-card:nth-child(3),
+.reveal.visible .stack-list .stack-card:nth-child(3) { opacity: 1; transform: none; transition-delay: .25s; }
+.split-row.visible .stack-list .stack-card:nth-child(4),
+.reveal.visible .stack-list .stack-card:nth-child(4) { opacity: 1; transform: none; transition-delay: .35s; }
+
+/* Hero parallax: the JS sets translate3d() on .hero-skyline. We just hint the
+   GPU and prevent layout repaints. */
+.hero-cinema .hero-skyline { will-change: transform; }
+
+/* Page-head parallax: the interior heading rises subtly as the user scrolls
+   away from the top, giving the page a sense of depth. JS sets the variable. */
+.page-head .container {
+  transform: translate3d(0, var(--page-head-shift, 0px), 0);
+  opacity: var(--page-head-fade, 1);
+  will-change: transform, opacity;
+}
+
+/* Hero content drifts up + fades as the user scrolls past the hero, so the
+   cinema crossover into the next section feels intentional. */
+.hero-cinema .hero-content {
+  transform: translate3d(0, var(--hero-shift, 0px), 0);
+  opacity: var(--hero-fade, 1);
+  will-change: transform, opacity;
+}
+
+/* ============================================================
+   Scroll-tied effects (reversible by construction — JS recomputes
+   values from each element's current viewport position every frame).
+
+   Two variables are written per element:
+   --p     linear 0..1 progress across the viewport
+            (0 = top just touched bottom of viewport, 1 = bottom just
+             left the top of viewport). Good for parallax-style drift.
+   --focus center-peaked 0..1, falling to 0 at the viewport edges.
+            Good for "active row" highlights.
+   ============================================================ */
+
+/* Illustration card: drifts vertically by ~30px range as you scroll past
+   the section. Pure linear parallax, no rotation, no scale — the figure
+   stays calm, the motion stays subtle. */
+.split-row.visible .illustration-frame[data-scroll-tie],
+.reveal.visible .illustration-frame[data-scroll-tie] {
+  transform: translateY(calc((0.5 - var(--p, 0.5)) * 36px));
+  transition: opacity .9s var(--ease);
+}
+
+/* Partnership "collaborative environment" block — slides horizontally as the
+   reader scrolls through the section. Enters from the right, sits centered
+   at the section's vertical midpoint, then continues out to the left as you
+   pass it. Continuous and reversible because --p is recomputed every frame
+   from the element's current viewport position. The parent section has
+   overflow:hidden so the content cleanly clips at the edges instead of
+   pushing the horizontal scrollbar. */
+.partnership-slide[data-scroll-tie] {
+  will-change: transform;
+  transform: translate3d(calc((0.5 - var(--p, 0.5)) * 180px), 0, 0);
+}
+@media (max-width: 800px), (pointer: coarse) {
+  /* Mobile: scroll-tied JS is gated off. Pin to centered. */
+  .partnership-slide[data-scroll-tie] { transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .partnership-slide[data-scroll-tie] { transform: none; }
+}
+
+/* Solutions list rows: number tag brightens to brand orange when the row
+   crosses viewport center, fades back as it leaves. */
+.numbered-item[data-scroll-tie] {
+  --focus: 0;
+}
+.numbered-item[data-scroll-tie] .numbered-num {
+  color: color-mix(in srgb, var(--fg-faint) calc((1 - var(--focus)) * 100%), var(--orange));
+  transition: none;
+}
+/* Fallback for browsers without color-mix(): brighten via opacity-of-orange. */
+@supports not (color: color-mix(in srgb, red, blue)) {
+  .numbered-item[data-scroll-tie] .numbered-num {
+    color: var(--orange);
+    opacity: calc(0.45 + var(--focus) * 0.55);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .numbered-item[data-scroll-tie] .numbered-num { color: var(--orange); opacity: 1; }
+}
+/* Mobile: the JS that drives --focus is gated off (touch scroll + per-frame
+   transforms = jank). Number tags stay static orange instead of scroll-tied. */
+@media (max-width: 800px), (pointer: coarse) {
+  .numbered-item[data-scroll-tie] .numbered-num { color: var(--orange); opacity: 1; }
+  .illustration-frame[data-scroll-tie] { transform: none !important; }
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -862,10 +1424,14 @@ body.page-home:not(.is-scrolled) .site-header .brand-mark-dark { opacity: 1; }
     transition-duration: 0.001ms !important;
   }
   .reveal { opacity: 1; transform: none; }
+  .word { opacity: 1 !important; transform: none !important; }
+  .illustration-frame { opacity: 1 !important; transform: none !important; }
+  .stack-list .stack-card { opacity: 1 !important; transform: none !important; }
+  .hero-cinema .hero-skyline { transform: none !important; }
 }
 
 /* ============================================================
-   Cinematic video hero (NYC YouTube background)
+   Cinematic NYC skyline hero
    ============================================================ */
 .hero-cinema {
   position: relative;
@@ -876,26 +1442,51 @@ body.page-home:not(.is-scrolled) .site-header .brand-mark-dark { opacity: 1; }
   isolation: isolate;
   background: #07091c;
 }
-.hero-cinema .hero-video-wrap {
+.hero-cinema .hero-skyline {
   position: absolute;
   inset: 0;
-  overflow: hidden;
   z-index: 0;
-  background:
-    radial-gradient(circle at 30% 40%, rgba(47, 77, 171, 0.25), transparent 60%),
-    radial-gradient(circle at 75% 70%, rgba(244, 122, 31, 0.18), transparent 65%),
-    #07091c;
+  overflow: hidden;
+  /* Compositor hints. The JS sets translate3d() on this element once per
+     animation frame; everything below should keep it on one stable GPU
+     layer, so the video doesn't get re-composited each scroll tick (which
+     is what was causing the occasional flicker). */
+  will-change: transform;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  contain: paint;
 }
-.hero-cinema .hero-video {
+.hero-cinema .hero-skyline img,
+.hero-cinema .hero-skyline video {
+  position: absolute;
+  /* Oversize the video via width/height (not transform: scale) so the source
+     MP4's baked-in letterbox bars get clipped by .hero-skyline's overflow:
+     hidden. Avoiding a nested transform on the video element keeps it on a
+     single stable composited layer with its parent. */
+  top: -6%;
+  left: -6%;
+  width: 112%;
+  height: 112%;
+  object-fit: cover;
+  object-position: center bottom;
+  display: block;
+  /* Force the video onto its own GPU layer so the parent's parallax transform
+     just shifts the layer rather than triggering per-frame video repaints. */
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+.hero-cinema .hero-skyline iframe {
   position: absolute;
   top: 50%;
   left: 50%;
-  min-width: 100%;
-  min-height: 100%;
-  width: auto;
-  height: auto;
+  width: 100vw;
+  height: 100vh;
+  min-width: 177.78vh;
+  min-height: 56.25vw;
   transform: translate(-50%, -50%);
-  object-fit: cover;
+  border: 0;
   pointer-events: none;
 }
 .hero-cinema .hero-overlay {
@@ -903,41 +1494,27 @@ body.page-home:not(.is-scrolled) .site-header .brand-mark-dark { opacity: 1; }
   inset: 0;
   z-index: 1;
   background:
-    radial-gradient(circle at 50% 50%, rgba(7,9,28,0.5) 0%, rgba(7,9,28,0.2) 28%, rgba(7,9,28,0) 55%),
-    radial-gradient(ellipse at 22% 38%, rgba(27,38,95,0.45) 0%, rgba(0,0,0,0) 60%),
-    linear-gradient(180deg, rgba(7,9,28,0.7) 0%, rgba(7,9,28,0.35) 42%, rgba(7,9,28,0.85) 100%);
+    radial-gradient(ellipse at 22% 38%, rgba(27,38,95,0.32) 0%, rgba(0,0,0,0) 62%),
+    linear-gradient(180deg, rgba(7,9,28,0.55) 0%, rgba(7,9,28,0.15) 38%, rgba(7,9,28,0.65) 100%);
 }
-
-/* Curtain: opaque poster layer covering the iframe during initial load so the
-   YouTube play button is never visible. Fades out once playback has started. */
-.hero-cinema .hero-curtain {
-  position: absolute;
-  inset: 0;
-  z-index: 2;
-  background:
-    linear-gradient(180deg, rgba(7,9,28,0.55) 0%, rgba(7,9,28,0.35) 55%, rgba(7,9,28,0.85) 100%),
-    radial-gradient(circle at 30% 40%, rgba(47, 77, 171, 0.25), transparent 60%),
-    radial-gradient(circle at 75% 70%, rgba(244, 122, 31, 0.18), transparent 65%),
-    #07091c;
-  opacity: 1;
-  pointer-events: none;
-  transition: opacity 1.4s var(--ease);
-}
-.hero-cinema .hero-curtain.fade-out { opacity: 0; }
-.hero-cinema .hero-content,
-.hero-cinema .hero-meta { z-index: 3; }
+.hero-cinema .hero-content { z-index: 2; }
+.hero-cinema .hero-meta { z-index: 4; }
 .hero-cinema .hero-content {
   position: relative;
   z-index: 2;
   min-height: inherit;
   display: flex;
   align-items: center;
-  padding: clamp(6rem, 12vw, 9rem) 0 clamp(4rem, 8vw, 6rem);
+  /* Bottom padding is reduced — the meta bar (~64px) now occupies the bottom
+     of the section, so the title block needs less of its own clearance. */
+  padding: clamp(6rem, 12vw, 9rem) 0 clamp(7rem, 11vw, 9rem);
 }
 .hero-cinema .hero-content .container { width: 100%; }
 .hero-cinema .eyebrow {
   color: #FFB774;
   letter-spacing: 0.18em;
+  font-size: clamp(0.95rem, 1.15vw, 1.15rem);
+  margin-bottom: 1.6rem;
 }
 .hero-cinema h1 {
   color: white;
@@ -956,35 +1533,73 @@ body.page-home:not(.is-scrolled) .site-header .brand-mark-dark { opacity: 1; }
   color: white;
 }
 .hero-cinema .hero-actions .btn-text:hover { color: var(--orange); }
+/* Full-width solid bar at the bottom of the cinema hero. Acts as the
+   intentional bottom edge — the parallax can shift the video upward without
+   exposing anything, because the bar is what the viewer sees as the "floor"
+   of the hero. */
 .hero-cinema .hero-meta {
   position: absolute;
-  left: 0; right: 0; bottom: 1.4rem;
-  z-index: 2;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 4;
+  height: clamp(56px, 6.5vw, 72px);
   display: flex;
   justify-content: space-between;
   align-items: center;
   gap: 1.5rem;
-  font-size: 0.78rem;
-  letter-spacing: 0.14em;
+  font-family: var(--font-display);
+  font-size: clamp(0.72rem, 0.85vw, 0.82rem);
+  font-weight: 600;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: rgba(255,255,255,0.6);
-  padding: 0 1.5rem;
-  max-width: var(--maxw);
-  margin: 0 auto;
+  color: rgba(255, 255, 255, 0.82);
+  padding: 0 clamp(1.5rem, 4vw, 3rem);
+  max-width: none;
+  margin: 0;
+  background: #07091c;
 }
-.hero-cinema .hero-meta::before,
-.hero-cinema .hero-meta::after {
+/* A single thin orange accent line at the top of the bar, brightest in the
+   middle and fading at the edges. Replaces the old left/right gradient
+   "lines" that were flex-grow filler between two centered labels. */
+.hero-cinema .hero-meta::before {
   content: "";
-  flex: 1;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 1px;
-  background: linear-gradient(to right, rgba(255,255,255,0.0), rgba(255,255,255,0.25), rgba(255,255,255,0.0));
+  background: linear-gradient(
+    90deg,
+    rgba(244, 122, 31, 0) 0%,
+    rgba(244, 122, 31, 0.55) 28%,
+    rgba(244, 122, 31, 0.85) 50%,
+    rgba(244, 122, 31, 0.55) 72%,
+    rgba(244, 122, 31, 0) 100%
+  );
+  pointer-events: none;
 }
+.hero-cinema .hero-meta::after { content: none; }
+.hero-cinema .hero-meta > span {
+  position: relative;
+  white-space: nowrap;
+}
+.hero-cinema .hero-meta > span:first-of-type {
+  color: rgba(255, 255, 255, 0.95);
+}
+
 @media (max-width: 680px) {
   .hero-cinema { min-height: 560px; }
-  .hero-cinema .hero-meta { font-size: 0.7rem; gap: 0.75rem; }
+  .hero-cinema .hero-meta {
+    height: 52px;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    gap: 0.75rem;
+    padding: 0 1.1rem;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .hero-cinema .hero-video-wrap { display: none; }
+  .hero-cinema .hero-skyline iframe { display: none; }
   .hero-cinema { background: linear-gradient(135deg, #0d1330 0%, #1B265F 60%, #2F4DAB 100%); }
 }
 
