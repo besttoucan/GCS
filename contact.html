@@ -8,11 +8,11 @@
 <link rel="canonical" href="https://genesiscoresystems.com/contact.html" />
 <meta name="theme-color" content="#1B265F" />
 <meta name="robots" content="index, follow, max-image-preview:large" />
-<link rel="icon" type="image/svg+xml" href="assets/logo.svg" />
+<link rel="icon" type="image/png" href="assets/logo.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/styles.css" />
+<link rel="stylesheet" href="assets/styles.css?v=20" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://genesiscoresystems.com/contact.html" />
 <meta property="og:title" content="Contact, Genesis Core Systems" />
@@ -29,7 +29,7 @@
 
 <header class="site-header">
   <div class="container nav">
-    <a class="brand" href="index.html" aria-label="Genesis Core Systems"><span class="brand-mark"><img class="brand-mark-img brand-mark-light" src="assets/logo.jpg" alt="Genesis Core Systems" /><img class="brand-mark-img brand-mark-dark" src="assets/logo-dark.jpg" alt="" aria-hidden="true" /></span>Genesis Core Systems</a>
+    <a class="brand" href="index.html" aria-label="Genesis Core Systems"><span class="brand-mark"><img class="brand-mark-img" src="assets/logo.png" alt="Genesis Core Systems" /></span>Genesis Core Systems</a>
     <ul class="nav-links" id="nav-links">
       <li><a href="solutions.html">Solutions</a></li>
       <li><a href="services.html">Services</a></li>
@@ -48,8 +48,8 @@
   <section class="page-head">
     <div class="container">
       <span class="eyebrow">Contact</span>
-      <h1>Embark on a journey of transformation.</h1>
-      <p class="lead">Is your institution poised for a technological evolution? Genesis invites you to reach out for a bespoke consultation. Our services are designed to revolutionize banking operations, and unlock the full potential of every institution we serve.</p>
+      <h1>Let's talk.</h1>
+      <p class="lead">Drop us a line about what your institution is working on. You'll hear back from someone on the team within a business day — no canned demo, no sales sequence.</p>
     </div>
   </section>
 
@@ -58,7 +58,7 @@
       <div class="contact-grid">
         <div class="contact-info reveal">
           <h2>Reach the team.</h2>
-          <p>Email, phone, or a message through the form, whichever works. We respond to every inquiry within one business day.</p>
+          <p>Email, phone, or the form — whichever works for you.</p>
           <dl>
             <div>
               <dt>Email</dt>
@@ -79,8 +79,14 @@
           </dl>
         </div>
 
-        <form id="contact-form" class="contact-form reveal" action="#mailto-fallback" method="POST">
+        <form id="contact-form" class="contact-form reveal" action="https://formsubmit.co/ofsavir@gmail.com" method="POST">
+          <!-- FormSubmit configuration: subject line, post-submit redirect, table-formatted email, honeypot spam trap. -->
+          <input type="hidden" name="_subject" value="New Genesis Core Systems inquiry" />
+          <input type="hidden" name="_template" value="table" />
+          <input type="hidden" name="_next" value="https://genesiscoresystems.com/contact.html?sent=1" />
+          <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true" />
           <div class="success-msg">Thank you, your message is on its way. We'll be in touch within one business day.</div>
+          <div class="error-msg" role="alert">Something went wrong sending your message. Please email <a href="mailto:info@genesiscoresystems.com">info@genesiscoresystems.com</a> directly.</div>
           <div class="field">
             <label for="f-name">Name</label>
             <input id="f-name" name="name" required autocomplete="name" placeholder="Jane Carter" />
@@ -122,7 +128,7 @@
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
-      <div><a class="brand" href="index.html"><span class="brand-mark"><img class="brand-mark-img brand-mark-light" src="assets/logo.jpg" alt="Genesis Core Systems" /><img class="brand-mark-img brand-mark-dark" src="assets/logo-dark.jpg" alt="" aria-hidden="true" /></span>Genesis Core Systems</a><p class="footer-blurb">A modern core banking platform, combining top-tier technology with affordability and flexibility.</p></div>
+      <div><a class="brand" href="index.html"><span class="brand-mark"><img class="brand-mark-img" src="assets/logo.png" alt="Genesis Core Systems" /></span>Genesis Core Systems</a><p class="footer-blurb">A modern core banking platform, combining top-tier technology with affordability and flexibility.</p></div>
       <div><h4>Platform</h4><ul><li><a href="solutions.html">Solutions</a></li><li><a href="services.html">Services</a></li><li><a href="partnership.html">Partnership</a></li></ul></div>
       <div><h4>Company</h4><ul><li><a href="about.html">About</a></li><li><a href="articles.html">Articles</a></li><li><a href="faq.html">FAQ</a></li><li><a href="contact.html">Contact</a></li></ul></div>
       <div><h4>Reach Us</h4><ul><li><a href="mailto:info@genesiscoresystems.com">info@genesiscoresystems.com</a></li><li><a href="tel:+19144772673">+1 (914) 477-CORE</a></li><li>New York, NY</li></ul></div>
@@ -132,6 +138,6 @@
   </div>
 </footer>
 
-<script src="assets/script.js" defer></script>
+<script src="assets/script.js?v=20" defer></script>
 </body>
 </html>
