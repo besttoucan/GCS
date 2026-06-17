@@ -1590,6 +1590,15 @@ body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border
 
 @media (max-width: 680px) {
   .hero-cinema { min-height: 560px; }
+  /* On mobile the parallax is disabled, so drop the GPU-compositing hints that
+     made the hero render blank until a scroll forced a repaint. Also give the
+     layer a solid dark fallback so it's never white while the video loads. */
+  .hero-cinema .hero-skyline {
+    will-change: auto;
+    contain: none;
+    transform: none;
+    background: #07091c;
+  }
   .hero-cinema .hero-meta {
     height: 52px;
     font-size: 0.68rem;
