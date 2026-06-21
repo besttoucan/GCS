@@ -875,6 +875,7 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   overflow: hidden;
 }
 .article-thumb svg { width: 70%; height: 70%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); opacity: 0.9; }
+.article-thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .article-body { padding: 1.5rem 1.7rem 1.8rem; }
 .article-meta {
   font-size: 0.78rem;
@@ -1746,18 +1747,15 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  background: linear-gradient(135deg, #f4f1ea 0%, #eee7d7 100%);
-  padding: 1.5rem;
-  box-shadow: 0 30px 70px -30px rgba(27, 38, 95, 0.25);
+  /* Navy brand panel — the logo mark graphic fills it edge to edge. */
+  background: linear-gradient(135deg, #131A40 0%, #1B265F 100%);
+  padding: 0;
+  box-shadow: 0 30px 70px -30px rgba(27, 38, 95, 0.35);
 }
 .illustration-frame img {
   width: 100%;
   height: auto;
   display: block;
-  border-radius: calc(var(--radius-lg) - 4px);
-}
-@media (max-width: 680px) {
-  .illustration-frame { padding: 1rem; }
 }
 
 /* Footer "any questions" tagline, matching the original site footer */
