@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 620" role="img" aria-label="Genesis Core Systems">
+  <defs>
+    <linearGradient id="gm-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#11173a"/>
+      <stop offset="100%" stop-color="#1d2a63"/>
+    </linearGradient>
+    <radialGradient id="gm-glow" cx="50%" cy="46%" r="58%">
+      <stop offset="0%" stop-color="#2F4DAB" stop-opacity="0.42"/>
+      <stop offset="62%" stop-color="#1B265F" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="gm-blue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2F4DAB"/>
+      <stop offset="100%" stop-color="#1B265F"/>
+    </linearGradient>
+    <linearGradient id="gm-orange" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F9A825"/>
+      <stop offset="55%" stop-color="#F47A1F"/>
+      <stop offset="100%" stop-color="#E63E2C"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="620" fill="url(#gm-bg)"/>
+  <rect width="1000" height="620" fill="url(#gm-glow)"/>
+
+  <!-- faint concentric rings for depth -->
+  <g fill="none" stroke="#ffffff" stroke-opacity="0.05">
+    <circle cx="500" cy="285" r="205"/>
+    <circle cx="500" cy="285" r="285"/>
+  </g>
+
+  <!-- Genesis logo mark (from logo.svg), centered and scaled 1.4x -->
+  <g transform="translate(360,145) scale(1.4)">
+    <polygon points="50,20 130,20 110,90 30,90" fill="url(#gm-blue)"/>
+    <polygon points="120,20 175,20 155,90 100,90" fill="url(#gm-orange)"/>
+    <polygon points="45,110 100,110 80,180 25,180" fill="url(#gm-blue)"/>
+    <polygon points="90,110 170,110 150,180 70,180" fill="url(#gm-orange)"/>
+  </g>
+
+  <!-- thin orange accent rule -->
+  <rect x="442" y="505" width="116" height="3" rx="1.5" fill="#F47A1F"/>
+</svg>
