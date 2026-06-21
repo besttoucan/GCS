@@ -2,17 +2,27 @@
 
 (function () {
   // ---- Mobile nav ----
+  // Toggling .open on the menu also toggles .nav-open on <body>. That lets the
+  // header go solid while the menu is open over the transparent cinema hero —
+  // otherwise, opening the menu at the very top of the homepage showed the menu
+  // floating over a dark/blank hero with no header surface behind it.
+  const setNavOpen = (open) => {
+    const links = document.querySelector(".nav-links");
+    const toggle = document.querySelector("[data-nav-toggle]");
+    if (links) links.classList.toggle("open", open);
+    document.body.classList.toggle("nav-open", open);
+    if (toggle) toggle.setAttribute("aria-expanded", open ? "true" : "false");
+  };
   document.addEventListener("click", (e) => {
     const t = e.target.closest("[data-nav-toggle]");
     if (!t) return;
     const links = document.querySelector(".nav-links");
-    if (links) links.classList.toggle("open");
+    setNavOpen(!(links && links.classList.contains("open")));
   });
 
   document.querySelectorAll(".nav-links a").forEach((a) =>
     a.addEventListener("click", () => {
-      const links = document.querySelector(".nav-links");
-      if (links && links.classList.contains("open")) links.classList.remove("open");
+      if (document.body.classList.contains("nav-open")) setNavOpen(false);
     })
   );
 
@@ -158,7 +168,15 @@
   // download + per-frame decode (the biggest mobile-jank source on this page).
   const heroVideo = document.getElementById("hero-video");
   if (heroVideo) {
+    // Skip the multi-MB video download + per-frame decode on phones/tablets and
+    // for data-saver / reduced-motion users. The poster image (assets/hero-poster.jpg,
+    // already wired as both the <video poster> and the .hero-skyline background)
+    // looks like the video's first frame, so the visitor sees a clean still hero
+    // instead of a heavy, janky, sometimes-blank video. This is the single biggest
+    // mobile performance + reliability win on this page.
     const skipVideo =
+      matchMedia("(max-width: 900px)").matches ||
+      matchMedia("(pointer: coarse)").matches ||
       matchMedia("(prefers-reduced-data: reduce)").matches ||
       matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (skipVideo) {

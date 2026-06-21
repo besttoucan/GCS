@@ -237,6 +237,24 @@ body.page-home:not(.is-scrolled) .site-header .nav-links a.active { color: white
 body.page-home:not(.is-scrolled) .site-header .nav-cta .btn-primary { background: var(--orange); color: white; }
 body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border-color: rgba(255,255,255,0.3); }
 
+/* When the mobile menu is open over the cinema hero, swap the transparent
+   header for a solid one and force the links/brand back to dark ink. Without
+   this, opening the menu at the very top of the homepage rendered the dropdown
+   as white links on a white panel — i.e. a "blank, empty" menu — until the
+   user scrolled a little and the .is-scrolled state kicked in. Placed after the
+   :not(.is-scrolled) rules above so it wins on equal specificity. */
+body.nav-open .site-header {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  border-bottom-color: var(--border);
+}
+body.page-home.nav-open .site-header .brand { color: var(--brand); }
+body.page-home.nav-open .site-header .nav-links a { color: var(--fg-muted); }
+body.page-home.nav-open .site-header .nav-links a:hover,
+body.page-home.nav-open .site-header .nav-links a.active { color: var(--brand); }
+body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-color: var(--border); }
+
 .nav {
   display: flex;
   align-items: center;
@@ -1230,7 +1248,10 @@ body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border
   .nav-toggle { display: inline-grid; place-items: center; }
   .nav-links {
     position: absolute;
-    top: 70px; left: 0; right: 0;
+    /* Anchor to the actual bottom of the header. At the top of the homepage the
+       header is 86px tall (not 70px), so a hardcoded top:70px left the dropdown
+       overlapping the header. top:100% follows whatever height it currently is. */
+    top: 100%; left: 0; right: 0;
     flex-direction: column;
     align-items: stretch;
     background: var(--bg-elev);
@@ -1248,6 +1269,44 @@ body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border
   .form-row { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .footer-bottom { justify-content: center; text-align: center; }
+}
+
+/* ============================================================
+   Go light on mobile / touch.
+   Phones get the content in its final position with the heavy reveal,
+   word-stagger, and illustration motion switched off. The per-element
+   fade/slide is cheap on desktop but stacks up into visible jank while
+   touch-scrolling on lower-power GPUs — which is what makes the page
+   feel laggy on a phone. Content simply appears, scrolling stays smooth.
+   (The scroll-driven parallax + custom scroll rail are already gated off
+   in JS for these devices.)
+   ============================================================ */
+@media (max-width: 800px), (pointer: coarse) {
+  .reveal,
+  .reveal.reveal-pending,
+  .reveal.visible { opacity: 1 !important; transform: none !important; }
+  .numbered.reveal .numbered-item,
+  .feature-grid.reveal .feature-item,
+  .articles-grid.reveal .article-card,
+  .stack-list .stack-card,
+  .illustration-frame {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .section-head h2 .word,
+  .page-head h1 .word,
+  .hero-cinema h1 .word,
+  .cta-band h2 .word,
+  .pullquote .word {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  /* Eyebrow underline: show it already drawn instead of animating its width. */
+  .section-head .eyebrow::after,
+  .page-head .eyebrow::after,
+  .split-row .eyebrow::after { width: 28px; transition: none !important; }
 }
 
 /* ============================================================
@@ -1613,6 +1672,20 @@ body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border
     padding: 0 1.1rem;
   }
 }
+
+/* Mobile & touch: the JS skips the hero video download entirely and shows the
+   poster still instead (faster, no decode jank, no autoplay failures). Paint the
+   poster as the skyline background and hide the now-source-less <video> so it
+   can never flash white during a repaint — that white flash, combined with the
+   menu's white-on-white links, is what made the top of the page look blank.
+   This media query matches the JS skip condition (<=900px or coarse pointer). */
+@media (max-width: 900px), (pointer: coarse) {
+  .hero-cinema .hero-skyline {
+    background: #07091c url("hero-poster.jpg") center bottom / cover no-repeat;
+  }
+  .hero-cinema .hero-skyline video { display: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-cinema .hero-skyline iframe { display: none; }
   .hero-cinema { background: linear-gradient(135deg, #0d1330 0%, #1B265F 60%, #2F4DAB 100%); }
