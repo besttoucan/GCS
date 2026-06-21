@@ -1673,17 +1673,15 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   }
 }
 
-/* Mobile & touch: the JS skips the hero video download entirely and shows the
-   poster still instead (faster, no decode jank, no autoplay failures). Paint the
-   poster as the skyline background and hide the now-source-less <video> so it
-   can never flash white during a repaint — that white flash, combined with the
-   menu's white-on-white links, is what made the top of the page look blank.
-   This media query matches the JS skip condition (<=900px or coarse pointer). */
+/* Mobile & touch: the video still plays here. We paint the poster still as the
+   skyline background underneath it so that, until the first video frame decodes
+   (or if a data-saver device blocks autoplay), the visitor sees the real NYC
+   footage rather than a white/blank box — which, combined with the menu's
+   white-on-white links, is what used to make the top of the page look empty. */
 @media (max-width: 900px), (pointer: coarse) {
   .hero-cinema .hero-skyline {
-    background: #07091c url("hero-poster.jpg") center bottom / cover no-repeat;
+    background: #07091c url("hero-poster-city.jpg") center bottom / cover no-repeat;
   }
-  .hero-cinema .hero-skyline video { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

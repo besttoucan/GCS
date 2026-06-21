@@ -168,15 +168,13 @@
   // download + per-frame decode (the biggest mobile-jank source on this page).
   const heroVideo = document.getElementById("hero-video");
   if (heroVideo) {
-    // Skip the multi-MB video download + per-frame decode on phones/tablets and
-    // for data-saver / reduced-motion users. The poster image (assets/hero-poster.jpg,
-    // already wired as both the <video poster> and the .hero-skyline background)
-    // looks like the video's first frame, so the visitor sees a clean still hero
-    // instead of a heavy, janky, sometimes-blank video. This is the single biggest
-    // mobile performance + reliability win on this page.
+    // The video now plays on mobile too — it's a light 6MB/720p faststart clip,
+    // and the heavy scroll effects (parallax, reveals) are already gated off on
+    // touch, so it stays smooth. We only skip the download for visitors who have
+    // explicitly asked their device to save data or reduce motion; they get the
+    // poster still (assets/hero-poster-city.jpg) instead, which is a real frame
+    // from the same footage, so the hero still looks right.
     const skipVideo =
-      matchMedia("(max-width: 900px)").matches ||
-      matchMedia("(pointer: coarse)").matches ||
       matchMedia("(prefers-reduced-data: reduce)").matches ||
       matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (skipVideo) {
