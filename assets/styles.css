@@ -1507,6 +1507,11 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   inset: 0;
   z-index: 0;
   overflow: hidden;
+  /* The skyline + video are purely decorative. Make the whole layer ignore
+     pointer/touch input so a finger drag (or tap) over it scrolls the page
+     instead of landing on the <video> — touching a video element on mobile
+     can otherwise pause/flicker it or hijack the scroll. */
+  pointer-events: none;
   /* Compositor hints. The JS sets translate3d() on this element once per
      animation frame; everything below should keep it on one stable GPU
      layer, so the video doesn't get re-composited each scroll tick (which
@@ -1531,6 +1536,12 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   object-fit: cover;
   object-position: center bottom;
   display: block;
+  /* Never let the video itself capture a tap/long-press (no play/pause UI,
+     no context menu, no scroll capture). It's a background, not a player. */
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
   /* Force the video onto its own GPU layer so the parent's parallax transform
      just shifts the layer rather than triggering per-frame video repaints. */
   transform: translateZ(0);
@@ -1553,6 +1564,9 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   position: absolute;
   inset: 0;
   z-index: 1;
+  /* Decorative gradient — also transparent to input, so the only things in the
+     hero that respond to touch are the actual buttons/links in .hero-content. */
+  pointer-events: none;
   background:
     radial-gradient(ellipse at 22% 38%, rgba(27,38,95,0.32) 0%, rgba(0,0,0,0) 62%),
     linear-gradient(180deg, rgba(7,9,28,0.55) 0%, rgba(7,9,28,0.15) 38%, rgba(7,9,28,0.65) 100%);
@@ -1649,6 +1663,18 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
 }
 
 @media (max-width: 680px) {
+  /* On phones, a frosted (backdrop-filter) sticky header has to re-blur the
+     moving page — including the hero video — on every scroll frame, which is a
+     classic source of scroll stutter/glitching on mobile GPUs. Use a solid
+     surface instead; it looks the same but composites for free. (The
+     transparent-at-top and menu-open states keep their own higher-specificity
+     backgrounds.) */
+  .site-header {
+    background: rgba(251, 250, 247, 0.97);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+
   .hero-cinema { min-height: 560px; }
   /* On mobile the parallax is disabled, so drop the GPU-compositing hints that
      made the hero render blank until a scroll forced a repaint. Also give the
@@ -1757,6 +1783,12 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   width: 100%;
   height: auto;
   display: block;
+}
+/* The GENESIS animation is decorative — ignore touch so scrolling over it
+   never grabs the video or shows playback UI. */
+.illustration-frame video {
+  pointer-events: none;
+  -webkit-touch-callout: none;
 }
 
 /* Footer "any questions" tagline, matching the original site footer */
