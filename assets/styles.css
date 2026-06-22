@@ -1747,12 +1747,13 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  /* Navy brand panel — the logo mark graphic fills it edge to edge. */
-  background: linear-gradient(135deg, #131A40 0%, #1B265F 100%);
+  /* Dark brand panel — the looping Genesis animation fills it edge to edge. */
+  background: #07091c;
   padding: 0;
   box-shadow: 0 30px 70px -30px rgba(27, 38, 95, 0.35);
 }
-.illustration-frame img {
+.illustration-frame img,
+.illustration-frame video {
   width: 100%;
   height: auto;
   display: block;
