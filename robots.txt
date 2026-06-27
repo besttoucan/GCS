@@ -1,5 +1,40 @@
+# Genesis Core Systems — robots.txt
+# All search and AI crawlers are explicitly welcome.
+
 User-agent: *
 Allow: /
 Disallow: /tmp/
+
+# Search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# AI search / assistant crawlers
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Applebot
+Allow: /
 
 Sitemap: https://genesiscoresystems.com/sitemap.xml
