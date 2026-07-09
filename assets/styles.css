@@ -505,7 +505,7 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
    ============================================================ */
 .feature-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));
   gap: 2.5rem 3rem;
 }
 .feature-item h3 {
@@ -854,7 +854,10 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
    ============================================================ */
 .articles-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  /* min(320px, 100%): a fixed 320px minimum track overflows the container on
+     narrow phones (e.g. 360px screen − 48px padding = 312px available) and
+     causes sideways page scroll. */
+  grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
   gap: 2rem;
 }
 .article-card {
@@ -1245,7 +1248,11 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   .split-row.wide-right { grid-template-columns: 1fr; gap: 2.5rem; }
 }
 
-@media (max-width: 680px) {
+/* The full nav row (brand + six links + Contact button) needs roughly 1000px
+   of width. Below that — tablets, landscape phones — the links and brand fight
+   for space and the brand name wraps onto two lines. So the hamburger takes
+   over at 1000px, not 680px. */
+@media (max-width: 1000px) {
   .nav-toggle { display: inline-grid; place-items: center; }
   .nav-links {
     position: absolute;
@@ -1260,14 +1267,49 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
     padding: 0.75rem;
     gap: 0;
     transform: translateY(-130%);
-    transition: transform .25s var(--ease);
+    /* When closed, the panel must be fully unpainted — not just translated
+       offscreen. translateY alone parked the white panel ~40px above the
+       viewport, and iOS rubber-band overscroll (pulling down past the top of
+       the page) revealed it as a floating white box. visibility flips to
+       hidden after the slide-up transition finishes, so the closing animation
+       still shows; pointer-events/visibility also stop the hidden links from
+       being tappable or tabbable. */
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform .25s var(--ease), visibility 0s linear .25s;
     box-shadow: 0 10px 30px rgba(0,0,0,0.06);
   }
-  .nav-links.open { transform: translateY(0); }
+  .nav-links.open {
+    transform: translateY(0);
+    visibility: visible;
+    pointer-events: auto;
+    transition: transform .25s var(--ease);
+  }
   .nav-links a { padding: 0.85rem; border-radius: var(--radius); }
   .nav-cta { margin: 0.5rem 0 0; }
   .nav-cta a { width: 100%; justify-content: center; }
+}
+
+@media (max-width: 680px) {
+  /* Keep the brand on ONE line on phones. The top-of-homepage state enlarged
+     it to 1.5rem text + 46px mark, which pushed "Genesis Core Systems" onto
+     two lines next to the hamburger. On phones, both header states now share
+     one compact size that provably fits down to 320px-wide screens — only the
+     colors change on scroll, so there's no size-jump either. */
+  .site-header .nav { gap: 1rem; }
+  .site-header .brand,
+  body.page-home:not(.is-scrolled) .site-header .brand {
+    font-size: clamp(0.9rem, 4.4vw, 1.05rem);
+    white-space: nowrap;
+    gap: 0.6rem;
+  }
+  body.page-home:not(.is-scrolled) .site-header .brand-mark {
+    width: 36px;
+    height: 36px;
+  }
+  body.page-home:not(.is-scrolled) .nav { height: 70px; }
   .form-row { grid-template-columns: 1fr; }
+  .contact-form { padding: 1.6rem 1.25rem; }
   .footer-grid { grid-template-columns: 1fr; gap: 2.5rem; }
   .footer-bottom { justify-content: center; text-align: center; }
 }
@@ -1697,6 +1739,19 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
     letter-spacing: 0.12em;
     gap: 0.75rem;
     padding: 0 1.1rem;
+  }
+}
+
+@media (max-width: 540px) {
+  /* The two nowrap labels don't fit side by side on a phone — the right one
+     was clipping mid-word ("…NEW YOR"). Stack them centered instead. */
+  .hero-cinema .hero-meta {
+    height: auto;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.3rem;
+    padding: 0.8rem 1rem 0.9rem;
+    text-align: center;
   }
 }
 

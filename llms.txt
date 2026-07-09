@@ -2,12 +2,12 @@
 
 > Genesis Core Systems is a modern core banking platform built for community banks, combining top-tier technology with affordability, flexibility, and dedicated support. Based in New York, NY.
 
-Genesis Core Systems provides a unified, cloud-based, real-time core banking platform engineered specifically for small and medium-sized community banks. The platform offers modular plug-and-play architecture, API-driven integration, and a Design Partner Program that gives institutions privileged access to upcoming products.
+Genesis Core Systems provides a unified, cloud-first, real-time core banking platform engineered specifically for small and medium-sized community banks. The platform offers modular plug-and-play architecture, API-driven integration, and a Design Partner Program that gives institutions early access to upcoming products.
 
 ## Pages
 
 - [Home](https://genesiscoresystems.com/): Overview of the Genesis Core Systems core banking platform for community banks.
-- [Solutions](https://genesiscoresystems.com/solutions.html): The platform — real-time processing, modular cloud architecture, and a marketplace of plug-and-play modules.
+- [Solutions](https://genesiscoresystems.com/solutions.html): The platform — real-time processing, modular cloud architecture, and a curated module catalogue.
 - [Services](https://genesiscoresystems.com/services.html): Consultation and implementation, support and maintenance, training and development, and bespoke services.
 - [Partnership](https://genesiscoresystems.com/partnership.html): The Genesis Design Partner Program — limited-enrollment partnership for community banks.
 - [About](https://genesiscoresystems.com/about.html): Who we are and our mission to bring Tier-1 banking technology within reach of community banks.
@@ -17,7 +17,7 @@ Genesis Core Systems provides a unified, cloud-based, real-time core banking pla
 
 ## Articles
 
-- [Transforming Community Banking](https://genesiscoresystems.com/article-transforming-community-banking.html): How Genesis Core Systems is leading a technological revolution with affordable, scalable, flexible, and secure solutions.
+- [Transforming Community Banking](https://genesiscoresystems.com/article-transforming-community-banking.html): A practical path to modern core banking for community banks.
 
 ## Policies
 
