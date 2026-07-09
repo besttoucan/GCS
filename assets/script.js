@@ -11,7 +11,10 @@
     const toggle = document.querySelector("[data-nav-toggle]");
     if (links) links.classList.toggle("open", open);
     document.body.classList.toggle("nav-open", open);
-    if (toggle) toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    if (toggle) {
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    }
   };
   document.addEventListener("click", (e) => {
     const t = e.target.closest("[data-nav-toggle]");

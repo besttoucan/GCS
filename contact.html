@@ -12,7 +12,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="assets/styles.css?v=26" />
+<link rel="stylesheet" href="assets/styles.css?v=27" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://genesiscoresystems.com/contact.html" />
 <meta property="og:title" content="Contact, Genesis Core Systems" />
@@ -43,7 +43,7 @@
       <li><a href="faq.html">FAQ</a></li>
       <li class="nav-cta"><a href="contact.html" class="btn btn-primary">Contact <span class="arrow">→</span></a></li>
     </ul>
-    <button class="nav-toggle" data-nav-toggle aria-label="Open menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    <button class="nav-toggle" data-nav-toggle aria-label="Open menu" aria-controls="nav-links" aria-expanded="false"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
   </div>
 </header>
 
@@ -53,7 +53,7 @@
     <div class="container">
       <span class="eyebrow">Contact</span>
       <h1>Let's talk.</h1>
-      <p class="lead">Tell us a bit about what you're working on, and we'll get back to you within a business day. You'll talk to a real person, not a sales rep.</p>
+      <p class="lead">Tell us a bit about what you're working on, and a member of the Genesis team will get back to you within one business day.</p>
     </div>
   </section>
 
@@ -83,9 +83,14 @@
           </dl>
         </div>
 
-        <form id="contact-form" class="contact-form reveal" action="https://formsubmit.co/ofsavir@gmail.com" method="POST">
+        <!-- FormSubmit setup: submissions are delivered to the private Genesis inbox WITHOUT exposing the address.
+             One-time step before launch: submit this form once while the action still targets your real inbox,
+             click the activation link FormSubmit emails you, then copy your unique FormSubmit code (the random
+             string, e.g. formsubmit.co/xxxxxxxx) and paste it in place of REPLACE_WITH_YOUR_FORMSUBMIT_CODE below.
+             This keeps the destination email out of the public page source. -->
+        <form id="contact-form" class="contact-form reveal" action="https://formsubmit.co/REPLACE_WITH_YOUR_FORMSUBMIT_CODE" method="POST">
           <!-- FormSubmit configuration: subject line, post-submit redirect, table-formatted email, honeypot spam trap. -->
-          <input type="hidden" name="_subject" value="New Genesis Core Systems inquiry" />
+          <input type="hidden" name="_subject" value="New Genesis website inquiry" />
           <input type="hidden" name="_template" value="table" />
           <input type="hidden" name="_next" value="https://genesiscoresystems.com/contact.html?sent=1" />
           <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true" />
@@ -142,6 +147,6 @@
   </div>
 </footer>
 
-<script src="assets/script.js?v=25" defer></script>
+<script src="assets/script.js?v=26" defer></script>
 </body>
 </html>
