@@ -1,0 +1,67 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 625" width="1000" height="625" role="img" aria-label="Abstract diagram of a core banking system with modules orbiting a central ledger">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0a0f28"/>
+      <stop offset="0.55" stop-color="#101a45"/>
+      <stop offset="1" stop-color="#1a2a63"/>
+    </linearGradient>
+    <radialGradient id="core" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#F9A24B"/>
+      <stop offset="0.55" stop-color="#F47A1F"/>
+      <stop offset="1" stop-color="#E63E2C"/>
+    </radialGradient>
+    <linearGradient id="ring" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2F4DAB"/>
+      <stop offset="1" stop-color="#4f6fd0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1000" height="625" fill="url(#bg)"/>
+
+  <!-- faint grid to read as "systems / infrastructure" -->
+  <g stroke="#ffffff" stroke-opacity="0.05" stroke-width="1">
+    <path d="M0 156H1000M0 312H1000M0 469H1000"/>
+    <path d="M200 0V625M400 0V625M600 0V625M800 0V625"/>
+  </g>
+
+  <g transform="translate(500 312)">
+    <!-- orbit rings -->
+    <g fill="none" stroke="url(#ring)" stroke-opacity="0.5">
+      <ellipse rx="150" ry="150" stroke-width="1.5"/>
+      <ellipse rx="245" ry="245" stroke-width="1.25" stroke-opacity="0.32"/>
+    </g>
+
+    <!-- connectors from core to modules -->
+    <g stroke="#7f93d8" stroke-opacity="0.45" stroke-width="1.5">
+      <line x1="0" y1="0" x2="150" y2="0"/>
+      <line x1="0" y1="0" x2="75" y2="-130"/>
+      <line x1="0" y1="0" x2="-75" y2="-130"/>
+      <line x1="0" y1="0" x2="-150" y2="0"/>
+      <line x1="0" y1="0" x2="-75" y2="130"/>
+      <line x1="0" y1="0" x2="75" y2="130"/>
+    </g>
+
+    <!-- orbiting module nodes -->
+    <g>
+      <circle cx="150" cy="0" r="16" fill="#2F4DAB"/>
+      <circle cx="75" cy="-130" r="16" fill="#4f6fd0"/>
+      <circle cx="-75" cy="-130" r="16" fill="#2F4DAB"/>
+      <circle cx="-150" cy="0" r="16" fill="#4f6fd0"/>
+      <circle cx="-75" cy="130" r="16" fill="#2F4DAB"/>
+      <circle cx="75" cy="130" r="16" fill="#4f6fd0"/>
+      <!-- outer-ring accents -->
+      <circle cx="245" cy="0" r="9" fill="#ffffff" fill-opacity="0.55"/>
+      <circle cx="-173" cy="-173" r="9" fill="#F47A1F" fill-opacity="0.8"/>
+      <circle cx="173" cy="173" r="9" fill="#ffffff" fill-opacity="0.4"/>
+    </g>
+
+    <!-- the core -->
+    <circle r="60" fill="url(#core)"/>
+    <circle r="60" fill="none" stroke="#ffffff" stroke-opacity="0.25" stroke-width="2"/>
+    <circle r="26" fill="#0a0f28" fill-opacity="0.28"/>
+  </g>
+
+  <!-- wordmark -->
+  <text x="60" y="86" font-family="Manrope, Inter, system-ui, sans-serif" font-size="30" font-weight="800" fill="#ffffff" letter-spacing="-0.5">Genesis Core Systems</text>
+  <text x="60" y="565" font-family="Manrope, Inter, system-ui, sans-serif" font-size="26" font-weight="700" fill="#F9A24B" letter-spacing="0.5">Modernizing the Community-Bank Core</text>
+</svg>

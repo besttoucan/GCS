@@ -17,6 +17,7 @@ Genesis Core Systems provides a unified, cloud-first, real-time core banking pla
 
 ## Articles
 
+- [Modernizing the Community-Bank Core](https://genesiscoresystems.com/article-modernizing-community-bank-core.html): A Genesis perspective by Brent Jenos on why core banking modernization is hard for community banks and a practical, evidence-driven path forward — a managed program owned by one accountable operator.
 - [Transforming Community Banking](https://genesiscoresystems.com/article-transforming-community-banking.html): A practical path to modern core banking for community banks.
 
 ## Policies
