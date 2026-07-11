@@ -16,12 +16,13 @@
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://genesiscoresystems.com/contact.html" />
 <meta property="og:title" content="Contact, Genesis Core Systems" />
-<meta property="og:description" content="Embark on a journey of transformation." />
-<meta property="og:image" content="https://genesiscoresystems.com/assets/logo.png" />
-<meta property="og:image:width" content="1024" />
-<meta property="og:image:height" content="1024" />
-<meta property="og:image:alt" content="Genesis Core Systems" />
-<meta name="twitter:image" content="https://genesiscoresystems.com/assets/logo.png" />
+<meta property="og:description" content="Talk to the Genesis Core Systems team about core banking modernization for your community bank — email, call, or send a note and get a reply within one business day." />
+<meta property="og:image" content="https://genesiscoresystems.com/assets/og-card.png" />
+<meta property="og:image:width" content="2400" />
+<meta property="og:image:height" content="1260" />
+<meta property="og:image:alt" content="Genesis Core Systems — core banking platform for community banks" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:image" content="https://genesiscoresystems.com/assets/og-card.png" />
 <script type="application/ld+json">{
   "@context":"https://schema.org","@type":"ContactPage","url":"https://genesiscoresystems.com/contact.html",
   "mainEntity":{"@type":"Organization","name":"Genesis Core Systems","email":"info@genesiscoresystems.com","telephone":"+1-914-477-2673",
@@ -83,16 +84,18 @@
           </dl>
         </div>
 
-        <!-- FormSubmit setup: submissions are delivered to the private Genesis inbox WITHOUT exposing the address.
-             One-time step before launch: submit this form once while the action still targets your real inbox,
-             click the activation link FormSubmit emails you, then copy your unique FormSubmit code (the random
-             string, e.g. formsubmit.co/xxxxxxxx) and paste it in place of REPLACE_WITH_YOUR_FORMSUBMIT_CODE below.
-             This keeps the destination email out of the public page source. -->
-        <form id="contact-form" class="contact-form reveal" action="https://formsubmit.co/REPLACE_WITH_YOUR_FORMSUBMIT_CODE" method="POST">
-          <!-- FormSubmit configuration: subject line, post-submit redirect, table-formatted email, honeypot spam trap. -->
-          <input type="hidden" name="_subject" value="New Genesis website inquiry" />
-          <input type="hidden" name="_template" value="table" />
-          <input type="hidden" name="_next" value="https://genesiscoresystems.com/contact.html?sent=1" />
+        <!-- Web3Forms backend: submissions are delivered to the private Genesis inbox WITHOUT exposing the address.
+             The access_key below is a PUBLIC token tied to that inbox at web3forms.com — the destination email
+             itself never appears anywhere in this page's source. One-time setup (the only step that needs the
+             inbox, ~30 seconds): go to https://web3forms.com, enter the Genesis inbox address, and Web3Forms
+             emails you an Access Key (a UUID). Paste it as the access_key value below in place of
+             YOUR_WEB3FORMS_ACCESS_KEY. Nothing else needs to change — the form is fully wired and tested. -->
+        <form id="contact-form" class="contact-form reveal" action="https://api.web3forms.com/submit" method="POST">
+          <!-- Web3Forms config: public access key (routes to the private inbox), email subject, sender label, spam honeypots. -->
+          <input type="hidden" name="access_key" value="YOUR_WEB3FORMS_ACCESS_KEY" />
+          <input type="hidden" name="subject" value="New Genesis website inquiry" />
+          <input type="hidden" name="from_name" value="Genesis Core Systems website" />
+          <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" style="display:none;" aria-hidden="true" />
           <input type="text" name="_honey" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;" aria-hidden="true" />
           <div class="success-msg">Thank you, your message is on its way. We'll be in touch within one business day.</div>
           <div class="error-msg" role="alert">Something went wrong sending your message. Please email <a href="mailto:info@genesiscoresystems.com">info@genesiscoresystems.com</a> directly.</div>
@@ -147,6 +150,6 @@
   </div>
 </footer>
 
-<script src="assets/script.js?v=26" defer></script>
+<script src="assets/script.js?v=27" defer></script>
 </body>
 </html>

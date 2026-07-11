@@ -77,20 +77,25 @@
 
     form.addEventListener("submit", (e) => {
       const action = form.getAttribute("action") || "";
-      if (!/formsubmit\.co/.test(action)) return; // let any other backend submit natively
+      const isWeb3 = /web3forms\.com/.test(action);
+      const isFormSubmit = /formsubmit\.co/.test(action);
+      if (!isWeb3 && !isFormSubmit) return; // unknown backend: let it submit natively
       e.preventDefault();
       if (err) err.classList.remove("show");
+      if (ok) ok.classList.remove("show");
       const btn = form.querySelector("button[type=submit]");
       if (btn) { btn.disabled = true; btn.dataset.label = btn.innerHTML; btn.textContent = "Sending…"; }
-      const ajax = action.replace("formsubmit.co/", "formsubmit.co/ajax/");
-      fetch(ajax, {
+      // Web3Forms accepts the FormData POST directly; FormSubmit needs its /ajax/ path.
+      const endpoint = isFormSubmit ? action.replace("formsubmit.co/", "formsubmit.co/ajax/") : action;
+      fetch(endpoint, {
         method: "POST",
         headers: { "Accept": "application/json" },
         body: new FormData(form),
       })
         .then((r) => r.json().catch(() => ({})).then((j) => ({ r, j })))
         .then(({ r, j }) => {
-          if (r.ok && (j.success === "true" || j.success === true || r.status === 200)) {
+          // Both backends return a JSON success flag; require it explicitly.
+          if (r.ok && (j.success === true || j.success === "true")) {
             if (ok) ok.classList.add("show");
             form.reset();
           } else {
