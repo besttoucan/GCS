@@ -151,6 +151,31 @@ body.page-home:not(.is-scrolled) .scroll-rail .scroll-rail-thumb {
 }
 
 img, svg { max-width: 100%; display: block; }
+
+/* ------------------------------------------------------------
+   Decorative videos never show a play button.
+   The hero clip and the "core system" illustration both autoplay
+   muted + looped + playsinline — they are backgrounds, not players.
+   iOS/WebKit still overlays a center "play" button in some states
+   (autoplay blocked under Low Power Mode / data-saver, or after a
+   tap pauses the clip). Strip ALL native media-control chrome from
+   every video so that button can never appear — on mobile or anywhere.
+   No video on this site is meant to be user-controlled.
+   ------------------------------------------------------------ */
+video { pointer-events: none; }
+video::-webkit-media-controls,
+video::-webkit-media-controls-enclosure,
+video::-webkit-media-controls-overlay-enclosure,
+video::-webkit-media-controls-panel,
+video::-webkit-media-controls-start-playback-button,
+video::-webkit-media-controls-overlay-play-button,
+video::-webkit-media-controls-play-button {
+  display: none !important;
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
 a {
   color: var(--orange);
   text-decoration: none;
