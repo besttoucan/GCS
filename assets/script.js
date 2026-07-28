@@ -167,6 +167,28 @@
     window.addEventListener("scroll", setScrolled, { passive: true });
   }
 
+  // ---- Robust autoplay for decorative videos (hero + illustration) ----
+  // These are muted, inline, looping backgrounds. iOS Safari is strict about inline
+  // autoplay: the element must be muted (as a *property*, set here — not merely the
+  // HTML attribute) at play() time, and it may still defer until the first user
+  // gesture. We set muted, call play() immediately, retry it across every readiness
+  // event, and fall back to the first touch/scroll anywhere on the page. This is what
+  // stops mobile from sitting on a paused first frame with a center play button.
+  const playWhenReady = (v) => {
+    if (!v) return;
+    v.muted = true; v.defaultMuted = true; v.playsInline = true;
+    v.setAttribute("muted", ""); v.setAttribute("playsinline", "");
+    const tryPlay = () => { const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); };
+    tryPlay();
+    ["loadedmetadata", "loadeddata", "canplay", "canplaythrough"].forEach((ev) =>
+      v.addEventListener(ev, tryPlay, { once: true })
+    );
+    // Gesture fallback: any first interaction unblocks a browser that deferred autoplay.
+    window.addEventListener("touchstart", tryPlay, { passive: true, once: true });
+    window.addEventListener("pointerdown", tryPlay, { once: true });
+    window.addEventListener("scroll", tryPlay, { passive: true, once: true });
+  };
+
   // ---- Hero video: start at data-start seconds, manual loop back to same point ----
   // We don't use the native `loop` attribute because we want every loop to begin at
   // 5s (past the source video's watermark), not 0s.
@@ -202,12 +224,15 @@
         const p = heroVideo.play();
         if (p && p.catch) p.catch(() => {});
       });
-      // Autoplay can be blocked silently — try once after metadata to be safe.
-      heroVideo.addEventListener("canplay", () => {
-        const p = heroVideo.play();
-        if (p && p.catch) p.catch(() => {});
-      }, { once: true });
+      playWhenReady(heroVideo);
     }
+  }
+
+  // Illustration loop(s) — same robust autoplay, unless the visitor asked to reduce
+  // motion or data (then the poster still is shown instead of forcing playback).
+  if (!matchMedia("(prefers-reduced-data: reduce)").matches &&
+      !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.querySelectorAll(".illustration-video").forEach((v) => playWhenReady(v));
   }
 
   // ---- Scroll-driven effects: hero parallax + hero content fade + page-head drift + scroll-tied --p ----
