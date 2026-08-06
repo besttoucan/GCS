@@ -426,7 +426,7 @@
   // created free at analytics.google.com). Until then, no analytics load.
   (function cookieConsent() {
     var KEY = "gcs-cookie-consent";
-    var GA_ID = "G-XXXXXXXXXX"; // <-- replace with your GA4 Measurement ID
+    var GA_ID = "G-G3EP1H4KHJ"; // Genesis Core Systems GA4 Measurement ID
 
     function loadAnalytics() {
       if (!GA_ID || GA_ID.indexOf("G-XXXX") === 0) return; // placeholder not set yet
