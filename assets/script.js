@@ -36,36 +36,11 @@
     if (href === path || (path === "" && href === "index.html")) a.classList.add("active");
   });
 
-  // ---- Reveal on scroll ----
-  // Strategy: .reveal defaults to VISIBLE in CSS now. We split elements
-  // into two buckets at load time:
-  //   above-the-fold → add .visible immediately, no animation. The user
-  //     never sees a fade-in delay on content they can already see.
-  //   below-the-fold → add .reveal-pending (opacity:0 + translateY) so
-  //     the IntersectionObserver can fade it in when they scroll to it.
-  // This fixes the "blank bottom on page open" issue where the pullquote
-  // section (just below the hero) was waiting ~1s to fade in.
-  const io = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.remove("reveal-pending");
-          entry.target.classList.add("visible");
-          io.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.08, rootMargin: "0px 0px -60px 0px" }
-  );
-  document.querySelectorAll(".reveal").forEach((el) => {
-    const r = el.getBoundingClientRect();
-    if (r.top < window.innerHeight - 60 && r.bottom > 0) {
-      el.classList.add("visible");
-    } else {
-      el.classList.add("reveal-pending");
-      io.observe(el);
-    }
-  });
+  // ---- Reveal on scroll: DISABLED ----
+  // Scroll-triggered fade/slide-in reveals were removed by request. Every
+  // .reveal element is simply marked visible at load so content renders in its
+  // final position with no motion. (CSS also pins these static as a safety net.)
+  document.querySelectorAll(".reveal").forEach((el) => el.classList.add("visible"));
 
   // ---- Contact form: submit via FormSubmit AJAX so the visitor stays on the page ----
   const form = document.querySelector("#contact-form");
@@ -241,10 +216,9 @@
   // Gates: skip on (a) reduced-motion preference, (b) small viewports — touch
   // scroll is already smooth and adding per-frame transforms during it causes
   // jank on lower-power GPUs that mobile devices typically have.
-  const skipScrollFx =
-    matchMedia("(prefers-reduced-motion: reduce)").matches ||
-    matchMedia("(max-width: 800px)").matches ||
-    matchMedia("(pointer: coarse)").matches;
+  // Parallax / scroll-tied drift removed by request (reads as an "AI tell").
+  // Kept the machinery below but hard-gated off so nothing moves on scroll.
+  const skipScrollFx = true;
   if (!skipScrollFx) {
     const heroSkyline = document.querySelector(".hero-cinema .hero-skyline");
     const heroContent = document.querySelector(".hero-cinema .hero-content");
@@ -324,48 +298,9 @@
     onScrollFx();
   }
 
-  // ---- Word-stagger reveal on big headings ----
-  // Wraps each word in a <span class="word">. To stay safe with headings that
-  // contain nested HTML (e.g. accent spans), we only split if the element has
-  // a single text-node child.
-  const wrapWords = (el) => {
-    if (el.dataset.split) return;
-    if (el.childNodes.length !== 1 || el.firstChild.nodeType !== Node.TEXT_NODE) return;
-    el.dataset.split = "1";
-    const words = el.textContent.split(/(\s+)/);
-    el.textContent = "";
-    words.forEach((w) => {
-      if (/^\s+$/.test(w)) { el.appendChild(document.createTextNode(w)); return; }
-      const span = document.createElement("span");
-      span.className = "word";
-      span.textContent = w;
-      el.appendChild(span);
-    });
-  };
-  const headingTargets = document.querySelectorAll(
-    ".section-head h2, .page-head h1, .hero-cinema h1, .cta-band h2"
-  );
-  headingTargets.forEach(wrapWords);
-
-  const wordIo = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("words-in");
-          wordIo.unobserve(entry.target);
-        }
-      });
-    },
-    { threshold: 0.25, rootMargin: "0px 0px -10% 0px" }
-  );
-  headingTargets.forEach((el) => wordIo.observe(el));
-  // Trigger immediately on first-paint headings that are already in view.
-  requestAnimationFrame(() => {
-    headingTargets.forEach((el) => {
-      const r = el.getBoundingClientRect();
-      if (r.top < window.innerHeight * 0.9 && r.bottom > 0) el.classList.add("words-in");
-    });
-  });
+  // ---- Word-stagger reveal on big headings: DISABLED ----
+  // Removed by request. Headings are no longer split into per-word spans and no
+  // longer animate in word-by-word; they render as plain, static text.
 
   // ---- Custom scroll rail (right-edge scrollbar replacement) ----
   // We hide the native scrollbar in CSS and render our own. The thumb height
@@ -482,6 +417,58 @@
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
       window.scrollTo({ top: ratio * scrollable, behavior: "smooth" });
     });
+  })();
+
+  // ---- Cookie consent + analytics (Google Analytics 4, loaded only on Accept) ----
+  // Analytics cookies are NOT set until the visitor clicks Accept. The choice is
+  // remembered in localStorage so the banner shows once. To go live, replace the
+  // GA_ID placeholder below with your GA4 Measurement ID (looks like G-XXXXXXXXXX,
+  // created free at analytics.google.com). Until then, no analytics load.
+  (function cookieConsent() {
+    var KEY = "gcs-cookie-consent";
+    var GA_ID = "G-XXXXXXXXXX"; // <-- replace with your GA4 Measurement ID
+
+    function loadAnalytics() {
+      if (!GA_ID || GA_ID.indexOf("G-XXXX") === 0) return; // placeholder not set yet
+      if (window.__gaLoaded) return;
+      window.__gaLoaded = true;
+      var s = document.createElement("script");
+      s.async = true;
+      s.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = function () { window.dataLayer.push(arguments); };
+      window.gtag("js", new Date());
+      window.gtag("config", GA_ID, { anonymize_ip: true });
+    }
+
+    var choice = null;
+    try { choice = localStorage.getItem(KEY); } catch (_) {}
+    if (choice === "accepted") { loadAnalytics(); return; }
+    if (choice === "declined") { return; }
+
+    var bar = document.createElement("div");
+    bar.id = "cookie-banner";
+    bar.className = "cookie-banner";
+    bar.setAttribute("role", "dialog");
+    bar.setAttribute("aria-label", "Cookie consent");
+    bar.innerHTML =
+      '<p class="cookie-text">We use cookies to understand how visitors use this site and to improve it. ' +
+      'You can accept analytics cookies or decline; declining still lets you use the whole site. ' +
+      'See our <a href="privacy.html">Privacy Policy</a>.</p>' +
+      '<div class="cookie-actions">' +
+      '<button type="button" class="btn btn-ghost" data-cookie="declined">Decline</button>' +
+      '<button type="button" class="btn btn-primary" data-cookie="accepted">Accept</button>' +
+      '</div>';
+    bar.addEventListener("click", function (e) {
+      var t = e.target.closest("[data-cookie]");
+      if (!t) return;
+      var v = t.getAttribute("data-cookie");
+      try { localStorage.setItem(KEY, v); } catch (_) {}
+      if (v === "accepted") loadAnalytics();
+      bar.remove();
+    });
+    document.body.appendChild(bar);
   })();
 
 })();

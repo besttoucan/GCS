@@ -19,11 +19,15 @@
   --fg-muted: #4a5366;          /* slightly cooler (warm original: #4a5266) */
   --fg-faint: #8c93a3;          /* cool-toned faint (warm original: #8a8f9f) */
 
-  --brand: #131A40;            /* deeper navy (logo original: #1B265F) */
-  --brand-2: #2F4DAB;          /* royal blue from logo — unchanged */
-  --orange: #F47A1F;           /* primary accent — orange from logo — unchanged */
-  --orange-deep: #E63E2C;      /* deep red-orange — unchanged */
-  --orange-light: #FDEFDB;     /* soft orange tint (warm original: #FDEBD8) */
+  /* Palette sampled directly from the logo — one blue family + one orange family,
+     used consistently: royal blue = interactive (buttons, links), deep blue =
+     headings/dark UI, orange = accent (eyebrows, arrows, underlines). */
+  --brand: #1B265F;            /* logo deep blue — headings, brand text, dark UI */
+  --brand-2: #2F4DAB;          /* logo royal blue — primary buttons, links, interactive */
+  --blue-deep: #223A86;        /* royal blue darkened — button / link hover */
+  --orange: #F47A1F;           /* logo orange — accent only */
+  --orange-deep: #E0570F;      /* orange darkened — orange hover / accents */
+  --orange-light: #FDEFDB;     /* soft orange tint */
 
   --border: #E1E5EE;           /* cool light gray (warm original: #e8e3d8) */
   --border-strong: #C8CFDB;    /* cool gray (warm original: #d4cdbe) */
@@ -106,7 +110,7 @@ body::-webkit-scrollbar { width: 0; height: 0; display: none; }
   width: 12px;
   height: var(--scroll-thumb-h, 80px);
   top: var(--scroll-pos, 0px);
-  background: linear-gradient(180deg, var(--brand) 0%, var(--brand-2) 60%, var(--orange) 100%);
+  background: var(--brand-2);
   border-radius: 999px;
   box-shadow: 0 2px 14px rgba(27, 38, 95, 0.25);
   pointer-events: auto;
@@ -137,8 +141,8 @@ body.page-home:not(.is-scrolled) .scroll-rail .scroll-rail-track::before {
   background: rgba(255, 255, 255, 0.22);
 }
 body.page-home:not(.is-scrolled) .scroll-rail .scroll-rail-thumb {
-  background: linear-gradient(180deg, #ffffff 0%, var(--orange) 100%);
-  box-shadow: 0 2px 18px rgba(244, 122, 31, 0.45);
+  background: #ffffff;
+  box-shadow: 0 2px 14px rgba(7, 9, 28, 0.35);
 }
 
 @media (max-width: 680px) {
@@ -177,11 +181,11 @@ video::-webkit-media-controls-play-button {
   pointer-events: none !important;
 }
 a {
-  color: var(--orange);
+  color: var(--brand-2);
   text-decoration: none;
   transition: color .15s var(--ease);
 }
-a:hover { color: var(--orange-deep); }
+a:hover { color: var(--blue-deep); }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
@@ -229,17 +233,19 @@ section { padding: clamp(4rem, 8vw, 7rem) 0; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(251, 250, 247, 0.85);
+  background: rgba(250, 251, 253, 0.9);
   backdrop-filter: saturate(160%) blur(12px);
   -webkit-backdrop-filter: saturate(160%) blur(12px);
   border-bottom: 1px solid var(--border);
   transition: background .25s var(--ease), border-color .25s var(--ease);
 }
 
-/* Transparent header over the cinema hero on the homepage (top of page only). */
+/* Transparent header over the cinema hero on the homepage (top of page only).
+   No dark gradient scrim — a subtle text-shadow keeps the nav legible over the
+   video instead, which reads cleaner than a shaded band across the top. */
 body.page-home:not(.is-scrolled) .site-header {
-  background: linear-gradient(180deg, rgba(7,9,28,0.55) 0%, rgba(7,9,28,0) 100%);
-  border-bottom-color: transparent;
+  background: transparent;
+  border-bottom: none;   /* width 0, not just transparent — avoids a 1px sliver above the hero */
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -247,6 +253,7 @@ body.page-home:not(.is-scrolled) .site-header .brand {
   color: white;
   font-size: 1.5rem;
   letter-spacing: -0.02em;
+  text-shadow: 0 1px 12px rgba(7,9,28,0.55);
 }
 body.page-home:not(.is-scrolled) .site-header .brand-mark {
   width: 46px;
@@ -256,11 +263,21 @@ body.page-home:not(.is-scrolled) .nav { height: 86px; }
 .site-header .brand,
 .site-header .brand-mark,
 .site-header.nav { transition: font-size .25s var(--ease), width .25s var(--ease), height .25s var(--ease); }
-body.page-home:not(.is-scrolled) .site-header .nav-links a { color: rgba(255,255,255,0.85); }
+body.page-home:not(.is-scrolled) .site-header .nav-links a { color: rgba(255,255,255,0.92); text-shadow: 0 1px 10px rgba(7,9,28,0.5); }
 body.page-home:not(.is-scrolled) .site-header .nav-links a:hover,
 body.page-home:not(.is-scrolled) .site-header .nav-links a.active { color: white; }
-body.page-home:not(.is-scrolled) .site-header .nav-cta .btn-primary { background: var(--orange); color: white; }
-body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border-color: rgba(255,255,255,0.3); }
+body.page-home:not(.is-scrolled) .site-header .nav-cta .btn-primary { background: var(--brand-2); color: white; }
+body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border-color: rgba(255,255,255,0.4); }
+
+/* Homepage: the cinema hero sits BEHIND the (in-flow, sticky) header so the NYC
+   video is full-bleed under a transparent nav — no header background or shadow.
+   We cancel the header's flow height with a matching negative margin on the hero;
+   the hero content's own top padding keeps the title clear of the nav. The flat
+   scrim on .hero-overlay darkens the video enough to keep the white nav legible. */
+body.page-home .hero-cinema { margin-top: -86px; }
+@media (max-width: 680px) {
+  body.page-home .hero-cinema { margin-top: -70px; }
+}
 
 /* When the mobile menu is open over the cinema hero, swap the transparent
    header for a solid one and force the links/brand back to dark ink. Without
@@ -334,6 +351,15 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
 .nav-links a:hover { color: var(--brand); background: transparent; }
 .nav-links a.active { color: var(--brand); }
 .nav-cta { margin-left: 0.5rem; }
+/* The Contact CTA is an <a> inside .nav-links, so ".nav-links a { color: muted }"
+   (0,1,1) would otherwise beat ".btn-primary { color:#fff }" (0,1,0) and render the
+   label dark gray on the blue button. Force white in every header state, and give
+   it real button padding (nav-link padding would shrink it). */
+.site-header .nav-links .nav-cta .btn-primary,
+.site-header .nav-links .nav-cta .btn-primary:hover {
+  color: #fff;
+  padding: 0.6rem 1.15rem;
+}
 
 .nav-toggle {
   display: none;
@@ -364,29 +390,30 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   letter-spacing: -0.005em;
 }
 .btn-primary {
-  background: var(--orange);
+  background: var(--brand-2);   /* royal blue — white text = 7.6:1 contrast (WCAG AA) */
   color: white;
 }
 .btn-primary:hover {
-  background: var(--orange-deep);
+  background: var(--blue-deep);
   color: white;
 }
 .btn-ghost {
   background: transparent;
-  color: var(--brand);
-  border-color: var(--border-strong);
+  color: var(--brand-2);
+  border-color: var(--brand-2);
 }
 .btn-ghost:hover {
   background: var(--bg-soft);
-  border-color: var(--brand);
+  border-color: var(--blue-deep);
+  color: var(--blue-deep);
 }
 .btn-text {
-  color: var(--orange);
+  color: var(--brand-2);
   background: transparent;
   padding: 0.4rem 0;
 }
 .btn-text:hover {
-  color: var(--orange-deep);
+  color: var(--blue-deep);
   background: transparent;
 }
 .btn-lg { padding: 0.95rem 1.6rem; font-size: 1.02rem; }
@@ -730,7 +757,7 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   top: 0.4rem;
   bottom: 0.4rem;
   width: 2px;
-  background: linear-gradient(180deg, var(--orange) 0%, var(--orange) 60%, transparent 100%);
+  background: var(--orange);
   border-radius: 1px;
 }
 .page-head-about h1 {
@@ -1035,8 +1062,8 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
 }
 .field input:focus, .field textarea:focus, .field select:focus {
   outline: none;
-  border-color: var(--orange);
-  box-shadow: 0 0 0 3px rgba(244, 122, 31, 0.18);
+  border-color: var(--brand-2);
+  box-shadow: 0 0 0 3px rgba(47, 77, 171, 0.18);
 }
 .field textarea { min-height: 140px; resize: vertical; }
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
@@ -1231,7 +1258,7 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   box-shadow: 0 1px 0 rgba(13, 19, 48, 0.04);
 }
 .btn-primary:hover {
-  box-shadow: 0 4px 16px -4px rgba(244, 122, 31, 0.4);
+  box-shadow: 0 4px 16px -4px rgba(47, 77, 171, 0.45);
   transform: translateY(-1px);
 }
 .btn-primary:active { transform: translateY(0); }
@@ -1631,12 +1658,10 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   position: absolute;
   inset: 0;
   z-index: 1;
-  /* Decorative gradient — also transparent to input, so the only things in the
-     hero that respond to touch are the actual buttons/links in .hero-content. */
+  /* Flat scrim (no gradient) — darkens the video just enough to keep the white
+     hero text legible. Transparent to input so only the buttons/links respond. */
   pointer-events: none;
-  background:
-    radial-gradient(ellipse at 22% 38%, rgba(27,38,95,0.32) 0%, rgba(0,0,0,0) 62%),
-    linear-gradient(180deg, rgba(7,9,28,0.55) 0%, rgba(7,9,28,0.15) 38%, rgba(7,9,28,0.65) 100%);
+  background: rgba(7, 9, 28, 0.5);
 }
 .hero-cinema .hero-content { z-index: 2; }
 .hero-cinema .hero-meta { z-index: 4; }
@@ -1700,24 +1725,15 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   margin: 0;
   background: #07091c;
 }
-/* A single thin orange accent line at the top of the bar, brightest in the
-   middle and fading at the edges. Replaces the old left/right gradient
-   "lines" that were flex-grow filler between two centered labels. */
+/* A single thin solid orange accent line at the top of the bottom bar. */
 .hero-cinema .hero-meta::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    rgba(244, 122, 31, 0) 0%,
-    rgba(244, 122, 31, 0.55) 28%,
-    rgba(244, 122, 31, 0.85) 50%,
-    rgba(244, 122, 31, 0.55) 72%,
-    rgba(244, 122, 31, 0) 100%
-  );
+  height: 2px;
+  background: var(--orange);
   pointer-events: none;
 }
 .hero-cinema .hero-meta::after { content: none; }
@@ -1737,7 +1753,7 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
      transparent-at-top and menu-open states keep their own higher-specificity
      backgrounds.) */
   .site-header {
-    background: rgba(251, 250, 247, 0.97);
+    background: rgba(250, 251, 253, 0.98);
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
   }
@@ -1793,7 +1809,7 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
 
 @media (prefers-reduced-motion: reduce) {
   .hero-cinema .hero-skyline iframe { display: none; }
-  .hero-cinema { background: linear-gradient(135deg, #0d1330 0%, #1B265F 60%, #2F4DAB 100%); }
+  .hero-cinema { background: var(--brand); }
 }
 
 /* ============================================================
@@ -1883,3 +1899,123 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
   text-underline-offset: 3px;
 }
 .footer-help a:hover { color: var(--orange-deep); }
+
+/* ============================================================
+   Motion removed (per request): no scroll-reveal fades, no
+   word-stagger, no parallax drift. Content renders in its final
+   position immediately. Hover/focus micro-interactions are kept.
+   ============================================================ */
+.reveal,
+.reveal.reveal-pending,
+.reveal.visible,
+.numbered.reveal .numbered-item,
+.feature-grid.reveal .feature-item,
+.articles-grid.reveal .article-card,
+.stack-list .stack-card,
+.split-row.visible .stack-list .stack-card,
+.reveal.visible .stack-list .stack-card,
+.illustration-frame,
+.split-row.visible .illustration-frame,
+.reveal.visible .illustration-frame,
+.section-head h2 .word,
+.page-head h1 .word,
+.hero-cinema h1 .word,
+.cta-band h2 .word,
+.pullquote .word {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+/* Parallax layers pinned (JS is also gated off). */
+.hero-cinema .hero-content,
+.page-head .container,
+.illustration-frame[data-scroll-tie],
+.partnership-slide[data-scroll-tie] {
+  transform: none !important;
+  opacity: 1 !important;
+}
+/* Numbered list markers: solid orange at all times (were scroll-tied). */
+.numbered-item[data-scroll-tie] .numbered-num {
+  color: var(--orange) !important;
+  opacity: 1 !important;
+}
+/* Eyebrow underline shown already drawn, no width animation. */
+.section-head .eyebrow::after,
+.page-head .eyebrow::after,
+.split-row .eyebrow::after {
+  width: 28px !important;
+  transition: none !important;
+}
+/* Any residual word spans render as normal inline text. */
+.word { display: inline !important; }
+
+/* ============================================================
+   Cookie consent banner (analytics load only after Accept).
+   ============================================================ */
+.cookie-banner {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 80;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  padding: 1rem clamp(1.25rem, 4vw, 3rem);
+  background: var(--bg-elev);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -6px 24px -12px rgba(13, 19, 48, 0.22);
+}
+.cookie-banner .cookie-text {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--fg-muted);
+  max-width: 74ch;
+  flex: 1 1 340px;
+}
+.cookie-banner .cookie-text a {
+  color: var(--brand-2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.cookie-banner .cookie-actions { display: flex; gap: 0.6rem; flex-shrink: 0; }
+.cookie-banner .btn { padding: 0.62rem 1.25rem; font-size: 0.9rem; }
+@media (max-width: 560px) {
+  .cookie-banner { gap: 0.8rem; padding: 0.9rem 1.1rem; }
+  .cookie-banner .cookie-actions { width: 100%; }
+  .cookie-banner .cookie-actions .btn { flex: 1; justify-content: center; }
+}
+
+/* ============================================================
+   Tables inside long-form prose (privacy / policies).
+   Navy header row, bordered cells, zebra striping, mobile scroll.
+   ============================================================ */
+.prose .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 1.4rem 0 2rem; }
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  min-width: 460px;
+}
+.prose thead th {
+  background: var(--brand);
+  color: #fff;
+  text-align: left;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.9rem;
+  letter-spacing: 0.01em;
+  padding: 0.7rem 0.95rem;
+  border: 1px solid var(--brand);
+}
+.prose tbody td {
+  border: 1px solid var(--border);
+  padding: 0.7rem 0.95rem;
+  vertical-align: top;
+  color: var(--fg);
+  line-height: 1.55;
+}
+.prose tbody tr:nth-child(even) td { background: var(--bg-soft); }
+.prose tbody td strong { color: var(--brand); }
