@@ -12,7 +12,21 @@
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/assets/styles.css?v=33" />
+<link rel="stylesheet" href="/assets/styles.css?v=34" />
+<style>html.gcs-loading body{visibility:hidden}</style>
+<script>
+/* Hold first paint until the top of the page is complete (web fonts, header
+   logo, hero image), so visitors never see a half-built page. Hard cap of 2s
+   so a slow asset can never leave the page blank. No JS means no gate. */
+(function(d){var h=d.documentElement,done=0;h.classList.add("gcs-loading");
+function show(){if(!done){done=1;h.classList.remove("gcs-loading");}}
+setTimeout(show,2000);
+function img(src){return new Promise(function(r){if(!src)return r();var i=new Image();i.onload=i.onerror=function(){r();};i.src=src;});}
+d.addEventListener("DOMContentLoaded",function(){
+var logo=d.querySelector(".site-header .brand-mark-img"),hero=d.getElementById("hero-video");
+Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo&&logo.currentSrc||logo&&logo.src),img(hero&&hero.getAttribute("poster"))]).then(function(){requestAnimationFrame(show);},show);
+});})(document);
+</script>
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://genesiscoresystems.com/privacy" />
 <meta property="og:title" content="Privacy Policy" />
@@ -239,6 +253,6 @@
   </div>
 </footer>
 
-<script src="/assets/script.js?v=31" defer></script>
+<script src="/assets/script.js?v=32" defer></script>
 </body>
 </html>

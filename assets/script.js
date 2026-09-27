@@ -146,22 +146,70 @@
   // These are muted, inline, looping backgrounds. iOS Safari is strict about inline
   // autoplay: the element must be muted (as a *property*, set here — not merely the
   // HTML attribute) at play() time, and it may still defer until the first user
-  // gesture. We set muted, call play() immediately, retry it across every readiness
-  // event, and fall back to the first touch/scroll anywhere on the page. This is what
-  // stops mobile from sitting on a paused first frame with a center play button.
+  // gesture. We set muted, call play() immediately and retry it across every
+  // readiness event.
+  //
+  // iOS Low Power Mode refuses autoplay outright (play() rejects with
+  // NotAllowedError) and forces a play-button overlay that CSS cannot hide
+  // (WebKit bug 219889, WONTFIX). Animated images are not subject to autoplay
+  // policy, so when the video is refused, or is still frozen a few seconds after
+  // it has data, we swap in its data-fallback animated WebP, which loops like a GIF.
+  //
+  // Retries only listen for events WebKit counts as a user gesture (touchend,
+  // click, keydown). touchstart/scroll never qualified, so the old fallback
+  // could not unblock anything on an iPhone.
+  const GESTURES = ["touchend", "click", "keydown"];
   const playWhenReady = (v) => {
     if (!v) return;
     v.muted = true; v.defaultMuted = true; v.playsInline = true;
     v.setAttribute("muted", ""); v.setAttribute("playsinline", "");
-    const tryPlay = () => { const pr = v.play(); if (pr && pr.catch) pr.catch(() => {}); };
+    let swapped = false;
+
+    const showFallback = () => {
+      const src = v.dataset.fallback;
+      if (swapped || !src || !v.paused) return;
+      swapped = true;
+      const img = new Image();
+      img.alt = "";
+      img.setAttribute("aria-hidden", "true");
+      img.className = v.className;
+      if (v.getAttribute("width")) img.width = v.width;
+      if (v.getAttribute("height")) img.height = v.height;
+      img.onload = () => {
+        // Stop the video download and remove its forced play button.
+        v.removeAttribute("autoplay");
+        v.pause();
+        v.replaceWith(img);
+        try { v.removeAttribute("src"); v.load(); } catch (_) {}
+      };
+      img.src = src;
+    };
+
+    const tryPlay = () => {
+      if (swapped || !v.paused) return;
+      const pr = v.play();
+      if (pr && pr.catch) pr.catch((e) => { if (e && e.name === "NotAllowedError") showFallback(); });
+    };
+    const retry = () => tryPlay();
+
     tryPlay();
     ["loadedmetadata", "loadeddata", "canplay", "canplaythrough"].forEach((ev) =>
       v.addEventListener(ev, tryPlay, { once: true })
     );
-    // Gesture fallback: any first interaction unblocks a browser that deferred autoplay.
-    window.addEventListener("touchstart", tryPlay, { passive: true, once: true });
-    window.addEventListener("pointerdown", tryPlay, { once: true });
-    window.addEventListener("scroll", tryPlay, { passive: true, once: true });
+    GESTURES.forEach((ev) => window.addEventListener(ev, retry, { passive: true }));
+    // Returning to the tab, or restoring the page from the back/forward cache,
+    // leaves iOS videos paused.
+    window.addEventListener("pageshow", retry);
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) tryPlay(); });
+    v.addEventListener("playing", () =>
+      GESTURES.forEach((ev) => window.removeEventListener(ev, retry))
+    , { once: true });
+
+    // Safety net: data has loaded but nothing is moving. Show the animated image
+    // rather than leave a frozen frame on screen.
+    v.addEventListener("loadeddata", () => {
+      setTimeout(() => { if (v.paused && !document.hidden) showFallback(); }, 2500);
+    }, { once: true });
   };
 
   // ---- Hero video: start at data-start seconds, manual loop back to same point ----
@@ -173,15 +221,13 @@
   // download + per-frame decode (the biggest mobile-jank source on this page).
   const heroVideo = document.getElementById("hero-video");
   if (heroVideo) {
-    // The video now plays on mobile too — it's a light 6MB/720p faststart clip,
-    // and the heavy scroll effects (parallax, reveals) are already gated off on
-    // touch, so it stays smooth. We only skip the download for visitors who have
-    // explicitly asked their device to save data or reduce motion; they get the
-    // poster still (assets/hero-poster-city.jpg) instead, which is a real frame
-    // from the same footage, so the hero still looks right.
-    const skipVideo =
-      matchMedia("(prefers-reduced-data: reduce)").matches ||
-      matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // The video plays on mobile too: phones get a 3.5MB 854px faststart clip
+    // (the <source media> query), desktops the 1080p one. Scroll effects are
+    // gated off, so it stays smooth. Reduce Motion no longer strips it: the
+    // slow drone drift sits behind a dark scrim and is meant to play like a
+    // GIF on every phone. We only skip the download for visitors who have
+    // asked their device to save data; they get the poster still instead.
+    const skipVideo = matchMedia("(prefers-reduced-data: reduce)").matches;
     if (skipVideo) {
       // Tear down the <source> children so the browser never starts downloading.
       while (heroVideo.firstChild) heroVideo.removeChild(heroVideo.firstChild);
@@ -203,10 +249,9 @@
     }
   }
 
-  // Illustration loop(s) — same robust autoplay, unless the visitor asked to reduce
-  // motion or data (then the poster still is shown instead of forcing playback).
-  if (!matchMedia("(prefers-reduced-data: reduce)").matches &&
-      !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+  // Illustration loop(s): same robust autoplay, unless the visitor asked to save
+  // data (then the poster still is shown instead of forcing playback).
+  if (!matchMedia("(prefers-reduced-data: reduce)").matches) {
     document.querySelectorAll(".illustration-video").forEach((v) => playWhenReady(v));
   }
 
