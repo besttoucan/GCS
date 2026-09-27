@@ -1952,14 +1952,33 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   transform: none !important;
   transition: none !important;
   animation: none !important;
+  will-change: auto !important;
 }
-/* Parallax layers pinned (JS is also gated off). */
+/* Parallax layers pinned (JS is also gated off). will-change is dropped too:
+   with nothing moving, each hint only forced an extra GPU layer that iPhones
+   had to hold in memory and composite on every scroll frame. */
 .hero-cinema .hero-content,
 .page-head .container,
 .illustration-frame[data-scroll-tie],
 .partnership-slide[data-scroll-tie] {
   transform: none !important;
   opacity: 1 !important;
+  will-change: auto !important;
+}
+.hero-cinema .hero-skyline { will-change: auto !important; }
+
+/* Background videos are decoration, not players. If iOS refuses autoplay
+   (Low Power Mode does this), hide its big play-button overlay so the visitor
+   sees the poster frame instead of what looks like a broken, paused video. */
+.hero-skyline video::-webkit-media-controls,
+.hero-skyline video::-webkit-media-controls-start-playback-button,
+.hero-skyline video::-webkit-media-controls-overlay-play-button,
+.illustration-frame video::-webkit-media-controls,
+.illustration-frame video::-webkit-media-controls-start-playback-button,
+.illustration-frame video::-webkit-media-controls-overlay-play-button {
+  display: none !important;
+  -webkit-appearance: none;
+  opacity: 0 !important;
 }
 /* Numbered list markers: solid orange at all times (were scroll-tied). */
 .numbered-item[data-scroll-tie] .numbered-num {
@@ -2045,3 +2064,31 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 }
 .prose tbody tr:nth-child(even) td { background: var(--bg-soft); }
 .prose tbody td strong { color: var(--brand); }
+
+/* ============================================================
+   "Keep reading" block at the end of articles: plain internal
+   links with descriptive anchor text (SEO + next step for readers).
+   ============================================================ */
+.related-links {
+  margin-top: 3rem;
+  padding-top: 1.6rem;
+  border-top: 1px solid var(--border);
+}
+.related-links h2 {
+  font-size: 1.15rem;
+  margin: 0 0 0.9rem;
+}
+.related-links ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 0.6rem;
+}
+.related-links a {
+  color: var(--brand-2);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.related-links a:hover { color: var(--orange); }
