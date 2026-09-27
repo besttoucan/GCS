@@ -283,16 +283,35 @@ body.page-home .hero-cinema { margin-top: -86px; }
    header for a solid one and force the links/brand back to dark ink. Without
    this, opening the menu at the very top of the homepage rendered the dropdown
    as white links on a white panel — i.e. a "blank, empty" menu — until the
-   user scrolled a little and the .is-scrolled state kicked in. Placed after the
-   :not(.is-scrolled) rules above so it wins on equal specificity. */
-body.nav-open .site-header {
+   user scrolled a little and the .is-scrolled state kicked in.
+   NOTE ON SPECIFICITY: these do NOT tie with the rules above. `:not(.is-scrolled)`
+   counts as a class, so `body.page-home:not(.is-scrolled) .site-header` is (0,3,1)
+   and a plain `body.nav-open .site-header` is only (0,2,1) — it loses, and the
+   header stayed transparent while the brand went dark ink, i.e. dark-on-dark over
+   the video. Each rule that has to beat the transparent state therefore repeats
+   `:not(.is-scrolled)` to outweigh it. Keep that duplication if you edit these. */
+body.nav-open .site-header,
+body.page-home.nav-open:not(.is-scrolled) .site-header {
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: saturate(160%) blur(12px);
   -webkit-backdrop-filter: saturate(160%) blur(12px);
-  border-bottom-color: var(--border);
+  /* border-bottom, not just its colour: the transparent state sets
+     `border-bottom: none`, so overriding the colour alone leaves it 0-width. */
+  border-bottom: 1px solid var(--border);
 }
-body.page-home.nav-open .site-header .brand { color: var(--brand); }
-body.page-home.nav-open .site-header .nav-links a { color: var(--fg-muted); }
+/* The brand/link colours below already flip to dark ink at equal specificity,
+   but the transparent state also paints a dark text-shadow for legibility over
+   the video. On the white panel that shadow reads as a smudge, so clear it. */
+body.page-home.nav-open .site-header .brand,
+body.page-home.nav-open:not(.is-scrolled) .site-header .brand {
+  color: var(--brand);
+  text-shadow: none;
+}
+body.page-home.nav-open .site-header .nav-links a,
+body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links a {
+  color: var(--fg-muted);
+  text-shadow: none;
+}
 body.page-home.nav-open .site-header .nav-links a:hover,
 body.page-home.nav-open .site-header .nav-links a.active { color: var(--brand); }
 body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-color: var(--border); }
@@ -356,7 +375,14 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
    label dark gray on the blue button. Force white in every header state, and give
    it real button padding (nav-link padding would shrink it). */
 .site-header .nav-links .nav-cta .btn-primary,
-.site-header .nav-links .nav-cta .btn-primary:hover {
+.site-header .nav-links .nav-cta .btn-primary:hover,
+/* The nav-open states re-colour `.nav-links a` at (0,4,2)/(0,5,2), which also
+   beat the (0,4,0) above and rendered the label muted grey on the blue button
+   (~1.0:1 contrast, effectively invisible). Repeat the state qualifiers here so
+   white wins in the open menu too. */
+body.nav-open .site-header .nav-links .nav-cta .btn-primary,
+body.page-home.nav-open .site-header .nav-links .nav-cta .btn-primary,
+body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-primary {
   color: #fff;
   padding: 0.6rem 1.15rem;
 }
