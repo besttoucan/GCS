@@ -17,6 +17,7 @@ The platform provides real-time posting, a modular architecture and an open API 
 
 ## Articles
 
+- [What Is a Core Banking System?](https://genesiscoresystems.com/core-banking-system): A plain-language guide for community banks covering what a core banking system does, core banking vs. core processing, surround systems, batch vs. real-time posting, how to evaluate a core, what a core conversion involves, and modernization paths.
 - [Modernizing the Community-Bank Core](https://genesiscoresystems.com/article-modernizing-community-bank-core): A Genesis perspective by Brent Jenos on why core banking modernization is hard for community banks and a practical, evidence-driven path forward, a managed program owned by one accountable operator.
 - [Transforming Community Banking](https://genesiscoresystems.com/article-transforming-community-banking): A practical path to modern core banking for community banks.
 

@@ -221,8 +221,9 @@
   // download + per-frame decode (the biggest mobile-jank source on this page).
   const heroVideo = document.getElementById("hero-video");
   if (heroVideo) {
-    // The video plays on mobile too: phones get a 3.5MB 854px faststart clip
-    // (the <source media> query), desktops the 1080p one. Scroll effects are
+    // The video plays on mobile too: phones get a full-resolution 864x908
+    // center crop (the <source media> query), since a portrait hero only ever
+    // shows the middle of the frame; desktops get the full 1080p clip. Scroll effects are
     // gated off, so it stays smooth. Reduce Motion no longer strips it: the
     // slow drone drift sits behind a dark scrim and is meant to play like a
     // GIF on every phone. We only skip the download for visitors who have
