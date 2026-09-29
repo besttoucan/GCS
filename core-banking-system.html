@@ -142,6 +142,14 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
         },
         {
           "@type": "Question",
+          "name": "How does a core banking system work?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Transactions arrive from every channel the bank runs, are validated against the account they touch, and are posted against its balance. Older cores post in an overnight batch; real-time cores post at the moment of the transaction. Posted activity rolls into the general ledger, and the core separately accrues interest, assesses fees, ages delinquent loans and produces required statements and notices. Every other system the bank runs reads from that record."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "What is the difference between core banking and core processing?",
           "acceptedAnswer": {
             "@type": "Answer",
@@ -254,7 +262,17 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
           <li><strong>Data for reporting:</strong> supplying the figures behind call reports, BSA/AML monitoring, management reporting and audits.</li>
         </ul>
 
-        <h2>What "core systems" means in banking</h2>
+        <h2>How a core banking system works</h2>
+
+      <p>Day to day, the core runs a cycle. Transactions arrive from every channel the bank operates: a teller line, an ATM, a debit card authorisation, an ACH file, a wire, a mobile transfer. Each one is validated against the account it touches, checked for available funds and holds, and then posted against that account's balance.</p>
+
+      <p>Posting is the moment the bank's official record changes. Older cores collect transactions through the day and post them in an overnight batch, which is why a balance seen at noon may not reflect everything that has happened. Real-time cores post at the moment of the transaction, so the balance is current whenever it is read.</p>
+
+      <p>As transactions post, the core rolls the activity into the general ledger, so finance can close the day. Overnight or continuously, it also runs the work nobody sees: accruing interest, assessing fees, aging delinquent loans, applying product rules, and generating the statements and notices that regulations require.</p>
+
+      <p>Everything else the bank runs reads from this record. Online banking displays balances the core holds. The card processor authorises against funds the core confirms. BSA/AML monitoring, call reports and management reporting all draw on core data. That is why the core is called the system of record, and why changing it touches every other system at once.</p>
+
+      <h2>What "core systems" means in banking</h2>
 
         <p>People often say "core systems," plural, because the core rarely stands alone. A typical community bank runs the core alongside a group of connected systems, sometimes called surround or ancillary systems:</p>
 
@@ -339,6 +357,9 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
         <h3>What is a core system in banking?</h3>
         <p>A bank's core system is the software that holds the official record of every customer, account, balance and transaction. Deposits, loans, interest, fees and the general ledger all run through it, and almost every other system the bank uses depends on it.</p>
 
+        <h3>How does a core banking system work?</h3>
+        <p>Transactions arrive from every channel the bank runs, are validated against the account they touch, and are posted against its balance. Older cores post in an overnight batch; real-time cores post at the moment of the transaction. Posted activity rolls into the general ledger, and the core separately accrues interest, assesses fees, ages delinquent loans and produces required statements and notices. Every other system the bank runs reads from that record.</p>
+
         <h3>What is the difference between core banking and core processing?</h3>
         <p>Core banking describes the system itself: the software that maintains accounts and posts transactions. Core processing usually describes the service of running it. A core processor is the provider that hosts and operates the core for the bank, either in its own data center or in the cloud, instead of the bank running it in-house.</p>
 
@@ -396,7 +417,7 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
     <div class="footer-grid">
       <div><a class="brand" href="/"><span class="brand-mark"><img class="brand-mark-img" src="/assets/logo.png" alt="Genesis Core Systems" /></span>Genesis Core Systems</a><p class="footer-blurb">A modern core banking platform, combining top-tier technology with affordability and flexibility.</p></div>
       <div><h4>Platform</h4><ul><li><a href="/solutions">Solutions</a></li><li><a href="/services">Services</a></li><li><a href="/partnership">Partnership</a></li></ul></div>
-      <div><h4>Company</h4><ul><li><a href="/about">About</a></li><li><a href="/articles">Articles</a></li><li><a href="/core-banking-system">Core Banking Guide</a></li><li><a href="/faq">FAQ</a></li><li><a href="/contact">Contact</a></li></ul></div>
+      <div><h4>Company</h4><ul><li><a href="/about">About</a></li><li><a href="/articles">Articles</a></li><li><a href="/core-banking-system">Core Banking Guide</a></li><li><a href="/core-conversion">Core Conversion Guide</a></li><li><a href="/faq">FAQ</a></li><li><a href="/contact">Contact</a></li></ul></div>
       <div><h4>Reach Us</h4><ul><li><a href="mailto:info@genesiscoresystems.com">info@genesiscoresystems.com</a></li><li><a href="tel:+19144772673">+1 (914) 477-CORE</a></li><li>New York, NY</li></ul></div>
     </div>
 <p class="footer-help">For any questions you have, <a href="/contact">reach out to our team</a>.</p>
