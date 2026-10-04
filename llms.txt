@@ -2,30 +2,30 @@
 
 > Genesis Core Systems delivers core banking to U.S. community banks. It packages a proven Tier-1-grade core foundation with Genesis-led configuration, integration, conversion and ongoing support. Based in New York, NY.
 
-The platform provides real-time posting, a modular architecture and an open API layer, engineered for small and medium-sized community banks. A Design Partner Program lets a bank shape the platform while its current core stays the system of record until cutover readiness.
+The platform is built on a proven Tier-1-grade core foundation configured for small and medium-sized community banks, with real-time posting, a modular architecture, an open API layer, and Genesis-built and approved partner modules around it. A Design Partner Program lets a bank shape the platform while its current core stays the system of record until cutover readiness is agreed.
 
 ## Pages
 
 - [Home](https://genesiscoresystems.com/): Overview of the Genesis Core Systems core banking platform for community banks.
-- [Solutions](https://genesiscoresystems.com/solutions): The platform itself. Real-time processing, modular architecture, an open API layer, and modules for deposits, lending, payments, and onboarding.
-- [Core Conversion Guide](https://genesiscoresystems.com/core-conversion): What a bank core conversion involves, how long it takes, what drives the cost, the phases from discovery through cutover and reconciliation, and where conversions go wrong.
-- [Services](https://genesiscoresystems.com/services): Core conversion, implementation, and migration for community banks, sequenced from discovery through cutover and parallel run, plus support and training.
+- [Solutions](https://genesiscoresystems.com/solutions): Core banking modules and the open API. Real-time processing, modular architecture, an open API layer, and modules for deposits, lending, payments, and onboarding.
+- [Services](https://genesiscoresystems.com/services): Core conversion services for community banks: implementation and migration sequenced from discovery through cutover and parallel run, plus support and training.
 - [Partnership](https://genesiscoresystems.com/partnership): The Genesis Design Partner Program, limited-enrollment partnership for community banks.
 - [About](https://genesiscoresystems.com/about): Genesis Core Systems is a core banking provider for U.S. community banks, based in New York, built by people who have run conversions and core operations.
-- [Articles](https://genesiscoresystems.com/articles): Writing on core conversion, migration testing, and vendor contracts for community banks.
+- [Articles](https://genesiscoresystems.com/articles): Guides and perspectives on core banking, core conversion and modernization for community banks.
 - [FAQ](https://genesiscoresystems.com/faq): Frequently asked questions about solutions, services, implementation, security, and the Design Partner Program.
 - [Contact](https://genesiscoresystems.com/contact): Get in touch with the Genesis Core Systems team.
 
 ## Articles
 
-- [What Is a Core Banking System?](https://genesiscoresystems.com/core-banking-system): A plain-language guide for community banks covering what a core banking system does, core banking vs. core processing, surround systems, batch vs. real-time posting, how to evaluate a core, what a core conversion involves, and modernization paths.
-- [Modernizing the Community-Bank Core](https://genesiscoresystems.com/article-modernizing-community-bank-core): A Genesis perspective by Brent Jenos on why core banking modernization is hard for community banks and a practical, evidence-driven path forward, a managed program owned by one accountable operator.
-- [Transforming Community Banking](https://genesiscoresystems.com/article-transforming-community-banking): A practical path to modern core banking for community banks.
+- [What Is a Core Banking System?](https://genesiscoresystems.com/core-banking-system): A plain-language guide for community banks covering what a core banking system does, how it works, core banking vs. core processing, surround systems, batch vs. real-time posting, how to evaluate a core, what a core conversion involves, and modernization paths.
+- [Bank Core Conversion: What It Involves](https://genesiscoresystems.com/core-conversion): What a bank core conversion involves, how long it takes, what drives the cost, the phases from discovery through cutover and reconciliation, and where conversions go wrong.
+- [Modernizing the Community-Bank Core](https://genesiscoresystems.com/article-modernizing-community-bank-core): A Genesis perspective by Brent Jenos on why core banking modernization is hard for community banks and a practical, evidence-driven path forward: a managed program owned by one accountable operator.
+- [Modern Core Banking Without a Big Bang](https://genesiscoresystems.com/article-transforming-community-banking): How a community bank moves to a modern core without betting the institution on one cutover weekend, starting with one or two modules alongside its current core and expanding as confidence builds.
 
 ## Policies
 
-- [Privacy Policy](https://genesiscoresystems.com/privacy): How Genesis Core Systems collects, uses, discloses, and safeguards information.
-- [Policies & Commitments](https://genesiscoresystems.com/policies): Code of Conduct, Supplier Code, Cookie Policy, ESG, DEI, Whistleblower, Modern Slavery, and Anti-Corruption policies.
+- [Privacy Policy](https://genesiscoresystems.com/privacy): How Genesis Core Systems collects, uses, discloses, and safeguards information, including analytics cookies (only after consent), the contact form, and the on-site assistant.
+- [Policies & Commitments](https://genesiscoresystems.com/policies): Code of Conduct, Supplier Code, Cookie Policy, Anti-Corruption, ESG, DEI, Human Rights, Modern Slavery, Whistleblower, Harassment Prevention, and Cybersecurity policies.
 
 ## Contact
 

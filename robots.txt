@@ -1,4 +1,4 @@
-# Genesis Core Systems — robots.txt
+# Genesis Core Systems robots.txt
 # All search and AI crawlers are explicitly welcome.
 
 User-agent: *

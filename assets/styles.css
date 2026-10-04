@@ -1,32 +1,52 @@
 /* ============================================================
-   Genesis Core Systems — Stylesheet
+   Genesis Core Systems: stylesheet
    Restrained enterprise fintech aesthetic
    Brand: navy + orange (sampled from logo)
    ============================================================ */
 
+/* Self-hosted web fonts (SIL Open Font License). One variable file per
+   family, latin subset, preloaded from every page head. */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400 700;
+  font-display: swap;
+  src: url("/assets/fonts/inter-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Manrope";
+  font-style: normal;
+  font-weight: 600 800;
+  font-display: swap;
+  src: url("/assets/fonts/manrope-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
-  /* Color scheme v2 — cooler, more "tech-forward fintech." Brand navy + orange
+  /* Color scheme v2: cooler, more "tech-forward fintech." Brand navy + orange
      (sampled from the logo) untouched. Backgrounds, text-mutes, and borders
-     shifted from warm cream/brown toward cool off-white/blue-gray for a
-     Stripe/Linear-style read. Easy to revert: swap to the values in the
-     `/* warm original */` comments below. */
-  --bg: #fafbfd;              /* cool off-white (warm original: #fbfaf7) */
+     shifted from warm cream/brown toward cool off-white/blue-gray. */
+  --bg: #fafbfd;              /* cool off-white */
   --bg-elev: #ffffff;
-  --bg-soft: #eff2f7;          /* cool tinted (warm original: #f4f1ea) */
-  --bg-dark: #080d22;          /* deeper, blacker navy (warm original: #0d1330) */
+  --bg-soft: #eff2f7;          /* cool tinted */
+  --bg-dark: #080d22;          /* deeper, blacker navy */
 
-  --fg: #0f1530;               /* near-black with navy hint (warm original: #0d1330) */
-  --fg-muted: #4a5366;          /* slightly cooler (warm original: #4a5266) */
-  --fg-faint: #8c93a3;          /* cool-toned faint (warm original: #8a8f9f) */
+  --fg: #0f1530;               /* near-black with navy hint */
+  --fg-muted: #4a5366;          /* 7.7:1 on white */
+  --fg-faint: #646C7E;          /* 5.3:1 on white, 4.7:1 on --bg-soft (was #8c93a3, 3.1:1) */
 
-  /* Palette sampled directly from the logo — one blue family + one orange family,
+  /* Palette sampled directly from the logo, one blue family + one orange family,
      used consistently: royal blue = interactive (buttons, links), deep blue =
-     headings/dark UI, orange = accent (eyebrows, arrows, underlines). */
-  --brand: #1B265F;            /* logo deep blue — headings, brand text, dark UI */
-  --brand-2: #2F4DAB;          /* logo royal blue — primary buttons, links, interactive */
-  --blue-deep: #223A86;        /* royal blue darkened — button / link hover */
-  --orange: #F47A1F;           /* logo orange — accent only */
-  --orange-deep: #E0570F;      /* orange darkened — orange hover / accents */
+     headings/dark UI, orange = accent (bars, dots, arrows, underlines).
+     Logo orange is only 2.75:1 on white, so orange TEXT on light surfaces uses
+     --orange-text instead (5.2:1 on white, 4.6:1 on --bg-soft). */
+  --brand: #1B265F;            /* logo deep blue: headings, brand text, dark UI */
+  --brand-2: #2F4DAB;          /* logo royal blue: primary buttons, links, focus ring */
+  --blue-deep: #223A86;        /* royal blue darkened: button / link hover */
+  --orange: #F47A1F;           /* logo orange: non-text accents, and text on dark surfaces */
+  --orange-text: #B05210;      /* orange for text on light surfaces (WCAG AA) */
+  --orange-deep: #E0570F;      /* orange darkened: accents on dark surfaces */
   --orange-light: #FDEFDB;     /* soft orange tint */
 
   --border: #E1E5EE;           /* cool light gray (warm original: #e8e3d8) */
@@ -44,10 +64,16 @@
 * { box-sizing: border-box; }
 html {
   scroll-behavior: smooth;
-  /* Hide the native scrollbar — we render our own rail on the right edge. */
+  /* In-page anchors and keyboard focus land below the sticky header (70px,
+     86px at the top of the homepage) instead of underneath it. */
+  scroll-padding-top: 88px;
+  /* Hide the native scrollbar; we render our own rail on the right edge. */
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+/* Page scroll is locked while the mobile menu is open. Only <html> is set:
+   overflow on <body> would make it the scroller for the sticky header. */
+html.nav-locked { overflow: hidden; }
 body {
   margin: 0;
   font-family: var(--font);
@@ -195,6 +221,15 @@ a {
 }
 a:hover { color: var(--blue-deep); }
 
+/* Links inside running text need a cue besides hue (WCAG 1.4.1): underline
+   them. Buttons and standalone text CTAs (.btn, .btn-text) are excluded. */
+main p a:not(.btn):not(.btn-text),
+main li a:not(.btn):not(.btn-text),
+.form-note a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
 h1, h2, h3, h4 {
   font-family: var(--font-display);
   font-weight: 700;
@@ -202,6 +237,18 @@ h1, h2, h3, h4 {
   letter-spacing: -0.022em;
   margin: 0 0 0.5em;
   color: var(--brand);
+}
+/* Even line lengths on headings (no single orphaned word on the last line),
+   and fewer one-word last lines in paragraphs. Ignored by older browsers. */
+h1, h2, h3, .pullquote { text-wrap: balance; }
+p, .lead { text-wrap: pretty; }
+.nowrap { white-space: nowrap; }
+
+/* Visually hidden, still read by screen readers. */
+.visually-hidden,
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 
 h1 {
@@ -276,6 +323,11 @@ body.page-home:not(.is-scrolled) .site-header .nav-links a:hover,
 body.page-home:not(.is-scrolled) .site-header .nav-links a.active { color: white; }
 body.page-home:not(.is-scrolled) .site-header .nav-cta .btn-primary { background: var(--brand-2); color: white; }
 body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border-color: rgba(255,255,255,0.4); }
+/* Between the hamburger breakpoint (1000px) and about 1100px the enlarged
+   top-of-homepage brand wrapped onto two lines. Step it down there. */
+@media (min-width: 1001px) and (max-width: 1100px) {
+  body.page-home:not(.is-scrolled) .site-header .brand { font-size: 1.25rem; white-space: nowrap; }
+}
 
 /* Homepage: the cinema hero sits BEHIND the (in-flow, sticky) header so the NYC
    video is full-bleed under a transparent nav — no header background or shadow.
@@ -489,9 +541,12 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   font-weight: 600;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--orange);
+  color: var(--orange-text);
   margin-bottom: 1.4rem;
 }
+/* On the dark bands the logo orange itself reads well (7:1). */
+.cta-band .eyebrow,
+.site-footer .eyebrow { color: var(--orange); }
 .hero h1 {
   margin-bottom: 1.4rem;
 }
@@ -520,7 +575,9 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
    ============================================================ */
 .section-head {
   max-width: 760px;
-  margin: 0 auto clamp(2.5rem, 5vw, 4rem);
+  /* Left-aligned with the content it introduces (a centered box with
+     left-aligned text sat indented from the list below it). */
+  margin: 0 0 clamp(2.5rem, 5vw, 4rem);
 }
 .section-head.center { text-align: center; margin-inline: auto; }
 .section-head.center .lead { margin-inline: auto; }
@@ -553,9 +610,10 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 1rem;
-  color: var(--orange);
+  color: var(--orange-text);
   letter-spacing: 0.05em;
 }
+.stack-card h3,
 .stack-card h4 {
   font-size: 1.05rem;
   color: var(--brand);
@@ -634,7 +692,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 1rem;
-  color: var(--orange);
+  color: var(--orange-text);
   letter-spacing: 0.05em;
   padding-top: 0.4rem;
 }
@@ -681,7 +739,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   letter-spacing: -0.018em;
   max-width: 28ch;
 }
-.pullquote .accent { color: var(--orange); }
+.pullquote .accent { color: var(--orange-text); }
 
 /* ============================================================
    Dark CTA section
@@ -833,7 +891,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   color: var(--fg-faint);
   font-weight: 600;
 }
-.page-head-editorial .editorial-meta-accent { color: var(--orange); }
+.page-head-editorial .editorial-meta-accent { color: var(--orange-text); }
 .page-head-editorial h1 {
   font-size: clamp(2.6rem, 5.5vw, 4rem);
   max-width: 22ch;
@@ -890,7 +948,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 }
 .page-head-faq .faq-jumps a:hover {
   border-color: var(--orange);
-  color: var(--orange);
+  color: var(--orange-text);
   transform: translateY(-1px);
 }
 
@@ -915,11 +973,11 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 .faq-item:target {
   animation: faq-target-pulse 2.4s var(--ease) 0.15s 1 both;
   border-top-color: var(--orange);
-  scroll-margin-top: 100px; /* keeps native :target scroll clear of sticky header */
+  scroll-margin-top: 12px; /* plus html scroll-padding-top: clears the sticky header */
 }
 .faq-item.is-jump-target summary,
 .faq-item:target summary {
-  color: var(--orange-deep);
+  color: var(--orange-text);
   transition: color .3s var(--ease);
 }
 
@@ -970,7 +1028,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--orange);
+  color: var(--orange-text);
   font-weight: 600;
   margin-bottom: 0.8rem;
 }
@@ -983,10 +1041,11 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   font-size: 0.94rem;
   margin-bottom: 1rem;
 }
-.article-card a.read-more {
+.article-card a.read-more,
+.article-card .read-more {
   font-weight: 600;
   font-size: 0.92rem;
-  color: var(--orange);
+  color: var(--orange-text);
 }
 
 /* ============================================================
@@ -1018,7 +1077,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 .faq-item summary::after {
   content: "+";
   font-size: 1.5rem;
-  color: var(--orange);
+  color: var(--orange-text);
   font-weight: 400;
   line-height: 1;
   transition: transform .2s var(--ease);
@@ -1066,7 +1125,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   color: var(--brand);
 }
 .contact-info dd a { color: var(--brand); }
-.contact-info dd a:hover { color: var(--orange); }
+.contact-info dd a:hover { color: var(--orange-text); }
 
 .contact-form {
   background: var(--bg-elev);
@@ -1117,7 +1176,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 }
 .success-msg {
   background: var(--orange-light);
-  color: var(--orange-deep);
+  color: var(--brand);
 }
 .error-msg {
   background: #fdecec;
@@ -1126,6 +1185,9 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 .error-msg a { color: inherit; text-decoration: underline; }
 .success-msg.show,
 .error-msg.show { display: block; }
+/* Script moves focus here after a send so it is seen and announced. */
+.success-msg:focus,
+.error-msg:focus { outline: none; }
 
 /* ============================================================
    Footer
@@ -1152,7 +1214,10 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   max-width: 32ch;
   margin-bottom: 1.5rem;
 }
+.footer-grid h2,
 .footer-grid h4 {
+  font-family: var(--font-display);
+  line-height: 1.18;
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -1161,7 +1226,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   font-weight: 600;
 }
 .footer-grid ul { list-style: none; padding: 0; margin: 0; }
-.footer-grid li { margin-bottom: 0.6rem; }
+.footer-grid li { margin-bottom: 0.6rem; font-size: 0.95rem; color: rgba(255,255,255,0.75); }
 .footer-grid a {
   color: rgba(255,255,255,0.75);
   font-size: 0.95rem;
@@ -1262,7 +1327,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 }
 .skip-link:focus { left: 0; color: white; }
 
-::selection { background: var(--orange); color: white; }
+::selection { background: var(--orange-text); color: white; }
 
 /* ============================================================
    Keyboard focus rings.
@@ -1271,11 +1336,20 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
    2.4.7 (focus visible) and 2.4.11 (focus appearance).
    Uses :focus-visible so mouse clicks don't show the ring.
    ============================================================ */
+/* Royal blue ring (7.6:1 on white, 6.8:1 on --bg-soft); white on the dark
+   surfaces, where blue would sink into the navy. */
 :focus-visible {
-  outline: 2px solid var(--orange);
+  outline: 2px solid var(--brand-2);
   outline-offset: 3px;
   border-radius: 4px;
 }
+.site-footer :focus-visible,
+.cta-band :focus-visible,
+.hero-cinema :focus-visible,
+body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
+  outline-color: #fff;
+}
+.skip-link:focus-visible { outline: 2px solid #fff; outline-offset: -5px; }
 .btn:focus-visible { outline-offset: 4px; }
 .faq-jumps a:focus-visible,
 .nav-links a:focus-visible { outline-offset: 4px; }
@@ -1370,6 +1444,12 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
     visibility: visible;
     pointer-events: auto;
     transition: transform .25s var(--ease);
+    /* The page behind is scroll-locked while the menu is open, so on a short
+       landscape phone the menu scrolls itself. */
+    max-height: calc(100vh - 86px);
+    max-height: calc(100dvh - 86px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .nav-links a { padding: 0.85rem; border-radius: var(--radius); }
   .nav-cta { margin: 0.5rem 0 0; }
@@ -1649,18 +1729,42 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   contain: paint;
+  background: #07091c;
+}
+/* Poster still under the video: what visitors see before the first frame
+   decodes, when autoplay is refused, with Save-Data or Reduce Motion on, or
+   while the video is paused before it has loaded. Same box and framing as
+   the video below (112% box, cover, anchored center bottom) so there is no
+   jump when the video starts. Desktop gets the landscape poster; phones,
+   which get the portrait center-crop video, get the matching portrait still. */
+.hero-cinema .hero-skyline::before {
+  content: "";
+  position: absolute;
+  top: -6%;
+  left: -6%;
+  width: 112%;
+  height: 112%;
+  background: #07091c url("hero-poster-city.jpg") center bottom / cover no-repeat;
+}
+@media (max-width: 900px) {
+  .hero-cinema .hero-skyline::before {
+    background-image: url("hero-poster-mobile.webp");
+  }
 }
 .hero-cinema .hero-skyline img,
 .hero-cinema .hero-skyline video {
   position: absolute;
   /* Oversize the video via width/height (not transform: scale) so the source
-     MP4's baked-in letterbox bars get clipped by .hero-skyline's overflow:
-     hidden. Avoiding a nested transform on the video element keeps it on a
-     single stable composited layer with its parent. */
+     MP4's edges get clipped by .hero-skyline's overflow: hidden. Avoiding a
+     nested transform on the video element keeps it on a single stable
+     composited layer with its parent. max-width: none beats the global
+     img rule, so the autoplay-blocked WebP fallback covers the hero exactly
+     like the video (it used to stop short and leave a strip on the right). */
   top: -6%;
   left: -6%;
   width: 112%;
   height: 112%;
+  max-width: none;
   object-fit: cover;
   object-position: center bottom;
   display: block;
@@ -1692,10 +1796,12 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   position: absolute;
   inset: 0;
   z-index: 1;
-  /* Flat scrim (no gradient) — darkens the video just enough to keep the white
-     hero text legible. Transparent to input so only the buttons/links respond. */
+  /* Flat scrim (no gradient): darkens the video enough to keep the white hero
+     text and the transparent nav at 4.5:1 or better on the brightest frames
+     (0.5 measured as low as 3.2:1 for the lead). Transparent to input so only
+     the buttons/links respond. */
   pointer-events: none;
-  background: rgba(7, 9, 28, 0.5);
+  background: rgba(7, 9, 28, 0.6);
 }
 .hero-cinema .hero-content { z-index: 2; }
 .hero-cinema .hero-meta { z-index: 4; }
@@ -1711,10 +1817,21 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 }
 .hero-cinema .hero-content .container { width: 100%; }
 .hero-cinema .eyebrow {
-  color: #FFB774;
+  /* White, not light orange: #FFB774 fell to about 2.2:1 over bright frames.
+     The orange stays as the short accent bar under it. */
+  color: #fff;
+  text-shadow: 0 1px 10px rgba(7, 9, 28, 0.5);
   letter-spacing: 0.18em;
   font-size: clamp(0.95rem, 1.15vw, 1.15rem);
   margin-bottom: 1.6rem;
+}
+.hero-cinema .eyebrow::after {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 2px;
+  margin-top: 0.55rem;
+  background: var(--orange);
 }
 .hero-cinema h1 {
   color: white;
@@ -1724,7 +1841,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   text-shadow: 0 4px 28px rgba(0,0,0,0.35);
 }
 .hero-cinema .lead {
-  color: rgba(255,255,255,0.86);
+  color: rgba(255,255,255,0.92);
   max-width: 60ch;
   font-size: clamp(1.1rem, 1.4vw, 1.3rem);
   text-shadow: 0 2px 14px rgba(0,0,0,0.35);
@@ -1733,6 +1850,38 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   color: white;
 }
 .hero-cinema .hero-actions .btn-text:hover { color: var(--orange); }
+
+/* Pause / play for the background video (added by script.js). A small flat
+   circle in the bottom-right corner of the hero, just above the meta bar
+   (--hero-meta-h is measured by script.js). No motion. */
+.hero-motion-toggle {
+  position: absolute;
+  right: clamp(1rem, 3vw, 2rem);
+  bottom: calc(var(--hero-meta-h, 72px) + 14px);
+  z-index: 5;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 50%;
+  background: rgba(7, 9, 28, 0.55);
+  color: #fff;
+  cursor: pointer;
+}
+.hero-motion-toggle:hover { background: rgba(7, 9, 28, 0.85); border-color: rgba(255, 255, 255, 0.6); }
+.hero-motion-toggle:focus-visible { outline: 2px solid #fff; outline-offset: 3px; border-radius: 50%; }
+.hero-motion-toggle svg { display: block; pointer-events: none; }
+
+/* Small phones: tighten the hero so the primary button stays above the fold
+   on a 375x667 screen (the lead ran 8 to 10 lines). Copy is unchanged. */
+@media (max-width: 480px) {
+  .hero-cinema .hero-content { padding-top: 5.25rem; }
+  .hero-cinema .eyebrow { margin-bottom: 1rem; }
+  .hero-cinema h1 { margin-bottom: 0.9rem; }
+  .hero-cinema .lead { font-size: 1rem; line-height: 1.5; margin-bottom: 1.6rem; }
+}
 /* Full-width solid bar at the bottom of the cinema hero. Acts as the
    intentional bottom edge — the parallax can shift the video upward without
    exposing anything, because the bar is what the viewer sees as the "floor"
@@ -1830,17 +1979,6 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   }
 }
 
-/* Mobile & touch: the video still plays here. We paint the poster still as the
-   skyline background underneath it so that, until the first video frame decodes
-   (or if a data-saver device blocks autoplay), the visitor sees the real NYC
-   footage rather than a white/blank box — which, combined with the menu's
-   white-on-white links, is what used to make the top of the page look empty. */
-@media (max-width: 900px), (pointer: coarse) {
-  .hero-cinema .hero-skyline {
-    background: #07091c url("hero-poster-city.jpg") center bottom / cover no-repeat;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero-cinema .hero-skyline iframe { display: none; }
   .hero-cinema { background: var(--brand); }
@@ -1870,7 +2008,8 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 .prose ul, .prose ol { padding-left: 1.3rem; margin: 0 0 1.2rem; color: var(--fg); }
 .prose li { margin: 0.35rem 0; }
 .prose strong { color: var(--brand); }
-.prose a { color: var(--orange); text-decoration: underline; text-underline-offset: 3px; }
+.prose a:not(.btn):not(.btn-text) { color: var(--brand-2); text-decoration: underline; text-underline-offset: 3px; }
+.prose a:not(.btn):not(.btn-text):hover { color: var(--blue-deep); }
 .prose .meta-row {
   font-size: 0.88rem;
   color: var(--fg-faint);
@@ -1893,10 +2032,23 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   gap: 1.2rem;
   flex-wrap: wrap;
   font-size: 0.82rem;
-  color: var(--fg-faint);
+  color: #8c93a3;   /* the separator dots, on the dark footer */
 }
-.footer-microlinks a { color: rgba(255,255,255,0.6); }
-.footer-microlinks a:hover { color: var(--orange); }
+.footer-microlinks a,
+.footer-microlinks .footer-linkbtn { color: rgba(255,255,255,0.6); }
+.footer-microlinks a:hover,
+.footer-microlinks .footer-linkbtn:hover { color: var(--orange); }
+/* "Cookie settings" (added by script.js): a button that looks like the
+   footer links next to it. */
+.footer-linkbtn {
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  line-height: inherit;
+  cursor: pointer;
+  transition: color .15s var(--ease);
+}
 
 /* Illustration frame for the "core system you can count on" section */
 .illustration-frame {
@@ -1988,9 +2140,10 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   -webkit-appearance: none;
   opacity: 0 !important;
 }
-/* Numbered list markers: solid orange at all times (were scroll-tied). */
+/* Numbered list markers: solid orange at all times (were scroll-tied). Text,
+   so the AA-contrast orange. */
 .numbered-item[data-scroll-tie] .numbered-num {
-  color: var(--orange) !important;
+  color: var(--orange-text) !important;
   opacity: 1 !important;
 }
 /* Eyebrow underline shown already drawn, no width animation. */

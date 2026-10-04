@@ -8,19 +8,19 @@
 <link rel="canonical" href="https://genesiscoresystems.com/article-transforming-community-banking" />
 <meta name="theme-color" content="#1B265F" />
 <meta name="robots" content="index, follow, max-image-preview:large" />
-<link rel="icon" type="image/png" href="/assets/logo.png" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
-<link rel="stylesheet" href="/assets/styles.css?v=36" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32.png" />
+<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<link rel="preload" href="/assets/fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="preload" href="/assets/fonts/manrope-latin.woff2" as="font" type="font/woff2" crossorigin />
+<link rel="stylesheet" href="/assets/styles.css?v=37" />
 <style>html.gcs-loading body{visibility:hidden}</style>
 <script>
 /* Hold first paint until the top of the page is complete (web fonts, header
-   logo, hero image), so visitors never see a half-built page. Hard cap of 2s
+   logo, hero image), so visitors never see a half-built page. Hard cap of 1s
    so a slow asset can never leave the page blank. No JS means no gate. */
 (function(d){var h=d.documentElement,done=0;h.classList.add("gcs-loading");
 function show(){if(!done){done=1;h.classList.remove("gcs-loading");}}
-setTimeout(show,2000);
+setTimeout(show,1000);
 function img(src){return new Promise(function(r){if(!src)return r();var i=new Image();i.onload=i.onerror=function(){r();};i.src=src;});}
 d.addEventListener("DOMContentLoaded",function(){
 var logo=d.querySelector(".site-header .brand-mark-img"),hero=d.getElementById("hero-video");
@@ -31,19 +31,20 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
 <meta property="og:url" content="https://genesiscoresystems.com/article-transforming-community-banking" />
 <meta property="og:title" content="Modern Core Banking Without a Big Bang" />
 <meta property="og:description" content="How a community bank moves to a new core without betting the institution on one cutover weekend." />
-<meta property="og:image" content="https://genesiscoresystems.com/assets/og-card.png" />
-<meta property="og:image:width" content="2400" />
-<meta property="og:image:height" content="1260" />
+<meta property="og:image" content="https://genesiscoresystems.com/assets/og-image.png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 <meta property="og:image:alt" content="Genesis Core Systems, core banking platform for community banks" />
+<meta property="og:site_name" content="Genesis Core Systems" />
 <meta property="article:published_time" content="2026-07-09" />
-<meta property="article:modified_time" content="2026-08-27" />
+<meta property="article:modified_time" content="2026-10-04" />
 <meta property="article:author" content="Genesis Core Systems" />
 <meta property="article:section" content="Core Modernization" />
 <meta property="article:tag" content="Core banking" />
 <meta property="article:tag" content="Community banking" />
 <meta name="author" content="Genesis Core Systems" />
 <meta name="twitter:card" content="summary_large_image" />
-<meta name="twitter:image" content="https://genesiscoresystems.com/assets/og-card.png" />
+<meta name="twitter:image" content="https://genesiscoresystems.com/assets/og-image.png" />
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -59,7 +60,7 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
         "url": "https://genesiscoresystems.com/assets/logo.png",
         "caption": "Genesis Core Systems"
       },
-      "image": "https://genesiscoresystems.com/assets/og-card.png",
+      "image": "https://genesiscoresystems.com/assets/og-image.png",
       "description": "Genesis Core Systems delivers core banking to United States community banks, packaging a proven Tier-1-grade core foundation with Genesis-led configuration, integration, conversion and ongoing support.",
       "email": "info@genesiscoresystems.com",
       "telephone": "+1-914-477-2673",
@@ -99,10 +100,10 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
     {
       "@type": "Article",
       "@id": "https://genesiscoresystems.com/article-transforming-community-banking#article",
-      "headline": "A Practical Path to Modern Core Banking for Community Banks",
+      "headline": "Modern Core Banking Without a Big Bang",
       "description": "How a community bank moves to a modern core without betting the institution on a single cutover weekend.",
       "image": [
-        "https://genesiscoresystems.com/assets/og-card.png"
+        "https://genesiscoresystems.com/assets/og-image.png"
       ],
       "author": {
         "@type": "Organization",
@@ -116,7 +117,7 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
         "@id": "https://genesiscoresystems.com/article-transforming-community-banking"
       },
       "datePublished": "2026-07-09",
-      "dateModified": "2026-08-27",
+      "dateModified": "2026-10-04",
       "inLanguage": "en-US"
     },
     {
@@ -137,7 +138,7 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
         {
           "@type": "ListItem",
           "position": 3,
-          "name": "Transforming Community Banking"
+          "name": "Modern Core Banking Without a Big Bang"
         }
       ]
     }
@@ -150,7 +151,7 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
 
 <header class="site-header">
   <div class="container nav">
-    <a class="brand" href="/" aria-label="Genesis Core Systems"><span class="brand-mark"><img class="brand-mark-img" src="/assets/logo.png" alt="Genesis Core Systems" /></span>Genesis Core Systems</a>
+    <a class="brand" href="/" aria-label="Genesis Core Systems"><span class="brand-mark"><img class="brand-mark-img" src="/assets/logo-144.png" width="144" height="144" alt="" /></span>Genesis Core Systems</a>
     <ul class="nav-links" id="nav-links">
       <li><a href="/solutions">Solutions</a></li>
       <li><a href="/services">Services</a></li>
@@ -158,7 +159,7 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
       <li><a href="/about">About</a></li>
       <li><a href="/articles">Articles</a></li>
       <li><a href="/faq">FAQ</a></li>
-      <li class="nav-cta"><a href="/contact" class="btn btn-primary">Contact <span class="arrow">→</span></a></li>
+      <li class="nav-cta"><a href="/contact" class="btn btn-primary">Contact <span class="arrow" aria-hidden="true">→</span></a></li>
     </ul>
     <button class="nav-toggle" data-nav-toggle aria-controls="nav-links" aria-expanded="false" aria-label="Open menu"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
   </div>
@@ -169,15 +170,15 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
   <section class="page-head">
     <div class="container">
       <span class="eyebrow">Featured Article · 2026</span>
-      <h1>Modern Core Banking for Community Banks.</h1>
-      <p class="lead">A practical path to modern core banking for community banks, with affordable, scalable, flexible, and secure solutions built for the digital age.</p>
+      <h1>Modern Core Banking Without a Big Bang.</h1>
+      <p class="lead">A practical path to a modern core for community banks: fewer vendors, predictable costs and one accountable operator.</p>
     </div>
   </section>
 
   <section>
     <div class="container">
       <article class="prose reveal">
-        <div class="meta-row">By Genesis Core Systems · 8 min read · Filed under Core Modernization</div>
+        <div class="meta-row">By Genesis Core Systems · 4 min read · Filed under Core Modernization</div>
 
         <blockquote>
           Community banks do not need to choose between staying on an aging legacy core and attempting a risky, bank-led transformation. Genesis is building a managed, bank-facing platform that brings Tier-1-grade core capability into a model community banks can adopt: fewer vendors, fewer integration points, disciplined implementation, and one accountable operator.
@@ -185,11 +186,11 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
 
         <p>For decades, community banks have been the quiet engine of the American economy, funding small businesses, family homes, and the institutions that hold neighborhoods together. And for decades, they've done it on technology stacks that were never designed for them. Cores built in the 1980s. Batch jobs that run nightly. Integrations that depend on flat files. Customer experiences that are perfectly adequate, if your customers don't know any better.</p>
 
-        <p>Your customers know better. They use modern consumer fintech apps every day. They expect to open an account in three minutes on their phone. They expect every interaction to be real-time. And when a community bank can't keep up, the result is not just attrition, it is the slow erosion of a category of institutions whose presence in this country matters.</p>
+        <p>Your customers know better. They use modern consumer fintech apps every day. They expect to open an account in three minutes on their phone. They expect every interaction to be real-time. And when a community bank can't keep up, it loses customers, and over time the country loses a category of institutions whose presence matters.</p>
 
-        <h2>The problem isn't the bank. It's the platform.</h2>
+        <h2>The platform is holding the bank back.</h2>
 
-        <p>The best-known incumbent core providers, FIS, Fiserv, and Jack Henry, serve much of the U.S. community and regional bank market. Their products are competent and durable, and were genuinely state-of-the-art in their era. But they were built on an assumption that the cost of computing was high and the cost of change was higher, so systems were engineered to do a fixed set of things and resist evolution.</p>
+        <p>The best-known incumbent core providers, FIS, Fiserv, and Jack Henry, serve much of the U.S. community and regional bank market. Their products are competent and durable, and were advanced for their era. But they were built on an assumption that the cost of computing was high and the cost of change was higher, so systems were engineered to do a fixed set of things and resist evolution.</p>
 
         <p>That assumption is now inverted. Computing is cheap. Change is constant. The platforms community banks rely on are increasingly mismatched with the operating environment they live in. The symptoms are familiar to anyone who has worked inside one:</p>
 
@@ -198,7 +199,7 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
           <li>Integrations that require vendor change requests and per-API pricing</li>
           <li>Regulatory updates that require waiting for the next release window</li>
           <li>Customer-facing experiences that lag the fintechs by a generation</li>
-          <li>Pricing models built around per-seat and per-account fees that punish growth</li>
+          <li>Pricing built around per-seat licenses and per-interface fees that rise every time the bank adds a product or connection</li>
         </ul>
 
         <h2>What Genesis is building.</h2>
@@ -211,10 +212,10 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
         <p>Genesis is event-driven from the ledger up. Posting is sub-second. Reconciliation is continuous. The nightly batch, that organizing principle that has shaped operations and customer experience for decades, is gone.</p>
 
         <h3>2. API-addressable everywhere</h3>
-        <p>Every entity in Genesis, accounts, customers, transactions, products, limits, is exposed through a documented, versioned API. Internal teams build against the same APIs that external partners use. There are no hidden interfaces, no privileged client tools.</p>
+        <p>Every entity in Genesis (accounts, customers, transactions, products, limits) is exposed through a documented, versioned API. Internal teams build against the same APIs that external partners use. There are no hidden interfaces, no privileged client tools.</p>
 
         <h3>3. Modular and incremental</h3>
-        <p>You don't have to swap your core to adopt Genesis. Most institutions start with one or two modules, origination, payments, onboarding, running alongside their incumbent stack. As confidence builds, the footprint expands. This is the opposite of the all-or-nothing migration that has scared community banks away from modernization for a generation.</p>
+        <p>You don't have to swap your core to adopt Genesis. A bank can start with one or two modules, such as origination, payments or onboarding, running alongside its incumbent stack, and expand as confidence builds. This is the opposite of the all-or-nothing migration that has scared community banks away from modernization for a generation.</p>
 
         <h3>4. Cloud-first, with deployment flexibility</h3>
         <p>Genesis prefers a managed cloud operating model because it simplifies operations, upgrades, security management, and support. For banks with specific operating, infrastructure, or self-processing requirements, Genesis can evaluate dedicated, hybrid, or bank-hosted deployment models, subject to technical validation and support constraints.</p>
@@ -226,11 +227,11 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
 
         <p>When community banks engage with Genesis, the conversation rarely starts with technology. It starts with strategy. What are the markets you're trying to serve? What products would you launch if you could launch them? What does your three-year plan require from your platform? From there, we work backward to the technology footprint that makes the plan executable.</p>
 
-        <p>That's a different posture than the traditional core conversation, which tends to begin and end with feature checklists, RFPs, and quote spreadsheets. Genesis is not selling you a feature matrix, we are selling you optionality. The ability to do, next quarter, things that would currently require a multi-year project.</p>
+        <p>That's a different posture than the traditional core conversation, which tends to begin and end with feature checklists, RFPs, and quote spreadsheets. What Genesis offers instead is optionality: the ability to do, next quarter, things that would currently require a multi-year project.</p>
 
         <h2>The road ahead.</h2>
 
-        <p>This transformation is not just a technological upgrade. It is a necessary evolution for community banks to thrive in the digital age. Genesis is focused on modernizing core banking for community banks, working toward a more affordable and durable future for the institutions that, for generations, have been the connective tissue of American economic life.</p>
+        <p>Modernizing the core is how community banks keep competing. Genesis is focused on making that affordable and durable for the institutions that have funded American communities for generations.</p>
 
         <p>If you lead, work in, or care about a community bank, we'd like to talk. <a href="/contact">Reach out to our team</a> for a working session: no slide deck, no scripted demo, just a conversation about what your institution needs and what a Genesis engagement might look like.</p>
 
@@ -238,13 +239,14 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
           <h2>Keep reading</h2>
           <ul>
             <li><a href="/article-modernizing-community-bank-core">Why core modernization is hard for community banks</a></li>
+            <li><a href="/core-conversion">Bank core conversion: timeline, cost and phases</a></li>
             <li><a href="/solutions">Core banking modules and the open API</a></li>
             <li><a href="/services">Core conversion services for community banks</a></li>
             <li><a href="/partnership">The Design Partner Program</a></li>
           </ul>
         </nav>
 
-        <p style="margin-top:3rem;"><a href="/articles" class="btn-text">← Back to all articles</a></p>
+        <p style="margin-top:3rem;"><a href="/articles" class="btn-text"><span aria-hidden="true">←</span> Back to all articles</a></p>
       </article>
     </div>
   </section>
@@ -257,8 +259,8 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
           <h2>Start the conversation.</h2>
           <p>Whether you're exploring options or ready to plan an engagement, our team is one email away.</p>
           <div class="hero-actions">
-            <a href="/contact" class="btn btn-primary btn-lg">Get in touch <span class="arrow">→</span></a>
-            <a href="/solutions" class="btn-text" style="color:white;">Explore the platform <span class="arrow">→</span></a>
+            <a href="/contact" class="btn btn-primary btn-lg">Get in touch <span class="arrow" aria-hidden="true">→</span></a>
+            <a href="/solutions" class="btn-text" style="color:white;">Explore the platform <span class="arrow" aria-hidden="true">→</span></a>
           </div>
         </div>
         <dl class="contact-card-list">
@@ -275,21 +277,21 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
 <footer class="site-footer">
   <div class="container">
     <div class="footer-grid">
-      <div><a class="brand" href="/"><span class="brand-mark"><img class="brand-mark-img" src="/assets/logo.png" alt="Genesis Core Systems" /></span>Genesis Core Systems</a><p class="footer-blurb">A modern core banking platform, combining top-tier technology with affordability and flexibility.</p></div>
-      <div><h4>Platform</h4><ul><li><a href="/solutions">Solutions</a></li><li><a href="/services">Services</a></li><li><a href="/partnership">Partnership</a></li></ul></div>
-      <div><h4>Company</h4><ul><li><a href="/about">About</a></li><li><a href="/articles">Articles</a></li><li><a href="/core-banking-system">Core Banking Guide</a></li><li><a href="/core-conversion">Core Conversion Guide</a></li><li><a href="/faq">FAQ</a></li><li><a href="/contact">Contact</a></li></ul></div>
-      <div><h4>Reach Us</h4><ul><li><a href="mailto:info@genesiscoresystems.com">info@genesiscoresystems.com</a></li><li><a href="tel:+19144772673">+1 (914) 477-CORE</a></li><li>New York, NY</li></ul></div>
+      <div><a class="brand" href="/"><span class="brand-mark"><img class="brand-mark-img" src="/assets/logo-144.png" width="144" height="144" alt="" /></span>Genesis Core Systems</a><p class="footer-blurb">A modern core banking platform, combining top-tier technology with affordability and flexibility.</p></div>
+      <div><h2>Platform</h2><ul><li><a href="/solutions">Solutions</a></li><li><a href="/services">Services</a></li><li><a href="/partnership">Partnership</a></li></ul></div>
+      <div><h2>Company</h2><ul><li><a href="/about">About</a></li><li><a href="/articles">Articles</a></li><li><a href="/core-banking-system">Core Banking Guide</a></li><li><a href="/core-conversion">Core Conversion Guide</a></li><li><a href="/faq">FAQ</a></li><li><a href="/contact">Contact</a></li></ul></div>
+      <div><h2>Reach Us</h2><ul><li><a href="mailto:info@genesiscoresystems.com">info@genesiscoresystems.com</a></li><li><a href="tel:+19144772673">+1 (914) 477-CORE</a></li><li>New York, NY</li></ul></div>
     </div>
 <p class="footer-help">For any questions you have, <a href="/contact">reach out to our team</a>.</p>
 <div class="footer-bottom">
       <span>© <span data-year>2026</span> Genesis Core Systems. All rights reserved.</span>
       <div class="footer-microlinks"><a href="/privacy">Privacy Policy</a> · <a href="/policies">Policies &amp; Commitments</a></div>
-      <div class="socials"><a href="https://www.linkedin.com/company/genesis-core-systems" target="_blank" rel="noopener" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg></a></div>
+      <div class="socials"><a href="https://www.linkedin.com/company/genesis-core-systems" target="_blank" rel="noopener" aria-label="LinkedIn (opens in a new tab)"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.5 2h-17A1.5 1.5 0 002 3.5v17A1.5 1.5 0 003.5 22h17a1.5 1.5 0 001.5-1.5v-17A1.5 1.5 0 0020.5 2zM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 118.3 6.5a1.78 1.78 0 01-1.8 1.75zM19 19h-3v-4.74c0-1.42-.6-1.93-1.38-1.93A1.74 1.74 0 0013 14.19a.66.66 0 000 .14V19h-3v-9h2.9v1.3a3.11 3.11 0 012.7-1.4c1.55 0 3.36.86 3.36 3.66z"/></svg></a></div>
     </div>
   </div>
 </footer>
 
-<script src="/assets/script.js?v=33" defer></script>
-<script src="/assets/chat.js?v=1" defer></script>
+<script src="/assets/script.js?v=34" defer></script>
+<script src="/assets/chat.js?v=2" defer></script>
 </body>
 </html>
