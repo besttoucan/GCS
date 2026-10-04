@@ -42,6 +42,10 @@
   // final position with no motion. (CSS also pins these static as a safety net.)
   document.querySelectorAll(".reveal").forEach((el) => el.classList.add("visible"));
 
+  // Explicit `behavior: "smooth"` in scrollTo() overrides the CSS reduced-motion
+  // rule, so JS-driven scrolls ask this instead.
+  const SCROLL_BEHAVIOR = matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+
   // ---- Contact form: submit via FormSubmit AJAX so the visitor stays on the page ----
   const form = document.querySelector("#contact-form");
   if (form) {
@@ -108,7 +112,7 @@
     const header = document.querySelector(".site-header");
     const offset = (header ? header.offsetHeight : 0) + 16;
     const top = target.getBoundingClientRect().top + window.scrollY - offset;
-    window.scrollTo({ top, behavior: "smooth" });
+    window.scrollTo({ top, behavior: SCROLL_BEHAVIOR });
   };
 
   document.querySelectorAll(".faq-jumps a").forEach((link) => {
@@ -134,9 +138,19 @@
 
   // ---- Scroll-aware header (transparent over cinema hero, frosts in on scroll) ----
   if (document.body.classList.contains("page-home")) {
+    // Hysteresis: turn solid further down than we turn transparent again.
+    // The header shrinks ~15px when it goes solid, and Chrome's scroll
+    // anchoring then moves scrollY by the same 15px. With one 40px threshold
+    // that shift pushed scrollY back across the line on every frame, so the
+    // header strobed between states (measured: 122 flips in 2s while parked
+    // at y=41, scrollY bouncing 41/26). A 48px dead band is wider than any
+    // anchoring shift, so the state settles. Keep ENTER - EXIT > header delta.
+    const ENTER = 64, EXIT = 16;
     const setScrolled = () => {
       const y = window.scrollY || window.pageYOffset;
-      document.body.classList.toggle("is-scrolled", y > 40);
+      const on = document.body.classList.contains("is-scrolled");
+      if (!on && y > ENTER) document.body.classList.add("is-scrolled");
+      else if (on && y < EXIT) document.body.classList.remove("is-scrolled");
     };
     setScrolled();
     window.addEventListener("scroll", setScrolled, { passive: true });
@@ -461,7 +475,7 @@
       const target = e.clientY - top - thumbH / 2;
       const ratio = Math.min(Math.max(0, target), height - thumbH) / (height - thumbH);
       const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      window.scrollTo({ top: ratio * scrollable, behavior: "smooth" });
+      window.scrollTo({ top: ratio * scrollable, behavior: SCROLL_BEHAVIOR });
     });
   })();
 
