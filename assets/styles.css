@@ -64,13 +64,17 @@
 * { box-sizing: border-box; }
 html {
   scroll-behavior: smooth;
-  /* In-page anchors and keyboard focus land below the sticky header (70px,
-     86px at the top of the homepage) instead of underneath it. */
-  scroll-padding-top: 88px;
   /* Hide the native scrollbar; we render our own rail on the right edge. */
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+/* In-page anchor targets and keyboard focus inside the page land below the
+   sticky header (70px, 86px at the top of the homepage) instead of under it.
+   Set per element, not as scroll-padding-top on <html>: that made Chrome
+   scroll the page every time focus moved through the sticky header itself. */
+main [id],
+main a, main button, main input, main select, main textarea, main summary,
+main [tabindex] { scroll-margin-top: 88px; }
 /* Page scroll is locked while the mobile menu is open. Only <html> is set:
    overflow on <body> would make it the scroller for the sticky header. */
 html.nav-locked { overflow: hidden; }
@@ -147,7 +151,7 @@ body::-webkit-scrollbar { width: 0; height: 0; display: none; }
   pointer-events: auto;
   cursor: grab;
   transition: width .15s var(--ease), right .15s var(--ease), box-shadow .15s var(--ease);
-  /* No transitions on top/height — drag must feel instant. */
+  /* No transitions on top/height, drag must feel instant. */
 }
 .scroll-rail:hover .scroll-rail-thumb,
 .scroll-rail.dragging .scroll-rail-thumb {
@@ -177,7 +181,7 @@ body.page-home:not(.is-scrolled) .scroll-rail .scroll-rail-thumb {
 }
 
 @media (max-width: 680px) {
-  /* On touch devices, hide the custom rail — native gesture scroll is the right UX. */
+  /* On touch devices, hide the custom rail, native gesture scroll is the right UX. */
   .scroll-rail { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -193,11 +197,11 @@ img, svg { max-width: 100%; display: block; }
 /* ------------------------------------------------------------
    Decorative videos never show a play button.
    The hero clip and the "core system" illustration both autoplay
-   muted + looped + playsinline — they are backgrounds, not players.
+   muted + looped + playsinline, they are backgrounds, not players.
    iOS/WebKit still overlays a center "play" button in some states
    (autoplay blocked under Low Power Mode / data-saver, or after a
    tap pauses the clip). Strip ALL native media-control chrome from
-   every video so that button can never appear — on mobile or anywhere.
+   every video so that button can never appear, on mobile or anywhere.
    No video on this site is meant to be user-controlled.
    ------------------------------------------------------------ */
 video { pointer-events: none; }
@@ -296,11 +300,11 @@ section { padding: clamp(4rem, 8vw, 7rem) 0; }
 }
 
 /* Transparent header over the cinema hero on the homepage (top of page only).
-   No dark gradient scrim — a subtle text-shadow keeps the nav legible over the
+   No dark gradient scrim, a subtle text-shadow keeps the nav legible over the
    video instead, which reads cleaner than a shaded band across the top. */
 body.page-home:not(.is-scrolled) .site-header {
   background: transparent;
-  border-bottom: none;   /* width 0, not just transparent — avoids a 1px sliver above the hero */
+  border-bottom: none;   /* width 0, not just transparent, avoids a 1px sliver above the hero */
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -330,7 +334,7 @@ body.page-home:not(.is-scrolled) .site-header .nav-toggle { color: white; border
 }
 
 /* Homepage: the cinema hero sits BEHIND the (in-flow, sticky) header so the NYC
-   video is full-bleed under a transparent nav — no header background or shadow.
+   video is full-bleed under a transparent nav, no header background or shadow.
    We cancel the header's flow height with a matching negative margin on the hero;
    the hero content's own top padding keeps the title clear of the nav. The flat
    scrim on .hero-overlay darkens the video enough to keep the white nav legible. */
@@ -342,11 +346,11 @@ body.page-home .hero-cinema { margin-top: -86px; }
 /* When the mobile menu is open over the cinema hero, swap the transparent
    header for a solid one and force the links/brand back to dark ink. Without
    this, opening the menu at the very top of the homepage rendered the dropdown
-   as white links on a white panel — i.e. a "blank, empty" menu — until the
+   as white links on a white panel, a "blank, empty" menu, until the
    user scrolled a little and the .is-scrolled state kicked in.
    NOTE ON SPECIFICITY: these do NOT tie with the rules above. `:not(.is-scrolled)`
    counts as a class, so `body.page-home:not(.is-scrolled) .site-header` is (0,3,1)
-   and a plain `body.nav-open .site-header` is only (0,2,1) — it loses, and the
+   and a plain `body.nav-open .site-header` is only (0,2,1), it loses, and the
    header stayed transparent while the brand went dark ink, i.e. dark-on-dark over
    the video. Each rule that has to beat the transparent state therefore repeats
    `:not(.is-scrolled)` to outweigh it. Keep that duplication if you edit these. */
@@ -476,7 +480,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   letter-spacing: -0.005em;
 }
 .btn-primary {
-  background: var(--brand-2);   /* royal blue — white text = 7.6:1 contrast (WCAG AA) */
+  background: var(--brand-2);   /* royal blue: white text = 7.6:1 contrast (WCAG AA) */
   color: white;
 }
 .btn-primary:hover {
@@ -763,7 +767,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 /* ============================================================
    Backed-by band
    Thin trust band, sits below the hero. Centered on desktop, stacks
-   on mobile. Brand-colored wordmark on a neutral background — reads
+   on mobile. Brand-colored wordmark on a neutral background, reads
    as an actual disclosure, not a "logo soup."
    ============================================================ */
 .backers {
@@ -826,7 +830,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 .page-head h1 { margin-bottom: 1.2rem; max-width: 18ch; }
 .page-head .lead { max-width: 56ch; }
 
-/* About — asymmetric grid with a thin orange accent rule on the left edge.
+/* About: asymmetric grid with a thin orange accent rule on the left edge.
    Heading lives in a tall left column; the lead drops into a narrower right
    column separated by a hairline rule. Reads as a manifesto opener instead
    of a brochure cover. */
@@ -874,7 +878,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   .page-head-about .lead { border-left: none; padding-left: 0; }
 }
 
-/* Articles — editorial masthead. A two-up meta row at the top with the
+/* Articles: editorial masthead. A two-up meta row at the top with the
    section label on the left and an orange "Issue No." marker on the right,
    under a hairline divider. Visually reads like a journal cover. */
 .page-head-editorial { padding-bottom: clamp(3rem, 5vw, 4rem); }
@@ -904,7 +908,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 }
 
 
-/* FAQ page header — split layout. Heading on the left, a row of jump
+/* FAQ page header: split layout. Heading on the left, a row of jump
    chips on the right that anchor down to specific FAQ items. Distinct
    from every other page-head and functional: visitors can skip straight
    to the topic they're actually here for. */
@@ -973,7 +977,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 .faq-item:target {
   animation: faq-target-pulse 2.4s var(--ease) 0.15s 1 both;
   border-top-color: var(--orange);
-  scroll-margin-top: 12px; /* plus html scroll-padding-top: clears the sticky header */
+  scroll-margin-top: 100px; /* keeps native :target scroll clear of sticky header */
 }
 .faq-item.is-jump-target summary,
 .faq-item:target summary {
@@ -986,7 +990,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
     grid-template-columns: 1fr;
     gap: 1.75rem;
   }
-  /* Bigger tap targets on touch — chips need ~44px to feel right with a finger. */
+  /* Bigger tap targets on touch, chips need ~44px to feel right with a finger. */
   .page-head-faq .faq-jumps a {
     padding: 0.75rem 1.15rem;
     font-size: 0.95rem;
@@ -1262,12 +1266,12 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 /* ============================================================
    Reveal animation. Default: gentle rise. Numbered items: alternating swipe.
    ============================================================ */
-/* .reveal default state is VISIBLE — so content above the fold paints in its
+/* .reveal default state is VISIBLE, so content above the fold paints in its
    final position on first frame, with no fade-in delay. JS adds .reveal-pending
    to elements that are below the fold on load (which the user can't see yet);
    the IntersectionObserver removes that class as they scroll into view, and
    the transition then runs as you'd expect. This is the fix for the "blank
-   bottom on page open" issue — the pullquote section is just below the hero,
+   bottom on page open" issue, the pullquote section is just below the hero,
    so most viewports show its top edge on load; it used to sit at opacity 0
    for ~1s before fading in. Now it's just visible. */
 .reveal {
@@ -1281,7 +1285,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
 .reveal.visible { opacity: 1; transform: none; }
 
 /* Numbered items: parent is the .reveal target; rows rise gently in sequence.
-   No alternating left/right — the list is being read top-to-bottom, so the
+   No alternating left/right, the list is being read top-to-bottom, so the
    eye should travel down, not zig-zag. */
 .numbered.reveal { opacity: 1; transform: none; transition: none; }
 .numbered.reveal .numbered-item {
@@ -1409,7 +1413,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
 }
 
 /* The full nav row (brand + six links + Contact button) needs roughly 1000px
-   of width. Below that — tablets, landscape phones — the links and brand fight
+   of width. Below that, on tablets and landscape phones, the links and brand fight
    for space and the brand name wraps onto two lines. So the hamburger takes
    over at 1000px, not 680px. */
 @media (max-width: 1000px) {
@@ -1427,7 +1431,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
     padding: 0.75rem;
     gap: 0;
     transform: translateY(-130%);
-    /* When closed, the panel must be fully unpainted — not just translated
+    /* When closed, the panel must be fully unpainted, not just translated
        offscreen. translateY alone parked the white panel ~40px above the
        viewport, and iOS rubber-band overscroll (pulling down past the top of
        the page) revealed it as a floating white box. visibility flips to
@@ -1460,7 +1464,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
   /* Keep the brand on ONE line on phones. The top-of-homepage state enlarged
      it to 1.5rem text + 46px mark, which pushed "Genesis Core Systems" onto
      two lines next to the hamburger. On phones, both header states now share
-     one compact size that provably fits down to 320px-wide screens — only the
+     one compact size that provably fits down to 320px-wide screens, only the
      colors change on scroll, so there's no size-jump either. */
   .site-header .nav { gap: 1rem; }
   .site-header .brand,
@@ -1485,7 +1489,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
    Phones get the content in its final position with the heavy reveal,
    word-stagger, and illustration motion switched off. The per-element
    fade/slide is cheap on desktop but stacks up into visible jank while
-   touch-scrolling on lower-power GPUs — which is what makes the page
+   touch-scrolling on lower-power GPUs, which is what makes the page
    feel laggy on a phone. Content simply appears, scrolling stays smooth.
    (The scroll-driven parallax + custom scroll rail are already gated off
    in JS for these devices.)
@@ -1533,7 +1537,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
   transition: opacity .7s var(--ease), transform .8s var(--ease);
 }
 /* These overrides must match or beat the specificity of the initial-state
-   selectors above — otherwise (0,2,1) beats (0,2,0) and the headings stay
+   selectors above, otherwise (0,2,1) beats (0,2,0) and the headings stay
    permanently invisible (which is exactly the page-head h1 bug). */
 .section-head h2.words-in .word,
 .page-head h1.words-in .word,
@@ -1619,7 +1623,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
 }
 
 /* ============================================================
-   Scroll-tied effects (reversible by construction — JS recomputes
+   Scroll-tied effects (reversible by construction, JS recomputes
    values from each element's current viewport position every frame).
 
    Two variables are written per element:
@@ -1631,7 +1635,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
    ============================================================ */
 
 /* Illustration card: drifts vertically by ~30px range as you scroll past
-   the section. Pure linear parallax, no rotation, no scale — the figure
+   the section. Pure linear parallax, no rotation, no scale, the figure
    stays calm, the motion stays subtle. */
 .split-row.visible .illustration-frame[data-scroll-tie],
 .reveal.visible .illustration-frame[data-scroll-tie] {
@@ -1639,7 +1643,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
   transition: opacity .9s var(--ease);
 }
 
-/* Partnership "collaborative environment" block — slides horizontally as the
+/* Partnership "collaborative environment" block, slides horizontally as the
    reader scrolls through the section. Enters from the right, sits centered
    at the section's vertical midpoint, then continues out to the left as you
    pass it. Continuous and reversible because --p is recomputed every frame
@@ -1664,24 +1668,24 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
   --focus: 0;
 }
 .numbered-item[data-scroll-tie] .numbered-num {
-  color: color-mix(in srgb, var(--fg-faint) calc((1 - var(--focus)) * 100%), var(--orange));
+  color: color-mix(in srgb, var(--fg-faint) calc((1 - var(--focus)) * 100%), var(--orange-text));
   transition: none;
 }
 /* Fallback for browsers without color-mix(): brighten via opacity-of-orange. */
 @supports not (color: color-mix(in srgb, red, blue)) {
   .numbered-item[data-scroll-tie] .numbered-num {
-    color: var(--orange);
+    color: var(--orange-text);
     opacity: calc(0.45 + var(--focus) * 0.55);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .numbered-item[data-scroll-tie] .numbered-num { color: var(--orange); opacity: 1; }
+  .numbered-item[data-scroll-tie] .numbered-num { color: var(--orange-text); opacity: 1; }
 }
 /* Mobile: the JS that drives --focus is gated off (touch scroll + per-frame
    transforms = jank). Number tags stay static orange instead of scroll-tied. */
 @media (max-width: 800px), (pointer: coarse) {
-  .numbered-item[data-scroll-tie] .numbered-num { color: var(--orange); opacity: 1; }
+  .numbered-item[data-scroll-tie] .numbered-num { color: var(--orange-text); opacity: 1; }
   .illustration-frame[data-scroll-tie] { transform: none !important; }
 }
 
@@ -1717,7 +1721,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
   overflow: hidden;
   /* The skyline + video are purely decorative. Make the whole layer ignore
      pointer/touch input so a finger drag (or tap) over it scrolls the page
-     instead of landing on the <video> — touching a video element on mobile
+     instead of landing on the <video>, touching a video element on mobile
      can otherwise pause/flicker it or hijack the scroll. */
   pointer-events: none;
   /* Compositor hints. The JS sets translate3d() on this element once per
@@ -1811,7 +1815,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
   min-height: inherit;
   display: flex;
   align-items: center;
-  /* Bottom padding is reduced — the meta bar (~64px) now occupies the bottom
+  /* Bottom padding is reduced, the meta bar (~64px) now occupies the bottom
      of the section, so the title block needs less of its own clearance. */
   padding: clamp(6rem, 12vw, 9rem) 0 clamp(7rem, 11vw, 9rem);
 }
@@ -1876,6 +1880,10 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
 
 /* Small phones: tighten the hero so the primary button stays above the fold
    on a 375x667 screen (the lead ran 8 to 10 lines). Copy is unchanged. */
+@media (max-width: 680px) {
+  /* Room under the buttons for the pause control above the meta bar. */
+  .hero-cinema .hero-content { padding-bottom: calc(var(--hero-meta-h, 68px) + 4.25rem); }
+}
 @media (max-width: 480px) {
   .hero-cinema .hero-content { padding-top: 5.25rem; }
   .hero-cinema .eyebrow { margin-bottom: 1rem; }
@@ -1883,7 +1891,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
   .hero-cinema .lead { font-size: 1rem; line-height: 1.5; margin-bottom: 1.6rem; }
 }
 /* Full-width solid bar at the bottom of the cinema hero. Acts as the
-   intentional bottom edge — the parallax can shift the video upward without
+   intentional bottom edge, the parallax can shift the video upward without
    exposing anything, because the bar is what the viewer sees as the "floor"
    of the hero. */
 .hero-cinema .hero-meta {
@@ -1930,7 +1938,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
 
 @media (max-width: 680px) {
   /* On phones, a frosted (backdrop-filter) sticky header has to re-blur the
-     moving page — including the hero video — on every scroll frame, which is a
+     moving page, including the hero video, on every scroll frame, which is a
      classic source of scroll stutter/glitching on mobile GPUs. Use a solid
      surface instead; it looks the same but composites for free. (The
      transparent-at-top and menu-open states keep their own higher-specificity
@@ -1967,7 +1975,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
 }
 
 @media (max-width: 540px) {
-  /* The two nowrap labels don't fit side by side on a phone — the right one
+  /* The two nowrap labels don't fit side by side on a phone, the right one
      was clipping mid-word ("…NEW YOR"). Stack them centered instead. */
   .hero-cinema .hero-meta {
     height: auto;
@@ -2055,7 +2063,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
   position: relative;
   border-radius: var(--radius-lg);
   overflow: hidden;
-  /* Dark brand panel — the looping Genesis animation fills it edge to edge. */
+  /* Dark brand panel, the looping Genesis animation fills it edge to edge. */
   background: #07091c;
   padding: 0;
   box-shadow: 0 30px 70px -30px rgba(27, 38, 95, 0.35);
@@ -2066,7 +2074,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
   height: auto;
   display: block;
 }
-/* The GENESIS animation is decorative — ignore touch so scrolling over it
+/* The GENESIS animation is decorative, ignore touch so scrolling over it
    never grabs the video or shows playback UI. */
 .illustration-frame video {
   pointer-events: none;
@@ -2225,6 +2233,14 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
 }
 .prose tbody tr:nth-child(even) td { background: var(--bg-soft); }
 .prose tbody td strong { color: var(--brand); }
+/* Phones: fit the table to the column instead of a 460px table clipped
+   mid-word inside a scroller. Only long links may break anywhere. */
+@media (max-width: 600px) {
+  .prose table { min-width: 0; font-size: 0.9rem; }
+  .prose thead th,
+  .prose tbody td { padding: 0.6rem 0.7rem; }
+  .prose td a { overflow-wrap: anywhere; }
+}
 
 /* ============================================================
    "Keep reading" block at the end of articles: plain internal
@@ -2252,7 +2268,7 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
   text-decoration: underline;
   text-underline-offset: 3px;
 }
-.related-links a:hover { color: var(--orange); }
+.related-links a:hover { color: var(--orange-text); }
 
 /* ============================================================
    On-site assistant (assets/chat.js)
@@ -2283,11 +2299,18 @@ body.nav-open .gcs-chat { display: none; }
   transition: background-color .15s var(--ease), box-shadow .15s var(--ease);
 }
 .gcs-chat-launcher:hover { background: var(--blue-deep); }
-.gcs-chat-launcher:focus-visible,
+/* Focus rings: blue on the white panel and bubble, white in the navy chat
+   header. The launcher floats over light and dark sections alike, so it gets
+   a two-tone ring (white halo, blue line) that shows on both. */
 .gcs-chat-teaser button:focus-visible,
-.gcs-chat-close:focus-visible,
 .gcs-chat-send:focus-visible,
-.gcs-chip:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+.gcs-chip:focus-visible { outline: 3px solid var(--brand-2); outline-offset: 3px; }
+.gcs-chat-head .gcs-chat-close:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+.gcs-chat-launcher:focus-visible {
+  outline: 3px solid var(--brand-2);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 9px #fff;
+}
 
 .gcs-chat-teaser {
   position: fixed;
@@ -2369,7 +2392,7 @@ body.nav-open .gcs-chat { display: none; }
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
-.gcs-msg p { margin: 0; }
+.gcs-msg p { margin: 0; color: inherit; }
 .gcs-msg-bot {
   align-self: flex-start;
   background: var(--bg-elev);
@@ -2438,6 +2461,18 @@ body.nav-open .gcs-chat { display: none; }
 /* Keep the footer's last row clear of the button when scrolled to the end. */
 @media (max-width: 1240px) {
   body.has-chat .site-footer { padding-bottom: calc(2rem + 72px); }
+}
+
+/* Contact form: the floating button must not sit on a field. Between the
+   two-column breakpoint and about 1260px the form reaches the right edge
+   under the button, so give it room; and while a visitor is typing in the
+   form, the button and its bubble step aside. */
+@media (min-width: 961px) and (max-width: 1260px) {
+  body.has-chat .contact-form { margin-right: 48px; }
+}
+body:has(#contact-form:focus-within) .gcs-chat-teaser,
+body:has(#contact-form:focus-within) .gcs-chat:not([data-state="open"]) .gcs-chat-launcher {
+  visibility: hidden;
 }
 
 /* Phones: no pop-up bubble (chat.js skips it), the panel becomes a bottom

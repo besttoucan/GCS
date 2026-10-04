@@ -155,7 +155,7 @@ Promise.all([d.fonts&&d.fonts.ready?d.fonts.ready.catch(function(){}):0,img(logo
 
   <section>
     <div class="container">
-      <div class="articles-grid reveal">
+      <div class="articles-grid reveal" style="grid-template-columns:repeat(auto-fit,minmax(max(min(320px,100%),calc(50% - 1rem - 1px)),1fr));">
 
         <article class="article-card">
           <a href="/core-banking-system" style="display:block;color:inherit;" aria-labelledby="card-cbs">

@@ -27,29 +27,29 @@
     // subj: subject line for the mailto link on any address in the answer.
     var KB = [
       { id: "what", q: "What is Genesis Core Systems?",
-        kw: "overview offer business purpose",
-        re: [/\bwhat('?s| is| does) (genesis|gcs)( core systems)?( do)?\s*\??\s*$/, /\b(who|what)('?s| is| are) (genesis|gcs)( core systems)?\s*\??\s*$/,
+        kw: "overview business purpose",
+        re: [/\bwhat('?s| is| does) (genesis|gcs)( core systems)?( do| offer| provide| sell)?\s*\??\s*$/, /\b(who|what)('?s| is| are) (genesis|gcs)( core systems)?\s*\??\s*$/,
              /\bwhat do (you|u) (guys |all |folks )?(do|offer|sell|make|provide)\b/, /\bwhat do (yall|y'all) (do|offer|sell|make|provide)\b/,
              /\bwhat (does|is) (the|your|this) (company|firm)( do)?\b/, /\btell me about (genesis|gcs|your company|the company|yourselves)\s*\??\s*$/,
-             /\bwhat is this (site|website|page)\b/],
+             /\bwhat is this (site|website|page)\b/, /\bwhat('?s| is) the (deal|story|scoop) (with|on|behind) (genesis|gcs|you|you guys|this company)\b/],
         a: "Genesis Core Systems delivers core banking to U.S. community banks. We package a proven Tier-1-grade core foundation with the work around it: configuration, integration, conversion and ongoing support, owned by one bank-facing team. The aim is fewer vendors and fewer integration points than the usual multi-vendor setup.",
         link: ["/solutions", "See the platform"], next: ["different", "conversion", "designpartner"] },
 
       { id: "fit", q: "Is Genesis right for a smaller bank?",
         kw: "small smaller size medium sized fit suitable asset lean limited tiny staff itstaff",
-        re: [/\bright for\b/],
+        re: [/\bright for\b/, /\b(good|fit|suitable|work|built|designed|make sense) for (a |an |our )?\$?\d+(\.\d+)?\s*(m|mm|mil|million|b|bn|billion)\b/],
         a: "That's who it's built for. Genesis is designed for small and medium-sized U.S. community banks, including banks with a lean IT team that has to keep things running while still making changes. It's designed to need minimal IT staffing on the bank's side, because Genesis runs the managed environment.",
         link: ["/about", "About Genesis"], next: ["what", "deployment", "pricing"] },
 
       { id: "different", q: "How is Genesis different?",
         kw: "different differ difference unique better why choose versus compare comparison advantage advantages standout competitor competitors fiserv fis jackhenry incumbent incumbents alternative alternatives",
         re: [/\b(how is|what makes) genesis different\b/, /\bwhy (choose|pick|use) genesis\b/, /\bwhy genesis\b/],
-        a: "Most community banks run a core from one provider and stitch together separate vendors for digital banking, origination, payments and reporting. Genesis consolidates that into one platform and one operating relationship, with an open API layer and a named team accountable from conversion through support. The best-known incumbents are FIS, Fiserv and Jack Henry; Genesis isn't trying to copy their model.",
+        a: "Most community banks run a core from one provider and stitch together separate vendors for digital banking, origination, payments and reporting. Genesis consolidates that into one platform and one operating relationship, with an open API layer and one named team accountable from conversion through support. Genesis isn't trying to copy the incumbent model of FIS, Fiserv and Jack Henry.",
         link: ["/solutions", "See the platform"], next: ["scratch", "api", "pricing"] },
 
       { id: "scratch", q: "What is Genesis built on?",
         kw: "scratch build builder own underlying foundation tier proprietary whitelabel whose technology engine nda",
-        re: [/\b(genesis|it|this|platform|core|system)('s| is| was)? (built|based|running|powered|runs) on\b/, /\bbuilt? (it )?from scratch\b/, /\b(underlying|whose) core\b/, /\bwho built\b/],
+        re: [/\b(genesis|platform|core|system)('s| is| was)? (built|based|powered) on\b|\b(it|this)('s| is| was)? (built|powered) on\b/, /\bbuilt? (it )?from scratch\b/, /\b(underlying|whose) core\b/, /\bwho built\b/],
         a: "Genesis is built on a proven Tier-1-grade core foundation, configured for community banks. Around it sit Genesis-built modules and approved partner modules, with Genesis-led configuration, integration, implementation, migration and ongoing operations. Details on the underlying foundation can be shared under NDA as part of your diligence.",
         link: ["/faq", "Read the FAQ"], next: ["security", "different", "contact"] },
 
@@ -60,7 +60,7 @@
         link: ["/solutions", "See the platform"], next: ["modules", "api", "payments"] },
 
       { id: "modules", q: "Which modules are available?",
-        kw: "module catalogue catalog deposit lending loan origination onboarding workflow prebuilt configured configuration",
+        kw: "module catalogue catalog deposit lending loan origination onboarding workflow prebuilt configured configuration dashboard reporting",
         a: "The module catalog covers loan origination, payments, onboarding, compliance reporting and customer workflows. Modules arrive with reference configuration already built and tested, so setup starts from a working baseline, then gets fitted to your products, disclosures and reporting. Some modules are Genesis-built and others come through approved partners, with Genesis governing the integration and the support path.",
         link: ["/solutions", "See the modules"], next: ["api", "features", "contact"] },
 
@@ -70,9 +70,18 @@
         a: "Genesis is API-first. Every entity in the system is exposed through an open API, and digital banking, origination, payments and other systems connect through APIs, adapters and one integration pattern governed by Genesis. Open APIs and open data are a deliberate principle: lock-in shouldn't be a cost the bank carries.",
         link: ["/solutions", "See the platform"], next: ["modules", "lockin", "conversion"] },
 
+      { id: "modular", q: "Can we modernize gradually?",
+        kw: "modernize modernization piece incremental incrementally phased gradual gradually alongside selective whole entire",
+        re: [/\b(one|a) (piece|module|step|bit) at a time\b/, /\b(replace|swap|rip out|rip and replace) (our |the |my )?(whole|entire)\b/,
+             /\bwithout (replacing|swapping|switching|converting) (our |the |my )?(whole |entire |current |existing )?core\b/,
+             /\b(keep|alongside) (our |the |my )?(current|existing|incumbent|old) core\b/, /\bselective(ly)? moderni[sz]/],
+        a: "You can modernize in steps. Genesis doesn't require swapping your core first: a bank can start with one or two modules, such as origination, payments or onboarding, running alongside its current core, and expand as confidence builds. Full replacement and selective modernization are both options.",
+        link: ["/solutions", "See the modules"], next: ["modules", "api", "conversion"] },
+
       { id: "deployment", q: "Cloud, hybrid or on-premises?",
         kw: "cloud onprem hybrid private dedicated deploy infrastructure server saas managed host",
-        re: [/\bwhere (is|are|will|would) (the |our |my )?(data|system|platform|core)( be)? (hosted|stored|kept|run|live)\b/],
+        re: [/\bwhere (is|are|will|would) (the |our |my )?(data|system|platform|core)( be)? (hosted|stored|kept|run|live)\b/,
+             /\b(data|core|system|platform) (be |is |are |get |gets )?(hosted|run|stored|kept|deployed) (in|on|at|with)\b/],
         a: "Genesis is cloud-first, with managed cloud as the preferred operating model. For banks with specific operating, security or infrastructure requirements, Genesis can also evaluate dedicated, hybrid or bank-hosted deployment, subject to technical validation and support constraints.",
         link: ["/faq", "Read the FAQ"], next: ["security", "uptime", "pricing"] },
 
@@ -82,30 +91,31 @@
         link: ["/faq", "Read the FAQ"], next: ["uptime", "compliance", "contact"] },
 
       { id: "uptime", q: "What about uptime and disaster recovery?",
-        kw: "uptime availability downtime outage reliability sla dr bcp backup recovery disaster rto rpo failover continuity maintenance resilience",
+        kw: "uptime availability downtime outage reliability sla dr bcp backup recovery disaster rto rpo failover continuity resilience",
+        re: [/\b99\.9+\b|\bfive nines\b/],
         a: "Genesis targets high availability and recoverability appropriate to the deployment model you choose. Specific availability, disaster recovery, backup and RTO/RPO commitments are set in the bank's agreement and operating model rather than published as one number, because they depend on that model.",
         link: ["/faq", "Read the FAQ"], next: ["security", "support", "deployment"] },
 
       { id: "conversion", q: "What does a core conversion involve?",
         kw: "conversion process phase step mock uat cutover parallel mapping reconciliation sor move data",
-        re: [/\bwhat (is|does) a (core |bank )?conversion( involve| entail| mean)?\s*\??\s*$/],
-        a: "A core conversion moves your system of record from one platform to another: every customer, account, balance, loan and ledger entry has to be mapped, moved and proven correct. The work runs in order: discovery, configuration, integration planning, data mapping, mock conversions, reconciliation, user acceptance testing, training, then cutover or a parallel run. Reconciliation is the step that decides whether a cutover date is real.",
+        re: [/\bwhat (is|does) a (core |bank )?conversion( involve| entail| mean)?\s*\??\s*$/, /\bdo (you|u) (guys |all )?(do|handle|run|support|help with|manage) (core |bank )?conversions?\s*\??\s*$/],
+        a: "A core conversion moves your system of record from one platform to another: every customer, account, balance, loan and ledger entry has to be mapped, moved and proven correct. The work runs in order: discovery, configuration, integration planning, data mapping, mock conversions, reconciliation, user acceptance testing, training, then cutover or a parallel run. Reconciliation decides whether a cutover date is real.",
         link: ["/core-conversion", "Read the conversion guide"], next: ["timeline", "convcost", "implementation"] },
 
       { id: "timeline", q: "How long does a conversion take?",
-        kw: "timeline duration month week year quick fast speed soon schedule start begin renew renewal expire expiry",
-        re: [/\bwhen (should|do|would|can|must) (we|i|a bank|banks) (start|begin)\b/],
+        kw: "timeline duration length month week year quick fast speed soon schedule start begin renew renewal expire expiry",
+        re: [/\bwhen (should|do|would|can|must) (we|i|a bank|banks) (start|begin)\b/, /\bcontract (ends|expires|renews|is up|runs out|ending|expiring)\b/, /\bhow (fast|quickly|soon) can (we|i|a bank|you)\b/],
         a: "Months rather than weeks. The pace is set by the sequence: data mapping, mock conversions, testing and reconciliation each have to be signed off before the next starts. Separately, banks commonly start evaluating alternatives 18 to 24 months before their current contract expires, since selection and negotiation happen before any conversion work begins.",
         link: ["/core-conversion", "Read the conversion guide"], next: ["convcost", "conversion", "designpartner"] },
 
       { id: "convcost", q: "What does a conversion cost?",
         kw: "price conversion deconversion contract interface driver hidden",
         requires: ["conversion", "deconversion"],
-        a: "There isn't one honest number without seeing your contracts and data. What drives the cost: account volume and years of history, how many connected systems need new interfaces, the deconversion fees in your current contract, staff time for testing and training, and any parallel running. Deconversion and interface fees are the items banks most often miss, so read those clauses before comparing options.",
+        a: "The cost depends on your contracts and data. What drives it: account volume and years of history, how many connected systems need new interfaces, the deconversion fees in your current contract, staff time for testing and training, and any parallel running. Deconversion and interface fees are the items banks most often miss, so read those clauses before comparing options.",
         link: ["/core-conversion", "Read the conversion guide"], next: ["pricing", "timeline", "contact"] },
 
       { id: "pricing", q: "How is Genesis priced?",
-        kw: "price license seat account subscription model list affordable",
+        kw: "price license seat account subscription model list affordable afford volume",
         re: [/\bhow much (does|is|would) (genesis|it|the platform|this)\b/, /\bhow (does|do) (genesis|you|gcs) make money\b/],
         a: "Pricing is competitive with the major vendors. The economics are tied to the bank's agreed platform scope and account volumes rather than per-seat licensing, so they're predictable. There's no published list price because scope varies by bank; the team scopes it with you directly.",
         link: ["/contact", "Talk to the team"], next: ["designcosts", "convcost", "contact"] },
@@ -121,7 +131,7 @@
         link: ["/core-conversion", "Read the conversion guide"], next: ["conversion", "implementation", "convcost"] },
 
       { id: "support", q: "What support do we get after go-live?",
-        kw: "support helpdesk ticket issue problem incident monitoring maintenance golive ongoing escalation break breaks broken",
+        kw: "support helpdesk ticket issue problem incident monitoring maintenance golive ongoing escalation break breaks broken hour",
         a: "Genesis provides 24/7 monitoring and a dedicated response team that catch issues before they reach customers. Genesis is the bank-facing support owner for the Genesis-managed environment and coordinates any upstream product or partner support behind the scenes, so you have one accountable contact. Support also covers documented incident playbooks, scheduled system health reviews and planned maintenance.",
         link: ["/services", "See our services"], next: ["uptime", "training", "implementation"] },
 
@@ -139,6 +149,7 @@
 
       { id: "designpartner", q: "What is the Design Partner Program?",
         kw: "designpartner program pilot beta early adopter cohort committee influence roadmap partner partnership founding",
+        re: [/\b(what|wht|wat|whats|what's)( is| are)?( the| your| this)? design partners?( program| programme| thing| deal)?\s*\??\s*$/],
         a: "It's a limited program for community banks that want to shape the platform. Design Partners sit on the Design Committee and influence the roadmap. The bank commits to a structured process, not to a blind production conversion: your current core stays the system of record until UAT and migration reconciliation criteria are met.",
         link: ["/partnership", "About the program"], next: ["designcommit", "designcosts", "apply"] },
 
@@ -149,7 +160,7 @@
 
       { id: "designcosts", q: "What does Genesis cover for Design Partners?",
         kw: "cover free price designpartner partner customization implementation",
-        requires: ["designpartner", "cover", "program", "partner"],
+        requires: ["designpartner", "program", "partner"],
         a: "Within the agreed Design Partner MVP scope, Genesis covers the standard implementation, integration, configuration and customization work needed to bring the platform into the bank's environment. Bank-unique requirements that aren't meant to become part of the Genesis platform are scoped and priced separately.",
         link: ["/partnership", "About the program"], next: ["designcommit", "apply", "pricing"] },
 
@@ -160,8 +171,9 @@
         link: ["/partnership", "Apply to the program"], next: ["designcommit", "designcosts", "contact"] },
 
       { id: "team", q: "Who founded Genesis?",
-        kw: "founder leadership leader executive president background experience story ohad savir brian brunner brent jenos danny galezer sofgen fiserv",
-        re: [/\bwho (is|are) behind\b/, /\bwho (runs|leads|started|owns) (genesis|gcs|the company)\b/],
+        kw: "founder leadership leader executive president background experience story ohad savir brian brunner brent jenos danny galezer sofgen",
+        re: [/\bwho (is|are) behind\b/, /\bwho (runs|leads|started|owns) (genesis|gcs|the company)\b/,
+             /\b(founders?|team|leadership|leaders?|executives?|ceo|people)\b[^.?!]{0,30}\b(fiserv|sofgen)\b|\b(ex|former)[\s-]?(fiserv|sofgen)\b/],
         a: "Genesis was founded by Ohad Savir with Brian Brunner and Brent Jenos, both former Fiserv leaders with deep core-banking modernization experience, and Danny Galezer, whose background includes Sofgen and complex core implementation work.",
         link: ["/about", "About the team"], next: ["what", "contact", "designpartner"] },
 
@@ -173,13 +185,15 @@
 
       { id: "demo", q: "Can I see a demo?",
         kw: "demo walkthrough trial preview tour screenshot video",
-        re: [/\b(book|schedule|arrange|set up|request|see|watch|get) (a |an |the )?(demo|walkthrough|product tour|working session)\b/, /\bsee (it|genesis|the platform|this) in action\b/],
+        re: [/\b(book|schedule|arrange|set up|request|see|watch|get) (a |an |the )?(demo|walkthrough|product tour|working session)\b/, /\bfree trial\b/, /\bsee (it|genesis|the platform|this) in action\b/,
+             /\bsandbox (we|i) can (try|test|play with|use)\b|\b(can|could) (we|i) try (it|genesis|the platform|this)\b|\btry (it|genesis|the platform) (out|first|before)\b/, /\bshow me (the platform|genesis|it|the product|the system|around)\b/,
+             /\bsee (the|your) (product|platform|software|system|app|ui|interface)\b/],
         a: "You can see Genesis in action in a working session with our team. We map your current stack, identify gaps and show how Genesis would slot in, so the session starts from what your bank actually runs.",
         link: ["/contact", "Book a working session"], next: ["contact", "what", "designpartner"] },
 
       { id: "corebanking", q: "What is a core banking system?",
         kw: "definition sor",
-        re: [/\b(what is|what are|define|definition of|meaning of|explain)\b.{0,12}\bcore\b(?!\s+(processor|processing|conversion))/, /\bhow (does|do) (a |the )?core( banking)?( system)? work/, /\bhow core banking (system )?works\b/],
+        re: [/\b(what is|what are|define|definition of|meaning of|explain)\b.{0,12}\bcore\b(?!\s+(processor|processing|conversion))/, /\bhow (does|do) (a |the )?core( banking)?( system)? work/, /\bhow core banking (system )?works\b/, /\bwhat does (a |the )?core( banking)?( system)? mean\b/],
         a: "A bank's core is the software that holds the official record of every customer, account, balance and transaction. Deposits, loans, interest, fees and the general ledger all run through it, and almost every other system the bank uses depends on it.",
         link: ["/core-banking-system", "Read the core banking guide"], next: ["processor", "conversion", "what"] },
 
@@ -190,7 +204,8 @@
 
       { id: "lockin", q: "What about vendor lock-in?",
         kw: "lockin ownership export portability portable leave exit trapped",
-        re: [/\bcan (we|i) (leave|exit|get out|cancel|switch away)\b/, /\bexit (clause|terms|fees?|rights?)\b/],
+        re: [/\bcan (we|i) (leave|exit|get out|cancel|switch away)\b/, /\bexit (clause|terms|fees?|rights?)\b/, /\b(switch|move) away\b/, /\bexport (our|my|the) data\b/, /\bcontract (term|length)\b/,
+             /\bget out of (our|my|the|a|this)\b/, /\bwant(ed)? (out|to leave|to exit)\b/, /\b(if|when) (we|i) (leave|exit|switch away|cancel)\b/],
         a: "Open APIs, open data and an open vendor strategy are principles at Genesis. Lock-in is a cost the bank shouldn't have to carry. Specific data access and exit terms are set in the bank's agreement, and they're worth reading closely with any provider, including deconversion fees.",
         link: ["/about", "Our principles"], next: ["api", "convcost", "contact"] },
 
@@ -200,12 +215,14 @@
         link: ["/solutions", "See the platform"], next: ["api", "designpartner", "features"] },
 
       { id: "compliance", q: "How does Genesis handle regulatory compliance?",
-        kw: "compliance regulatory bsa aml kyc ofac cfpb occ fdic ffiec exam callreport reporting update",
+        kw: "compliance regulatory bsa aml kyc ofac cfpb occ fdic ffiec exam callreport reporting update hmda cecl",
         a: "Genesis tracks regulatory changes that affect community banks and coordinates platform updates with its technology partners, so the bank doesn't run each change as its own project. The platform is designed to support the compliance reporting community banks prepare for examiners. For your specific exam and vendor-management requirements, the team can walk through the controls and evidence directly.",
         link: ["/faq", "Read the FAQ"], next: ["security", "uptime", "contact"] },
 
       { id: "creditunion", q: "Do you work with credit unions?",
         kw: "creditunion cu thrift international canada outside country global europe uk",
+        re: [/\b(only|just) (for )?(u\.?s\.?|us|american|domestic) banks\b/, /\boutside (of )?(the )?(u\.?s\.?|us|united states)\b/,
+             /\b(banks?|institutions?|we are|we're) (in|from|based in) (mexico|canada|the uk|britain|england|ireland|europe|asia|africa|australia|india|latin america|south america|brazil|germany|france|the caribbean|puerto rico)\b|\b(abroad|overseas|offshore)\b/],
         a: "Genesis is built for U.S. community banks. If you're a credit union, or outside the U.S., the team can tell you directly whether it's a fit.",
         link: ["/contact", "Ask the team"], next: ["fit", "what", "contact"] },
 
@@ -237,16 +254,17 @@
       { id: "references", q: "Can we talk to references?",
         kw: "client referral testimonial casestudy",
         re: [/\bwho (are|r) (your|ur|the) (clients|customers|users)\b/, /\breferences\b|\breference (check|call|bank|customer|client)s?\b/, /\btestimonials?\b/, /\bcase stud(y|ies)\b/,
-             /\bhow many (banks|clients|customers|institutions) (use|run|are on|have|do you have)\b/, /\bhow many (clients|customers)\b/, /\b(banks|anyone|anybody) (live|using)\b/,
+             /\bhow many (banks|clients|customers|institutions) (use|run|are on|are live|do you have|does genesis have)\b/, /\b(banks|anyone|anybody) (live|using)\b/,
              /\blive (with|at|in) (any )?(banks?|clients?|customers?)\b/, /\b(is|are) (it|this|genesis|the platform|gcs) live\b/, /\bwho uses (this|it|genesis|the platform)\b/,
-             /\b(talk|speak) (to|with) (a |an )?(current |existing )?(customer|client|bank using)/, /\b(any|existing|current) (customers|clients)\b/],
+             /\b(talk|speak) (to|with) (a |an )?(current |existing )?(customer|client|bank using)/,
+             /\b(do you have|have you got|are there|got) (any )?(current |existing |paying )?(customers|clients)\b/, /\bany (customers|clients)\s*\??\s*$/],
         a: "Banks considering Genesis get access to referrals, technology briefings and direct contact with our leadership team, and the Design Partner Program runs in small, select cohorts. For reference requests, the team will answer you directly.",
         link: ["/contact", "Talk to the team"], next: ["designpartner", "team", "contact"] },
 
       { id: "consumer", q: "I have a question about my bank account",
         kw: "routing checking savings balance",
         re: [/\bmy (bank |checking |savings )?(debit |credit )?(card|account|balance|loan|mortgage|statement)\b(?!s|\s+(data|history|volumes?|structures?|holders?|types?|records?|mapping))/,
-             /\bopen (a|an) (checking|savings|bank) account\b/, /\brouting number\b/, /\bcan i (get|apply for) (a|an) (loan|mortgage|credit card)\b/, /\b(i|we) need (a|an) (personal )?loan\b/],
+             /\bmy (debit |credit |atm |bank )?card\b[^.?!]*\b(not working|declined|blocked|lost|stolen|frozen|locked)\b/, /\bopen (a|an) (checking|savings|bank) account\b/, /\brouting number\b/, /\bcan i (get|apply for) (a|an) (loan|mortgage|credit card)\b/, /\b(i|we) need (a|an) (personal )?loan\b/],
         a: "Genesis Core Systems provides core banking technology to banks rather than accounts to individuals. For help with an account, card, balance or loan, please contact your bank directly using the number on your card or statement.",
         link: ["/about", "About Genesis"], next: ["what"] },
 
@@ -284,15 +302,18 @@
     // ---- Normalization --------------------------------------------------
     // Multi-word phrases collapse to one token before splitting.
     var PHRASES = [
-      [/\bhow much\b/g, "howmuch"], [/\bhow long\b/g, "howlong"],
+      [/\bhow much\b/g, "howmuch"], [/\b(how|hw|hoe|hiw) (long|lng|lon)\b/g, "howlong"], [/\bsign(ing)?[\s-]?up\b/g, "signup"],
       [/\b24 ?(\/|x) ?7\b/g, "monitoring support"], [/\bcloud[\s-]based\b/g, "cloud"],
       [/\btotal cost of ownership\b|\btco\b/g, "price"], [/\blicens(e|es|ing)\b/g, "price"],
-      [/\bat rest\b|\bin transit\b/g, "encryption"], [/\bpen(etration)?[\s-]?test(s|ing)?\b/g, "pentest"],
+      [/\b(data )?(at rest|in transit)\b/g, "encryption"], [/\bpen(etration)?[\s-]?test(s|ing)?\b/g, "pentest"],
       [/\biso ?27001\b/g, "certification"], [/\bdata (be )?(safe|secure|protected)\b/g, "security"],
       [/\bcontract (term|length)\b/g, "lockin"], [/\b(it|tech) (team|staff|people|department)\b/g, "itstaff"],
       [/\b(chat|talk|speak) (with|to) (a )?(live|real) (agent|person|human)\b/g, "contact person"],
       [/\bcase stud(y|ies)\b/g, "casestudy"], [/\bhuman rights\b/g, "humanrights"],
+      [/\bremote deposit capture\b|\brdc\b/g, "rdc"], [/\bteller (system|platform|module|software|app)s?\b/g, "module"],
+      [/\bdigital (account opening|onboarding)\b/g, "onboarding"],
       [/\bcodes? of (business )?conduct\b/g, "conduct"], [/\bearly adopters?\b/g, "adopter"],
+      [/\bblog posts?\b/g, "blog"], [/\breal[\s-]?time payments?\b/g, "rtp"], [/\bper (year|month|annum|account|seat|user)\b/g, "price"],
       [/\bdesign partners?\b/g, "designpartner"], [/\breal[\s-]?time\b/g, "realtime"],
       [/\bon[\s-]?prem(ise|ises)?\b/g, "onprem"], [/\bself[\s-]?host(ed|ing)?\b/g, "onprem"],
       [/\bin[\s-]house\b/g, "inhouse"], [/\bdata ?cent(er|re)s?\b/g, "datacenter"],
@@ -308,7 +329,7 @@
       [/\bfed ?now\b/g, "fednow"], [/\be[\s-]?learning\b/g, "training"], [/\bset[\s-]?up\b/g, "implementation"],
       [/\b(talk|speak) (to|with)\b/g, "contact"], [/\bget in touch\b/g, "contact"], [/\breach out\b/g, "contact"],
       [/\bwhite[\s-]?label(ed)?\b/g, "whitelabel"], [/\bopen source\b/g, "opensource"],
-      [/\bgo(es|ing)? down\b/g, "downtime"], [/\bpoint of contact\b/g, "accountable"],
+      [/\bgo(es|ing)? down\b/g, "downtime"], [/\b(point of|main|primary|single|day[\s-]to[\s-]day) contact\b/g, "accountable"],
       [/\b(locked|lock|tied) (into|in to|to)\b/g, "commit"], [/\bon the hook\b/g, "commit"],
       [/\bpays? for\b/g, "cover"], [/\bget(ting)? started\b/g, "getstarted"],
       [/\bopen (roles?|positions?|jobs?)\b/g, "career"], [/\b(own|ownership of|owns) (our|my|the) data\b/g, "ownership"]
@@ -317,9 +338,9 @@
     // Inflections and synonyms collapse to one canonical token.
     var SYN = {};
     function syn(canon, words) { words.split(" ").forEach(function (w) { SYN[w] = canon; }); }
-    syn("conversion", "convert converts converting converted conversion conversions switch switches switching switched migrate migrates migrating migrated migration migrations replace replacing replacement transition transitioning");
+    syn("conversion", "convert converts converting converted conversion conversions switch switches switching switched migrate migrates migrating migrated migration migrations replace replacing replacement transition transitioning swap swaps swapping swapped");
     syn("deconversion", "deconversion deconversions deconvert");
-    syn("price", "price prices pricing priced cost costs costing fee fees quote quotes expensive cheap cheaper budget budgets spend spending howmuch charge charges charged");
+    syn("price", "price prices pricing priced cost costs costing fee fees quote quotes expensive cheap cheaper budget budgets spend spending howmuch charge charges charged pay paying paid");
     syn("timeline", "howlong timeline timelines timeframe duration");      // not "time": "what time is it"
     syn("cloud", "cloud saas hosted hosting aws azure gcp datacenter");
     syn("host", "host hosts");
@@ -327,7 +348,7 @@
     syn("soc2", "soc soc2");
     syn("certification", "certification certifications certified certify certificate");
     syn("audit", "audit audits audited attestation attestations");
-    syn("uptime", "uptime availability downtime outage outages reliability reliable resilience resilient sla slas");
+    syn("uptime", "uptime availability downtime outage outages reliability reliable resilience resilient sla slas crash crashes crashed");
     syn("api", "api apis rest endpoint endpoints webhook webhooks sdk");
     syn("integrate", "integrate integrates integrating integrated integration integrations connect connects connecting connected connection connections connector connectors plugin adapter adapters");
     syn("support", "support supports supported supporting helpdesk");
@@ -384,10 +405,10 @@
     // Fair questions about the company that the site doesn't answer
     // (investors, revenue, headcount). They put a question in scope so the
     // visitor gets the honest "ask the team" reply instead of a refusal.
-    var HONEST = setOf("investor investment funding funded revenue profit profitable profitability valuation stable stability financially financials backer backed backing headcount");
+    var HONEST = setOf("investor investment funding funded revenue profit profitable profitability valuation stable stability financially financials backer backed backing headcount rdc");
     var HONEST_RE = /\bhow many (employees|people|staff)( do (you|they) have| does (genesis|the company|gcs) have| work (at|for) (genesis|you|the company|gcs))\b|\bhow long have you been (in business|around|operating)\b/;
 
-    var STOP = setOf("whats hows wheres whos whys thats theres dont doesnt didnt cant isnt arent wasnt wont wouldnt shouldnt couldnt im ive youre theyre happen happens happened happening during while between within without whether since until upon onto through across among regarding concerning maybe perhaps typically usually generally specifically approximately roughly around case example level allowed available see show say mean think find plan exist exists need needs needed run runs running help helps helpful a an the and or but if of to in on at by for with from about as into over under after before than then so too very can could would should will shall may might must do does did done doing is are was were be been being am have has had having i me my mine we us our ours you your yours it its this that these those there here what which who whom whose when where why how any some all each every more most much many other another such only own same just also really still yet already now today currently current new existing actually exactly basically possible able sure yes no not ok okay please thanks thank hi hello hey tell know need want like get got give gives make makes made take takes took use uses used using work works working go going come let lets ask asking question questions answer info information detail details thing things kind type types sort way ways look looking interested wondering curious anything something everything nothing per via etc e g ie one two three first lot lots bit well good great best right ur pls plz yall guys folks");
+    var STOP = setOf("whats hows wheres whos whys thats theres dont doesnt didnt cant isnt arent wasnt wont wouldnt shouldnt couldnt im ive youre theyre happen happens happened happening during while between within without whether since until upon onto through across among regarding concerning maybe perhaps typically usually generally specifically approximately roughly around case example level allowed available see show say mean think find plan exist exists need needs needed run runs running help helps helpful a an the and or but if of to in on at by for with from about as into over under after before than then so too very can could would should will shall may might must do does did done doing is are was were be been being am have has had having i me my mine we us our ours you your yours it its this that these those there here what which who whom whose when where why how any some all each every more most much many other another such only own same just also really still yet already now today currently current new existing actually exactly basically possible able sure yes no not ok okay please thanks thank hi hello hey tell know need want like get got give gives make makes made take takes took use uses used using work works working go going come let lets ask asking question questions answer info information detail details thing things kind type types sort way ways look looking interested wondering curious anything something everything nothing per via etc e g ie one two three first lot lots bit well good great best right ur pls plz yall guys folks handle handles handled handling");
 
     function setOf(words) { var o = {}; words.split(" ").forEach(function (w) { if (w) o[w] = true; }); return o; }
 
@@ -410,9 +431,11 @@
       return s.replace(/[^a-z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
     }
 
-    // Typo tolerance: an unknown word of 5+ letters maps to the one known word
-    // it is a single edit away from (insert, delete, swap, or two letters
-    // transposed), with the same first letter. Ambiguous matches are ignored.
+    // Typo tolerance: an unknown word maps to the one known word it is a
+    // single edit away from, with the same first letter. Short real words
+    // differ by one letter all the time (stuff/staff, score/store), so a
+    // dropped or doubled letter needs 5+ letters, two swapped letters 6+, and
+    // a wrong letter 7+. Ambiguous matches are ignored.
     var DICT = null;
     function near1(a, b) {
       var la = a.length, lb = b.length, i = 0;
@@ -420,8 +443,8 @@
       while (i < la && i < lb && a.charAt(i) === b.charAt(i)) i++;
       if (la === lb) {
         if (i === la) return true;
-        if (a.slice(i + 1) === b.slice(i + 1)) return true;
-        return a.charAt(i) === b.charAt(i + 1) && a.charAt(i + 1) === b.charAt(i) && a.slice(i + 2) === b.slice(i + 2);
+        if (la >= 7 && a.slice(i + 1) === b.slice(i + 1)) return true;
+        return la >= 6 && a.charAt(i) === b.charAt(i + 1) && a.charAt(i + 1) === b.charAt(i) && a.slice(i + 2) === b.slice(i + 2);
       }
       return la > lb ? a.slice(i + 1) === b.slice(i) : a.slice(i) === b.slice(i + 1);
     }
@@ -483,9 +506,9 @@
     var GENERATE = /\b(tell|give) me (a|an|another|some) (joke|story|poem|riddle|recipe|song)s?\b|\b(write|generate|compose|draft|create|produce|craft|make me)\b[^.?!]{0,45}\b(essays?|poems?|stor(y|ies)|songs?|lyrics|novels?|scripts?|code|programs?|functions?|letters?|speech(es)?|jokes?|haiku|raps?|blog posts?|tweets?|captions?|limericks?|sonnets?|recipes?|emails?)\b|\b(essay|poem|haiku|limerick|sonnet|lyrics)\b/;
     // Arithmetic is refused only when the whole message is a sum ("what is
     // 2+2", "7 x 8?"), so "24/7", "12-18 months", "T+1" and years never trip it.
-    var OFFTOPIC = /\b(weather|forecast|recipe|recipes|riddle|horoscope|astrology|super ?bowl|world cup|nba|nfl|mlb|nhl|netflix|movies?|celebrit(y|ies)|homework|translate|translation|bitcoin|ethereum|dating|girlfriend|boyfriend|capital of|meaning of life|hack into|launder (money|funds|cash))\b|^\s*(what is |whats |what's |calculate |solve )?(?!24\s*[\/x]\s*7\b)\d+(\.\d+)?\s*[+*\/x×-]\s*\d+(\.\d+)?\s*[?=]?\s*$/;
-    var ABUSE = /\b(fuck\w*|shit\w*|bitch\w*|asshole|bastard|cunt|dickhead|retard\w*|stupid bot|dumb bot|useless bot)\b/;
-    var IDENTITY = /\b(are you (a |an )?(bot|robot|ai|human|real(?! (company|business|firm|vendor|bank))|person|chatgpt|gpt|claude|machine|computer|automated|live agent))\b|\bwho are you\b|\bwhat are you\b|\bis this (a )?(bot|ai|human|real person|live (chat|agent|person))\b|\bwhat (model|llm|ai) are you\b|\b(chatgpt|gpt-?\d|openai|llm|large language model)\b/;
+    var OFFTOPIC = /\b(weather|forecast|recipe|recipes|riddle|horoscope|astrology|super ?bowl|world cup|nba|nfl|mlb|nhl|netflix|movies?|celebrit(y|ies)|homework|translate|translation|bitcoin|ethereum|dating|girlfriend|boyfriend|capital of|meaning of life|hack into|launder (money|funds|cash))\b|\b(bake|baking|eat|eating|chocolate chip|oatmeal|sugar) cookies?\b|\bcookies? (recipe|dough|jar)\b|\b(ceo|cto|founder|president) of (?!(genesis|gcs|the|our|my|your|this|a|an)\b)[a-z]+|\bconvert\w*\b[^.?!]{0,25}\b(miles?|kilometers?|km|pounds?|lbs?|kg|kilograms?|ounces?|oz|grams?|inches|feet|foot|meters?|celsius|fahrenheit|cups?|liters?|gallons?|units?|currency|currencies|pdf|word doc|jpe?g|png)\b|^\s*(what is |whats |what's |calculate |solve )?(?!24\s*[\/x]\s*7\b)\d+(\.\d+)?\s*[+*\/x×-]\s*\d+(\.\d+)?\s*[?=]?\s*$/;
+    var ABUSE = /\b(fuck\w*|shit\w*|bitch\w*|asshole|bastard|cunt|dickhead|retard\w*|stupid bot|dumb bot|useless bot)\b|\b(bot|chatbot|assistant|you|you're|you are|u r|ur) (is |are |r )?(so |really )?(stupid|dumb|useless|garbage|trash|terrible|an idiot|idiot|sucks?)\b/;
+    var IDENTITY = /\b(are you (a |an )?(bot|robot|ai|human|real(?! (company|business|firm|vendor|bank))|person|chatgpt|gpt|claude|machine|computer|automated|live agent))\b|\bwho are you\b|\bwhat are you\b|\bis this (a )?(bot|ai|human|real person|live (chat|agent|person))\b|\bwhat (model|llm|ai) are you\b|\bhow old are you\b|\b(chatgpt|gpt-?\d|openai|llm|large language model)\b/;
     var GREETING = /^(hi|hello|hey|hiya|howdy|yo|greetings|good (morning|afternoon|evening))( there| team| genesis)?$/;
     var THANKS = /^(thanks|thank you|thx|ty|cheers|appreciate it|much appreciated|great thanks|ok thanks|okay thanks)( very much| so much)?$/;
     var BYE = /^(bye|goodbye|see you|see ya|that is all|thats all|that is it|done|nothing else|no thanks|no thank you)$/;
@@ -495,7 +518,7 @@
 
     // Recognized words that also occur in everyday, non-banking questions.
     // Alone they can't put a question in scope if anything foreign comes with them.
-    var GENERIC = setOf("data timeline price contact person located number move difference compare experience start begin quick fast soon month week year schedule duration speed issue problem ongoing read update right fit small smaller size medium sized tiny lean limited staff user teach education book meeting appointment office address reach sign agree guarantee risk require cover leave exit join become interested open access control model list account overview business purpose offer feature background president break story");
+    var GENERIC = setOf("data timeline price contact person located number move difference compare experience start begin quick fast soon month week year schedule duration speed issue problem ongoing read update right fit store ticket small smaller size medium sized tiny lean limited staff user teach education book meeting appointment office address reach sign agree guarantee risk require cover leave exit join become interested open access control model list account overview business purpose offer feature background president break story");
 
     function classify(raw) {
       var text = String(raw || "").slice(0, 300);
@@ -515,6 +538,11 @@
       if (HONEST_RE.test(lower)) return { kind: "unsure" };
 
       var toks = tokens(text, true);
+      // Words recognized only by typo matching: they can steer a question
+      // that is otherwise in scope, but can't on their own pull in one that
+      // also carries foreign words ("what's the score of the game").
+      var exact = {};
+      tokens(text).forEach(function (t) { exact[t] = true; });
       var hasDomain = toks.some(function (t) { return DOMAIN_ONLY[t]; });
       var honest = toks.some(function (t) { return HONEST[t]; });
       var content = toks.filter(function (t) { return !DOMAIN_ONLY[t] && !HONEST[t]; });
@@ -535,7 +563,7 @@
       // "SOC 2"), or asks a purely generic question with nothing foreign in it
       // ("how much does it cost"). A generic term next to foreign words is out:
       // "how long is the Nile river" and "how much is a coffee" both refuse.
-      var specific = known.filter(function (t) { return !GENERIC[t]; });
+      var specific = known.filter(function (t) { return !GENERIC[t] && exact[t]; });
       var inScope = hasDomain || honest || strongPhrase || specific.length > 0 ||
                     (known.length > 0 && unknown.length === 0);
       // A recognized term buried in mostly foreign words: don't guess.

@@ -1,87 +1,189 @@
-// Genesis Core Systems — minimal client JS
+// Genesis Core Systems: site script (no dependencies)
 
 (function () {
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  // Explicit `behavior: "smooth"` in scrollTo() overrides the CSS reduced-motion
+  // rule, so JS-driven scrolls ask this instead.
+  const SCROLL_BEHAVIOR = reduceMotion ? "auto" : "smooth";
+
   // ---- Mobile nav ----
-  // Toggling .open on the menu also toggles .nav-open on <body>. That lets the
-  // header go solid while the menu is open over the transparent cinema hero —
-  // otherwise, opening the menu at the very top of the homepage showed the menu
-  // floating over a dark/blank hero with no header surface behind it.
+  // Toggling .open on the menu also toggles .nav-open on <body>, which turns the
+  // header solid while the menu is open over the transparent homepage hero, and
+  // .nav-locked on <html>, which stops the page scrolling underneath it.
+  const navLinks = document.querySelector(".nav-links");
+  const navToggle = document.querySelector("[data-nav-toggle]");
+  const ICON_MENU = navToggle ? navToggle.innerHTML : "";
+  const ICON_CLOSE =
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" focusable="false">' +
+    '<line x1="5" y1="5" x2="19" y2="19"/><line x1="19" y1="5" x2="5" y2="19"/></svg>';
+  const isNavOpen = () => document.body.classList.contains("nav-open");
+  // Older iOS ignores overflow:hidden on <html> for touch scrolling, so block
+  // touch drags outside the menu while it is open (listener only while open).
+  const blockTouchScroll = (e) => {
+    if (!(e.target.closest && e.target.closest(".nav-links"))) e.preventDefault();
+  };
+
   const setNavOpen = (open) => {
-    const links = document.querySelector(".nav-links");
-    const toggle = document.querySelector("[data-nav-toggle]");
-    if (links) links.classList.toggle("open", open);
+    if (navLinks) navLinks.classList.toggle("open", open);
     document.body.classList.toggle("nav-open", open);
-    if (toggle) {
-      toggle.setAttribute("aria-expanded", open ? "true" : "false");
-      toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    document.documentElement.classList.toggle("nav-locked", open);
+    if (open) document.addEventListener("touchmove", blockTouchScroll, { passive: false });
+    else document.removeEventListener("touchmove", blockTouchScroll, { passive: false });
+    if (navToggle) {
+      navToggle.setAttribute("aria-expanded", open ? "true" : "false");
+      navToggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+      if (ICON_MENU) navToggle.innerHTML = open ? ICON_CLOSE : ICON_MENU;
     }
   };
+
   document.addEventListener("click", (e) => {
-    const t = e.target.closest("[data-nav-toggle]");
-    if (!t) return;
-    const links = document.querySelector(".nav-links");
-    setNavOpen(!(links && links.classList.contains("open")));
+    const t = e.target.closest ? e.target.closest("[data-nav-toggle]") : null;
+    if (t) {
+      const opening = !isNavOpen();
+      setNavOpen(opening);
+      // Move focus into the menu, so the next Tab goes through the links.
+      if (opening && navLinks) {
+        const first = navLinks.querySelector("a");
+        if (first) first.focus({ preventScroll: true });
+      }
+      return;
+    }
+    // A tap or click anywhere outside the open menu closes it.
+    if (isNavOpen() && !(e.target.closest && e.target.closest(".nav-links"))) setNavOpen(false);
   });
+
+  // Escape closes the menu and puts focus back on the toggle.
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape" || e.defaultPrevented || !isNavOpen()) return;
+    setNavOpen(false);
+    if (navToggle) navToggle.focus();
+  });
+
+  // Tabbing out of the header closes the menu, so it never hangs open over
+  // the content that now has focus.
+  document.addEventListener("focusin", (e) => {
+    if (isNavOpen() && !(e.target.closest && e.target.closest(".site-header"))) setNavOpen(false);
+  });
+
+  // Rotating a tablet past the breakpoint shows the desktop nav: drop the lock.
+  const navMq = matchMedia("(max-width: 1000px)");
+  const onNavMq = () => { if (!navMq.matches && isNavOpen()) setNavOpen(false); };
+  if (navMq.addEventListener) navMq.addEventListener("change", onNavMq);
+  else if (navMq.addListener) navMq.addListener(onNavMq);
 
   document.querySelectorAll(".nav-links a").forEach((a) =>
     a.addEventListener("click", () => {
-      if (document.body.classList.contains("nav-open")) setNavOpen(false);
+      if (isNavOpen()) setNavOpen(false);
     })
   );
 
-  // ---- Active nav link ----
-  const path = location.pathname.split("/").pop() || "index.html";
-  document.querySelectorAll(".nav-links a").forEach((a) => {
-    const href = a.getAttribute("href");
-    if (href === path || (path === "" && href === "index.html")) a.classList.add("active");
-  });
+  // ---- Current page in the nav ----
+  // Clean URLs ("/solutions"), .html URLs, trailing slashes and /index all map
+  // to the same page. Pages that are not in the nav light up their section,
+  // taken from the page's own breadcrumb (articles and guides sit under
+  // Articles, the conversion guide under Services).
+  const normPath = (p) =>
+    (p || "/").toLowerCase()
+      .replace(/\/index(\.html)?$/, "/")
+      .replace(/\.html$/, "")
+      .replace(/\/+$/, "") || "/";
+  // Breadcrumb URLs are absolute production URLs, so those match by path.
+  const pathOf = (href, anyOrigin) => {
+    try {
+      const u = new URL(href, location.href);
+      return anyOrigin || u.origin === location.origin ? normPath(u.pathname) : null;
+    } catch (_) { return null; }
+  };
+  const here = normPath(location.pathname);
+  let section = /^\/article-/.test(here) ? "/articles" : null;
+  try {
+    document.querySelectorAll('script[type="application/ld+json"]').forEach((s) => {
+      const walk = (n) => {
+        if (!n || typeof n !== "object") return;
+        if (Array.isArray(n)) { n.forEach(walk); return; }
+        if (n["@type"] === "BreadcrumbList" && Array.isArray(n.itemListElement)) {
+          const trail = n.itemListElement
+            .map((i) => i && i.item && pathOf(typeof i.item === "string" ? i.item : i.item["@id"], true))
+            .filter((p) => p && p !== "/" && p !== here);
+          if (trail.length) section = trail[trail.length - 1];
+        }
+        Object.keys(n).forEach((k) => walk(n[k]));
+      };
+      walk(JSON.parse(s.textContent));
+    });
+  } catch (_) {}
+  if (here !== "/") {
+    document.querySelectorAll(".nav-links a").forEach((a) => {
+      const p = pathOf(a.getAttribute("href"));
+      if (!p) return;
+      if (p === here) {
+        a.classList.add("active");
+        a.setAttribute("aria-current", "page");
+      } else if (section && p === section) {
+        a.classList.add("active");
+        a.setAttribute("aria-current", "true");
+      }
+    });
+  }
 
-  // ---- Reveal on scroll: DISABLED ----
-  // Scroll-triggered fade/slide-in reveals were removed by request. Every
-  // .reveal element is simply marked visible at load so content renders in its
-  // final position with no motion. (CSS also pins these static as a safety net.)
+  // ---- Reveal on scroll: disabled ----
+  // Scroll-triggered reveals were removed by request. Every .reveal element is
+  // marked visible at load so content renders in its final position with no
+  // motion. (CSS also pins these static as a safety net.)
   document.querySelectorAll(".reveal").forEach((el) => el.classList.add("visible"));
 
-  // Explicit `behavior: "smooth"` in scrollTo() overrides the CSS reduced-motion
-  // rule, so JS-driven scrolls ask this instead.
-  const SCROLL_BEHAVIOR = matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
-
-  // ---- Contact form: submit via FormSubmit AJAX so the visitor stays on the page ----
-  const form = document.querySelector("#contact-form");
+  // ---- Contact form: post to Web3Forms with fetch so the visitor stays on the page ----
+  const form = document.getElementById("contact-form");
   if (form) {
-    const ok = form.querySelector(".success-msg");
-    const err = form.querySelector(".error-msg");
-    // Show success state if FormSubmit redirected back with ?sent=1 (used when JS is off).
-    if (ok && /[?&]sent=1\b/.test(location.search)) ok.classList.add("show");
+    const ok = form.querySelector(".success-msg") || document.querySelector(".success-msg");
+    const err = form.querySelector(".error-msg") || document.querySelector(".error-msg");
+    // Show a result where the visitor can see it: scroll it into view, then
+    // move focus to it so screen readers announce it too.
+    const reveal = (m) => {
+      if (!m) return;
+      m.classList.add("show");
+      if (!m.hasAttribute("tabindex")) m.setAttribute("tabindex", "-1");
+      m.scrollIntoView({ block: "center", behavior: SCROLL_BEHAVIOR });
+      m.focus({ preventScroll: true });
+    };
 
     form.addEventListener("submit", (e) => {
+      // `required` accepts whitespace, so check the text fields ourselves.
+      const blank = ["name", "message"]
+        .map((n) => form.elements.namedItem(n))
+        .find((el) => el && typeof el.value === "string" && !el.value.trim());
+      if (blank) {
+        e.preventDefault();
+        blank.value = "";
+        blank.reportValidity();
+        return;
+      }
+
       const action = form.getAttribute("action") || "";
-      const isWeb3 = /web3forms\.com/.test(action);
-      const isFormSubmit = /formsubmit\.co/.test(action);
-      if (!isWeb3 && !isFormSubmit) return; // unknown backend: let it submit natively
+      if (!/web3forms\.com/.test(action)) return; // unknown backend: submit natively
       e.preventDefault();
       if (err) err.classList.remove("show");
       if (ok) ok.classList.remove("show");
       const btn = form.querySelector("button[type=submit]");
       if (btn) { btn.disabled = true; btn.dataset.label = btn.innerHTML; btn.textContent = "Sending…"; }
-      // Web3Forms accepts the FormData POST directly; FormSubmit needs its /ajax/ path.
-      const endpoint = isFormSubmit ? action.replace("formsubmit.co/", "formsubmit.co/ajax/") : action;
-      fetch(endpoint, {
+      fetch(action, {
         method: "POST",
         headers: { "Accept": "application/json" },
         body: new FormData(form),
       })
         .then((r) => r.json().catch(() => ({})).then((j) => ({ r, j })))
         .then(({ r, j }) => {
-          // Both backends return a JSON success flag; require it explicitly.
+          // Web3Forms returns a JSON success flag; require it explicitly.
+          // Clear the form only on success; on failure the visitor keeps
+          // what they typed.
           if (r.ok && (j.success === true || j.success === "true")) {
-            if (ok) ok.classList.add("show");
             form.reset();
+            reveal(ok);
           } else {
-            if (err) err.classList.add("show");
+            reveal(err);
           }
         })
-        .catch(() => { if (err) err.classList.add("show"); })
+        .catch(() => reveal(err))
         .finally(() => {
           if (btn) { btn.disabled = false; btn.innerHTML = btn.dataset.label || "Send message"; }
         });
@@ -91,21 +193,45 @@
   // ---- Year ----
   document.querySelectorAll("[data-year]").forEach((y) => y.textContent = new Date().getFullYear());
 
+  // ---- Wide tables (privacy policy) ----
+  // A table that scrolls sideways must be reachable by keyboard: name the
+  // wrapper as a region and make it focusable while it actually overflows.
+  document.querySelectorAll(".table-wrap").forEach((w) => {
+    if (!w.hasAttribute("role")) w.setAttribute("role", "region");
+    if (!w.hasAttribute("aria-label") && !w.hasAttribute("aria-labelledby")) {
+      let label = "";
+      const cap = w.querySelector("caption");
+      if (cap) label = cap.textContent;
+      else {
+        let h = w.previousElementSibling;
+        while (h && !/^H[1-6]$/.test(h.tagName)) h = h.previousElementSibling;
+        if (h) label = h.textContent.replace(/^\s*\d+\.\s*/, "");
+      }
+      w.setAttribute("aria-label", label.trim() ? label.trim() + " table" : "Table");
+    }
+    if (w.hasAttribute("tabindex")) return; // set in the HTML: leave it
+    const sync = () => {
+      if (w.scrollWidth > w.clientWidth + 1) w.setAttribute("tabindex", "0");
+      else w.removeAttribute("tabindex");
+    };
+    sync();
+    if (window.ResizeObserver) new ResizeObserver(sync).observe(w);
+    else window.addEventListener("resize", sync);
+  });
+
   // ---- FAQ jump chips ----
-  // Native hash-scroll fights with our own scrollIntoView and was producing the
-  // visible judder. Take control: intercept the click, open the details, run
-  // a single smooth scroll with the sticky-header offset, and re-trigger the
-  // CSS pulse animation by force-restarting it via classlist toggle.
+  // Native hash-scroll fights with our own scroll and produced a visible
+  // judder. Take control: intercept the click, open the details, run a single
+  // scroll with the sticky-header offset, and re-trigger the CSS highlight.
   const scrollToFaqTarget = (target) => {
     if (!target) return;
     if (target.tagName === "DETAILS") target.open = true;
 
-    // Clear any previous jump highlight so the animation can re-fire on the
-    // new target. Removing + re-adding in the next frame restarts the keyframes.
+    // Clear any previous jump highlight so it can re-fire on the new target.
     document.querySelectorAll(".faq-item.is-jump-target").forEach((el) => {
       el.classList.remove("is-jump-target");
     });
-    // Force a reflow so the class re-add definitely re-triggers the animation.
+    // Force a reflow so the class re-add definitely restarts the highlight.
     void target.offsetWidth;
     target.classList.add("is-jump-target");
 
@@ -136,14 +262,13 @@
     } catch (_) {}
   }
 
-  // ---- Scroll-aware header (transparent over cinema hero, frosts in on scroll) ----
+  // ---- Scroll-aware header (transparent over the homepage hero, solid on scroll) ----
   if (document.body.classList.contains("page-home")) {
     // Hysteresis: turn solid further down than we turn transparent again.
     // The header shrinks ~15px when it goes solid, and Chrome's scroll
     // anchoring then moves scrollY by the same 15px. With one 40px threshold
     // that shift pushed scrollY back across the line on every frame, so the
-    // header strobed between states (measured: 122 flips in 2s while parked
-    // at y=41, scrollY bouncing 41/26). A 48px dead band is wider than any
+    // header strobed between states. A 48px dead band is wider than any
     // anchoring shift, so the state settles. Keep ENTER - EXIT > header delta.
     const ENTER = 64, EXIT = 16;
     const setScrolled = () => {
@@ -156,11 +281,11 @@
     window.addEventListener("scroll", setScrolled, { passive: true });
   }
 
-  // ---- Robust autoplay for decorative videos (hero + illustration) ----
-  // These are muted, inline, looping backgrounds. iOS Safari is strict about inline
-  // autoplay: the element must be muted (as a *property*, set here — not merely the
-  // HTML attribute) at play() time, and it may still defer until the first user
-  // gesture. We set muted, call play() immediately and retry it across every
+  // ---- Decorative videos (hero + illustration) ----
+  // These are muted, inline backgrounds. iOS Safari is strict about inline
+  // autoplay: the element must be muted (as a *property*, set here, not merely
+  // the HTML attribute) at play() time, and it may still defer until the first
+  // user gesture. We set muted, call play() and retry it across every
   // readiness event.
   //
   // iOS Low Power Mode refuses autoplay outright (play() rejects with
@@ -170,10 +295,17 @@
   // it has data, we swap in its data-fallback animated WebP, which loops like a GIF.
   //
   // Retries only listen for events WebKit counts as a user gesture (touchend,
-  // click, keydown). touchstart/scroll never qualified, so the old fallback
-  // could not unblock anything on an iPhone.
+  // click, keydown).
+  //
+  // Nothing autoplays for visitors who asked for less motion (Reduce Motion)
+  // or less data (Save-Data): they see the poster still, and the homepage
+  // hero has a play button if they want the video anyway.
+  const conn = navigator.connection;
+  const saveData = matchMedia("(prefers-reduced-data: reduce)").matches || !!(conn && conn.saveData);
+  const holdStill = reduceMotion || saveData;
+
   const GESTURES = ["touchend", "click", "keydown"];
-  const playWhenReady = (v) => {
+  const playWhenReady = (v, onSwap) => {
     if (!v) return;
     v.muted = true; v.defaultMuted = true; v.playsInline = true;
     v.setAttribute("muted", ""); v.setAttribute("playsinline", "");
@@ -181,8 +313,16 @@
 
     const showFallback = () => {
       const src = v.dataset.fallback;
-      if (swapped || !src || !v.paused) return;
+      if (swapped || !src || !v.paused || v.dataset.userPaused) return;
       swapped = true;
+      // Stop the video download for good: detach its sources before load(),
+      // or load() would run resource selection again and restart it.
+      v.removeAttribute("autoplay");
+      v.pause();
+      v.preload = "none";
+      v.querySelectorAll("source").forEach((s) => s.remove());
+      v.removeAttribute("src");
+      try { v.load(); } catch (_) {}
       const img = new Image();
       img.alt = "";
       img.setAttribute("aria-hidden", "true");
@@ -190,17 +330,14 @@
       if (v.getAttribute("width")) img.width = v.width;
       if (v.getAttribute("height")) img.height = v.height;
       img.onload = () => {
-        // Stop the video download and remove its forced play button.
-        v.removeAttribute("autoplay");
-        v.pause();
         v.replaceWith(img);
-        try { v.removeAttribute("src"); v.load(); } catch (_) {}
+        if (onSwap) onSwap(img);
       };
       img.src = src;
     };
 
     const tryPlay = () => {
-      if (swapped || !v.paused) return;
+      if (swapped || !v.paused || v.dataset.userPaused) return;
       const pr = v.play();
       if (pr && pr.catch) pr.catch((e) => { if (e && e.name === "NotAllowedError") showFallback(); });
     };
@@ -226,148 +363,128 @@
     }, { once: true });
   };
 
-  // ---- Hero video: start at data-start seconds, manual loop back to same point ----
-  // We don't use the native `loop` attribute because we want every loop to begin at
-  // 5s (past the source video's watermark), not 0s.
-  // On small viewports or data-saver connections, we skip the video entirely —
-  // the poster image is already loaded and looks the same as the video's first
-  // frame, so the user sees no difference, but we save them a multi-MB MP4
-  // download + per-frame decode (the biggest mobile-jank source on this page).
+  // Keep a video from autoplaying and cancel anything it has started to fetch.
+  // It shows its poster (for the hero, the CSS poster underneath it). The
+  // sources are detached before load(), because Chrome fetches the file on an
+  // explicit load() even with preload="none"; releaseVideo() puts them back.
+  const holdVideo = (v) => {
+    v.removeAttribute("autoplay");
+    v.autoplay = false;
+    v.preload = "none";
+    v.pause();
+    v._heldSources = Array.from(v.querySelectorAll("source"));
+    v._heldSources.forEach((s) => s.remove());
+    if (v.hasAttribute("src")) { v._heldSrc = v.getAttribute("src"); v.removeAttribute("src"); }
+    try { v.load(); } catch (_) {}
+  };
+  const releaseVideo = (v) => {
+    v.preload = "auto";
+    if (v._heldSrc) { v.setAttribute("src", v._heldSrc); v._heldSrc = null; }
+    if (v._heldSources) { v._heldSources.forEach((s) => v.appendChild(s)); v._heldSources = null; }
+  };
+
+  // ---- Hero video ----
+  // Phones get a full-resolution portrait center crop (the <source media>
+  // query); desktops get the landscape clip. data-start (optional) sets where
+  // each loop begins.
   const heroVideo = document.getElementById("hero-video");
   if (heroVideo) {
-    // The video plays on mobile too: phones get a full-resolution 864x908
-    // center crop (the <source media> query), since a portrait hero only ever
-    // shows the middle of the frame; desktops get the full 1080p clip. Scroll effects are
-    // gated off, so it stays smooth. Reduce Motion no longer strips it: the
-    // slow drone drift sits behind a dark scrim and is meant to play like a
-    // GIF on every phone. We only skip the download for visitors who have
-    // asked their device to save data; they get the poster still instead.
-    const skipVideo = matchMedia("(prefers-reduced-data: reduce)").matches;
-    if (skipVideo) {
-      // Tear down the <source> children so the browser never starts downloading.
-      while (heroVideo.firstChild) heroVideo.removeChild(heroVideo.firstChild);
-      heroVideo.removeAttribute("autoplay");
-      heroVideo.setAttribute("preload", "none");
-      try { heroVideo.load(); } catch (_) {}
-    } else {
-      const startAt = parseFloat(heroVideo.dataset.start || "0") || 0;
-      const seekToStart = () => {
-        try { heroVideo.currentTime = startAt; } catch (_) {}
-      };
-      heroVideo.addEventListener("loadedmetadata", seekToStart, { once: true });
-      heroVideo.addEventListener("ended", () => {
-        seekToStart();
-        const p = heroVideo.play();
-        if (p && p.catch) p.catch(() => {});
-      });
-      playWhenReady(heroVideo);
-    }
-  }
-
-  // Illustration loop(s): same robust autoplay, unless the visitor asked to save
-  // data (then the poster still is shown instead of forcing playback).
-  if (!matchMedia("(prefers-reduced-data: reduce)").matches) {
-    document.querySelectorAll(".illustration-video").forEach((v) => playWhenReady(v));
-  }
-
-  // ---- Scroll-driven effects: hero parallax + hero content fade + page-head drift + scroll-tied --p ----
-  // All variables are written to inline styles once per animation frame, so
-  // multiple effects share the same rAF and stay in sync.
-  // Gates: skip on (a) reduced-motion preference, (b) small viewports — touch
-  // scroll is already smooth and adding per-frame transforms during it causes
-  // jank on lower-power GPUs that mobile devices typically have.
-  // Parallax / scroll-tied drift removed by request (reads as an "AI tell").
-  // Kept the machinery below but hard-gated off so nothing moves on scroll.
-  const skipScrollFx = true;
-  if (!skipScrollFx) {
-    const heroSkyline = document.querySelector(".hero-cinema .hero-skyline");
-    const heroContent = document.querySelector(".hero-cinema .hero-content");
-    const pageHead = document.querySelector(".page-head");
-    const tiedEls = Array.from(document.querySelectorAll("[data-scroll-tie]"));
-    let ticking = false;
-    const onScrollFx = () => {
-      ticking = false;
-      const y = window.scrollY;
-      const vh = window.innerHeight;
-
-      // Note: the previous per-frame parallax on .hero-skyline was the source
-      // of two problems —
-      //  (a) sub-pixel transforms (y * 0.35 → 23.45px) jittered the video
-      //      layer on some GPUs, and
-      //  (b) the shift exposed the dark background between the skyline and
-      //      either the bar (bottom) or the section top, which is what the
-      //      user perceived as "the bottom of the video changes in size."
-      // The video now stays anchored to its container — the meta bar at the
-      // bottom is the intentional fixed edge. Compositor stays cheap, the
-      // bottom is frame-perfect, and the cinema feel comes from the video,
-      // the overlay gradient, and the title — not from a moving background.
-      // (heroSkyline reference kept above so future effects can use it.)
-
-      // Hero content (eyebrow + h1 + lead): rise + fade as we scroll past hero.
-      // Integer px on the shift — sub-pixel values jitter the text on certain GPUs.
-      if (heroContent && y <= vh * 1.1) {
-        const t = Math.min(1, y / (vh * 0.7));
-        heroContent.style.setProperty("--hero-shift", Math.round(-y * 0.18) + "px");
-        heroContent.style.setProperty("--hero-fade", (1 - t * 0.85).toFixed(3));
-      }
-
-      // Page-head heading on interior pages: drifts up and softens as it leaves.
-      if (pageHead) {
-        const headBottom = pageHead.offsetTop + pageHead.offsetHeight;
-        if (y < headBottom + 200) {
-          const t = Math.max(0, Math.min(1, y / headBottom));
-          pageHead.style.setProperty("--page-head-shift", Math.round(-y * 0.22) + "px");
-          pageHead.style.setProperty("--page-head-fade", (1 - t * 0.6).toFixed(3));
-        }
-      }
-
-      // Scroll-tied values: for each [data-scroll-tie], write two variables
-      // every frame —
-      //  --p     linear 0..1 progress across the viewport (parallax-style),
-      //  --focus center-peaked 0..1 ("active when near viewport center").
-      // CSS picks whichever fits the effect on a given element. Recomputed
-      // every frame from getBoundingClientRect(), so scrolling back up
-      // automatically reverses every effect tied to either variable.
-      const vpCenter = vh * 0.5;
-      const falloff = vh * 0.4;  // focus reaches 0 this far from viewport center
-      for (let i = 0; i < tiedEls.length; i++) {
-        const el = tiedEls[i];
-        const r = el.getBoundingClientRect();
-
-        // Linear progress --p.
-        const total = vh + r.height;
-        const traveled = vh - r.top;
-        const p = traveled <= 0 ? 0 : traveled >= total ? 1 : traveled / total;
-        el.style.setProperty("--p", p.toFixed(4));
-
-        // Center-peaked --focus.
-        if (r.bottom < 0 || r.top > vh) {
-          el.style.setProperty("--focus", "0");
-          continue;
-        }
-        const elCenter = r.top + r.height * 0.5;
-        const dist = Math.abs(elCenter - vpCenter);
-        const focus = dist >= falloff ? 0 : 1 - dist / falloff;
-        el.style.setProperty("--focus", focus.toFixed(4));
-      }
+    const hero = heroVideo.closest(".hero-cinema") || heroVideo.parentElement;
+    const startAt = parseFloat(heroVideo.dataset.start || "0") || 0;
+    const seekToStart = () => {
+      try { heroVideo.currentTime = startAt; } catch (_) {}
     };
-    window.addEventListener("scroll", () => {
-      if (!ticking) { ticking = true; requestAnimationFrame(onScrollFx); }
-    }, { passive: true });
-    window.addEventListener("resize", onScrollFx);
-    onScrollFx();
+    if (startAt) heroVideo.addEventListener("loadedmetadata", seekToStart, { once: true });
+    heroVideo.addEventListener("ended", () => {
+      if (heroVideo.dataset.userPaused) return;
+      seekToStart();
+      const p = heroVideo.play();
+      if (p && p.catch) p.catch(() => {});
+    });
+
+    // Pause / play control (WCAG 2.2.2): a background that moves for more
+    // than five seconds needs a way to stop it.
+    const ICON_PAUSE =
+      '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false">' +
+      '<rect x="2.5" y="1.5" width="3" height="11" rx="0.75" fill="currentColor"/>' +
+      '<rect x="8.5" y="1.5" width="3" height="11" rx="0.75" fill="currentColor"/></svg>';
+    const ICON_PLAY =
+      '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true" focusable="false">' +
+      '<path d="M3.5 1.9v10.2a.6.6 0 0 0 .91.51l8.1-5.1a.6.6 0 0 0 0-1.02l-8.1-5.1a.6.6 0 0 0-.91.51z" fill="currentColor"/></svg>';
+    let moving = !holdStill;
+    let started = !holdStill;
+    let fallbackImg = null;
+
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "hero-motion-toggle";
+    const render = () => {
+      btn.innerHTML = moving ? ICON_PAUSE : ICON_PLAY;
+      btn.setAttribute("aria-label", moving ? "Pause background video" : "Play background video");
+    };
+    render();
+    btn.addEventListener("click", () => {
+      moving = !moving;
+      const v = document.getElementById("hero-video");
+      if (fallbackImg) {
+        // Autoplay was refused and the animated WebP is showing: hiding it
+        // leaves the still poster underneath.
+        fallbackImg.style.visibility = moving ? "" : "hidden";
+      } else if (v) {
+        if (moving) {
+          delete v.dataset.userPaused;
+          if (!started) { started = true; releaseVideo(v); playWhenReady(v, onSwap); }
+          else { const p = v.play(); if (p && p.catch) p.catch(() => {}); }
+        } else {
+          v.dataset.userPaused = "1";
+          v.pause();
+        }
+      }
+      render();
+    });
+    const onSwap = (img) => {
+      fallbackImg = img;
+      if (!moving) img.style.visibility = "hidden";
+    };
+    if (hero) {
+      hero.appendChild(btn);
+      // Sit just above the meta bar, whatever height it wraps to.
+      const meta = hero.querySelector(".hero-meta");
+      if (meta) {
+        const syncMeta = () => hero.style.setProperty("--hero-meta-h", meta.offsetHeight + "px");
+        syncMeta();
+        if (window.ResizeObserver) new ResizeObserver(syncMeta).observe(meta);
+        else window.addEventListener("resize", syncMeta);
+      }
+    }
+
+    if (holdStill) holdVideo(heroVideo);
+    else playWhenReady(heroVideo, onSwap);
   }
 
-  // ---- Word-stagger reveal on big headings: DISABLED ----
-  // Removed by request. Headings are no longer split into per-word spans and no
-  // longer animate in word-by-word; they render as plain, static text.
+  // ---- Illustration loop(s) ----
+  // Below the fold, so they load and start only when they come near the
+  // viewport (the HTML ships them with preload="none" and no autoplay).
+  document.querySelectorAll(".illustration-video").forEach((v) => {
+    if (holdStill) { holdVideo(v); return; }
+    const start = () => { v.preload = "auto"; playWhenReady(v); };
+    if (!("IntersectionObserver" in window)) { start(); return; }
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en) => {
+        if (!en.isIntersecting) return;
+        io.disconnect();
+        start();
+      });
+    }, { rootMargin: "300px 0px" });
+    io.observe(v);
+  });
 
   // ---- Custom scroll rail (right-edge scrollbar replacement) ----
   // We hide the native scrollbar in CSS and render our own. The thumb height
   // is proportional to viewport/document ratio; the top offset is proportional
   // to scrollY. Click on track jumps to that position; drag on thumb scrolls.
   (function mountScrollRail() {
-    if (matchMedia("(pointer: coarse)").matches) return; // touch — skip
+    if (matchMedia("(pointer: coarse)").matches) return; // touch: skip
     const rail = document.createElement("div");
     rail.className = "scroll-rail";
     rail.setAttribute("aria-hidden", "true");
@@ -405,7 +522,7 @@
     update();
     window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update);
-    // Track DOM mutations (reveal animations expanding height etc.)
+    // Track page height changes (late images, opened FAQ items, etc.)
     new ResizeObserver(update).observe(document.body);
 
     // ----- Drag thumb -----
@@ -419,7 +536,7 @@
 
     const applyDragFrame = () => {
       dragFrame = 0;
-      // Force instant scroll during drag — html { scroll-behavior: smooth }
+      // Force instant scroll during drag: html { scroll-behavior: smooth }
       // would otherwise animate every micro-update and make the drag feel laggy.
       window.scrollTo({ top: pendingScroll, left: 0, behavior: "instant" });
     };
@@ -480,16 +597,20 @@
   })();
 
   // ---- Cookie consent + analytics (Google Analytics 4, loaded only on Accept) ----
-  // Analytics cookies are NOT set until the visitor clicks Accept. The choice is
-  // remembered in localStorage so the banner shows once. To go live, replace the
-  // GA_ID placeholder below with your GA4 Measurement ID (looks like G-XXXXXXXXXX,
-  // created free at analytics.google.com). Until then, no analytics load.
+  // GA4 (G-G3EP1H4KHJ) loads only after the visitor clicks Accept. The choice is
+  // kept in localStorage, so the banner shows once. "Cookie settings" in the
+  // footer of every page reopens it; choosing Decline then switches GA off on
+  // this page, removes its cookies, and keeps it off on later page loads.
   (function cookieConsent() {
     var KEY = "gcs-cookie-consent";
     var GA_ID = "G-G3EP1H4KHJ"; // Genesis Core Systems GA4 Measurement ID
+    var GA_OFF = "ga-disable-" + GA_ID; // Google's documented per-page opt-out flag
+
+    function readChoice() { try { return localStorage.getItem(KEY); } catch (_) { return null; } }
+    function saveChoice(v) { try { localStorage.setItem(KEY, v); } catch (_) {} }
 
     function loadAnalytics() {
-      if (!GA_ID || GA_ID.indexOf("G-XXXX") === 0) return; // placeholder not set yet
+      window[GA_OFF] = false;
       if (window.__gaLoaded) return;
       window.__gaLoaded = true;
       var s = document.createElement("script");
@@ -502,33 +623,121 @@
       window.gtag("config", GA_ID, { anonymize_ip: true });
     }
 
-    var choice = null;
-    try { choice = localStorage.getItem(KEY); } catch (_) {}
-    if (choice === "accepted") { loadAnalytics(); return; }
-    if (choice === "declined") { return; }
+    function stopAnalytics() {
+      window[GA_OFF] = true;
+      // Expire the GA cookies (_ga, _ga_<id>, and the legacy _gid/_gat) on this
+      // host and on each parent domain GA may have used.
+      var names = document.cookie.split(";")
+        .map(function (c) { return c.split("=")[0].trim(); })
+        .filter(function (n) { return /^_(ga|gid|gat)/.test(n); });
+      if (!names.length) return;
+      var parts = location.hostname.split(".");
+      var domains = [""];
+      for (var i = 0; i < parts.length - 1; i++) {
+        var d = parts.slice(i).join(".");
+        domains.push(d, "." + d);
+      }
+      names.forEach(function (n) {
+        domains.forEach(function (d) {
+          document.cookie = n + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/" + (d ? "; domain=" + d : "");
+        });
+      });
+    }
 
-    var bar = document.createElement("div");
-    bar.id = "cookie-banner";
-    bar.className = "cookie-banner";
-    bar.setAttribute("role", "dialog");
-    bar.setAttribute("aria-label", "Cookie consent");
-    bar.innerHTML =
-      '<p class="cookie-text">We use cookies to understand how visitors use this site and to improve it. ' +
-      'You can accept analytics cookies or decline; declining still lets you use the whole site. ' +
-      'See our <a href="privacy.html">Privacy Policy</a>.</p>' +
-      '<div class="cookie-actions">' +
-      '<button type="button" class="btn btn-ghost" data-cookie="declined">Decline</button>' +
-      '<button type="button" class="btn btn-primary" data-cookie="accepted">Accept</button>' +
-      '</div>';
-    bar.addEventListener("click", function (e) {
-      var t = e.target.closest("[data-cookie]");
+    var bar = null;
+    var returnFocus = null;
+
+    // While the banner is up, keep keyboard focus and the end of the page from
+    // being hidden behind it.
+    function syncBannerSpace() {
+      var h = bar && bar.isConnected ? bar.offsetHeight : 0;
+      document.documentElement.style.scrollPaddingBottom = h ? (h + 16) + "px" : "";
+      document.body.style.paddingBottom = h ? h + "px" : "";
+    }
+    window.addEventListener("resize", syncBannerSpace);
+
+    function hideBanner() {
+      var hadFocus = bar && bar.contains(document.activeElement);
+      if (bar) bar.remove();
+      bar = null;
+      syncBannerSpace();
+      if (hadFocus && returnFocus && returnFocus.isConnected) returnFocus.focus();
+      returnFocus = null;
+    }
+
+    function showBanner(moveFocus) {
+      if (!bar) {
+        bar = document.createElement("div");
+        bar.id = "cookie-banner";
+        bar.className = "cookie-banner";
+        bar.setAttribute("role", "region");
+        bar.setAttribute("aria-label", "Cookie consent");
+        bar.innerHTML =
+          '<p class="cookie-text">We use cookies to understand how visitors use this site and to improve it. ' +
+          'You can accept analytics cookies or decline; declining still lets you use the whole site. ' +
+          'You can change your choice anytime with Cookie settings at the bottom of the page. ' +
+          'See our <a href="/privacy">Privacy Policy</a>.</p>' +
+          '<div class="cookie-actions">' +
+          '<button type="button" class="btn btn-ghost" data-cookie="declined">Decline</button>' +
+          '<button type="button" class="btn btn-primary" data-cookie="accepted">Accept</button>' +
+          '</div>';
+        bar.addEventListener("click", function (e) {
+          var t = e.target.closest("[data-cookie]");
+          if (!t) return;
+          var v = t.getAttribute("data-cookie");
+          saveChoice(v);
+          if (v === "accepted") loadAnalytics();
+          else stopAnalytics();
+          hideBanner();
+        });
+        // Early in the page (right after the skip link), so keyboard and
+        // screen-reader users reach it first. It is position: fixed, so this
+        // does not move it visually, and it never takes focus on its own.
+        var skip = document.querySelector(".skip-link");
+        document.body.insertBefore(bar, skip ? skip.nextSibling : document.body.firstChild);
+        syncBannerSpace();
+      }
+      if (moveFocus) {
+        var first = bar.querySelector("[data-cookie]");
+        if (first) first.focus();
+      }
+    }
+
+    // "Cookie settings" next to the Privacy Policy link in the footer.
+    (function mountSettingsLink() {
+      var row = document.querySelector(".site-footer .footer-microlinks") ||
+                document.querySelector(".site-footer .footer-bottom");
+      if (!row || row.querySelector("[data-cookie-settings]")) return;
+      var btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "footer-linkbtn";
+      btn.setAttribute("data-cookie-settings", "");
+      btn.textContent = "Cookie settings";
+      var privacy = null;
+      Array.prototype.forEach.call(row.querySelectorAll("a"), function (a) {
+        if (!privacy && /\/privacy(\.html)?$/.test(a.getAttribute("href") || "")) privacy = a;
+      });
+      if (privacy && privacy.parentNode === row) {
+        row.insertBefore(btn, privacy.nextSibling);
+        row.insertBefore(document.createTextNode(" · "), btn);
+      } else {
+        row.appendChild(document.createTextNode(" · "));
+        row.appendChild(btn);
+      }
+    })();
+
+    document.addEventListener("click", function (e) {
+      var t = e.target.closest && e.target.closest("[data-cookie-settings]");
       if (!t) return;
-      var v = t.getAttribute("data-cookie");
-      try { localStorage.setItem(KEY, v); } catch (_) {}
-      if (v === "accepted") loadAnalytics();
-      bar.remove();
+      e.preventDefault();
+      returnFocus = t;
+      showBanner(true);
     });
-    document.body.appendChild(bar);
+
+    var choice = readChoice();
+    if (choice === "accepted") loadAnalytics();
+    else if (choice === "declined") window[GA_OFF] = true;
+    else showBanner(false);
   })();
 
 })();
