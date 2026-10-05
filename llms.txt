@@ -7,7 +7,7 @@ The platform is built on a proven Tier-1-grade core foundation configured for sm
 ## Pages
 
 - [Home](https://genesiscoresystems.com/): Overview of the Genesis Core Systems core banking platform for community banks.
-- [Solutions](https://genesiscoresystems.com/solutions): Core banking modules and the open API. Real-time processing, modular architecture, an open API layer, and modules for deposits, lending, payments, and onboarding.
+- [Solutions](https://genesiscoresystems.com/solutions): Core banking modules and the open API. Real-time processing, modular architecture, an open API layer, and modules for loan origination, payments, onboarding, and compliance reporting.
 - [Services](https://genesiscoresystems.com/services): Core conversion services for community banks: implementation and migration sequenced from discovery through cutover and parallel run, plus support and training.
 - [Partnership](https://genesiscoresystems.com/partnership): The Genesis Design Partner Program, limited-enrollment partnership for community banks.
 - [About](https://genesiscoresystems.com/about): Genesis Core Systems is a core banking provider for U.S. community banks, based in New York, built by people who have run conversions and core operations.

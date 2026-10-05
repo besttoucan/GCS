@@ -37,12 +37,13 @@
 
       { id: "fit", q: "Is Genesis right for a smaller bank?",
         kw: "small smaller size medium sized fit suitable asset lean limited tiny staff itstaff",
-        re: [/\bright for\b/, /\b(good|fit|suitable|work|built|designed|make sense) for (a |an |our )?\$?\d+(\.\d+)?\s*(m|mm|mil|million|b|bn|billion)\b/],
+        re: [/\bright for\b/, /\b(good|fit|suitable|work|built|designed|make sense) for (a |an |our )?\$?\d+(\.\d+)?\s*(m|mm|mil|million|b|bn|billion)\b/,
+             /\b(is|are) (that|it|this|we|our bank|my bank) too (small|big|large)\b|\b(bank|we|we're|we are) (is |are )?too (small|big|large)\b/],
         a: "That's who it's built for. Genesis is designed for small and medium-sized U.S. community banks, including banks with a lean IT team that has to keep things running while still making changes. It's designed to need minimal IT staffing on the bank's side, because Genesis runs the managed environment.",
         link: ["/about", "About Genesis"], next: ["what", "deployment", "pricing"] },
 
       { id: "different", q: "How is Genesis different?",
-        kw: "different differ difference unique better why choose versus compare comparison advantage advantages standout competitor competitors fiserv fis jackhenry incumbent incumbents alternative alternatives",
+        kw: "different differ difference unique better why choose versus compare comparison advantage advantages standout competitor competitors fiserv fis jackhenry incumbent incumbents alternative alternatives temenos finastra nymbus mambu thoughtmachine corelation csi",
         re: [/\b(how is|what makes) genesis different\b/, /\bwhy (choose|pick|use) genesis\b/, /\bwhy genesis\b/],
         a: "Most community banks run a core from one provider and stitch together separate vendors for digital banking, origination, payments and reporting. Genesis consolidates that into one platform and one operating relationship, with an open API layer and one named team accountable from conversion through support. Genesis isn't trying to copy the incumbent model of FIS, Fiserv and Jack Henry.",
         link: ["/solutions", "See the platform"], next: ["scratch", "api", "pricing"] },
@@ -66,12 +67,12 @@
 
       { id: "api", q: "Does Genesis have an open API?",
         kw: "api integrate thirdparty fintech digital online mobile app existing open endpoint webhook sdk",
-        re: [/\bintegrat\w* (with|w|to|into)\b/],
+        re: [/\bintegrat\w* (with|w|to|into)\b/, /\b(it|genesis|gcs|the platform|the core|your (system|platform|core)) (talk|connect|speak|plug|hook)s? (in(to)? |up )?(to|with|into)\b/],
         a: "Genesis is API-first. Every entity in the system is exposed through an open API, and digital banking, origination, payments and other systems connect through APIs, adapters and one integration pattern governed by Genesis. Open APIs and open data are a deliberate principle: lock-in shouldn't be a cost the bank carries.",
         link: ["/solutions", "See the platform"], next: ["modules", "lockin", "conversion"] },
 
       { id: "modular", q: "Can we modernize gradually?",
-        kw: "modernize modernization piece incremental incrementally phased gradual gradually alongside selective whole entire",
+        kw: "modernize modernization incremental incrementally phased gradual gradually selective",
         re: [/\b(one|a) (piece|module|step|bit) at a time\b/, /\b(replace|swap|rip out|rip and replace) (our |the |my )?(whole|entire)\b/,
              /\bwithout (replacing|swapping|switching|converting) (our |the |my )?(whole |entire |current |existing )?core\b/,
              /\b(keep|alongside) (our |the |my )?(current|existing|incumbent|old) core\b/, /\bselective(ly)? moderni[sz]/],
@@ -103,7 +104,7 @@
         link: ["/core-conversion", "Read the conversion guide"], next: ["timeline", "convcost", "implementation"] },
 
       { id: "timeline", q: "How long does a conversion take?",
-        kw: "timeline duration length month week year quick fast speed soon schedule start begin renew renewal expire expiry",
+        kw: "timeline duration length hour month week year quick fast speed soon schedule start begin renew renewal expire expiry",
         re: [/\bwhen (should|do|would|can|must) (we|i|a bank|banks) (start|begin)\b/, /\bcontract (ends|expires|renews|is up|runs out|ending|expiring)\b/, /\bhow (fast|quickly|soon) can (we|i|a bank|you)\b/],
         a: "Months rather than weeks. The pace is set by the sequence: data mapping, mock conversions, testing and reconciliation each have to be signed off before the next starts. Separately, banks commonly start evaluating alternatives 18 to 24 months before their current contract expires, since selection and negotiation happen before any conversion work begins.",
         link: ["/core-conversion", "Read the conversion guide"], next: ["convcost", "conversion", "designpartner"] },
@@ -131,14 +132,19 @@
         link: ["/core-conversion", "Read the conversion guide"], next: ["conversion", "implementation", "convcost"] },
 
       { id: "support", q: "What support do we get after go-live?",
-        kw: "support helpdesk ticket issue problem incident monitoring maintenance golive ongoing escalation break breaks broken hour",
+        kw: "support helpdesk ticket issue problem incident monitoring maintenance golive ongoing escalation break breaks broken",
+        re: [/\bwhen (something|anything|it|the system|the core|the platform) (breaks|goes down|fails|stops working)\b/,
+             /\bwho (would|will|does|is going to) (actually )?(run|operate|manage|maintain|look after) (our|the|my) (core|system|platform)\b/],
         a: "Genesis provides 24/7 monitoring and a dedicated response team that catch issues before they reach customers. Genesis is the bank-facing support owner for the Genesis-managed environment and coordinates any upstream product or partner support behind the scenes, so you have one accountable contact. Support also covers documented incident playbooks, scheduled system health reviews and planned maintenance.",
         link: ["/services", "See our services"], next: ["uptime", "training", "implementation"] },
 
       { id: "support247", q: "Is there 24/7 support?",
-        kw: "monitoring support",
-        re: [/\b24 ?(\/|x) ?7\b/, /\b24[\s-]?(hours?|hrs?)( a day)?\b/, /\b(a)?round[\s-]the[\s-]clock\b/, /\bafter[\s-]hours\b/,
-             /\b(nights?|weekends?|holidays?)\b[^.?!]{0,25}\b(support|monitor\w*|cover\w*|help)\b/, /\b(support|monitor\w*|cover\w*|help)\b[^.?!]{0,25}\b(nights?|weekends?|holidays?)\b/],
+        kw: "roundclock",
+        // Only round-the-clock wording reaches this answer (PHRASES turns it into
+        // "roundclock"), so "support?" goes to support and "does the conversion
+        // take 24 hours" is never answered with a 24/7 "Yes".
+        requires: ["roundclock"],
+        re: [/\b24 ?(\/|x|-) ?7\b|\b24 7\b/, /\b(a)?round[\s-]the[\s-]clock\b/, /\b24[\s-]?(hours?|hrs?) (a|per) day\b/],
         a: "Yes. Genesis provides 24/7 monitoring and a dedicated response team that catch issues before they reach customers, with scheduled health checks across every module in production. Genesis is the bank-facing support owner, so the bank has one accountable contact.",
         link: ["/services", "See our services"], next: ["support", "uptime", "implementation"] },
 
@@ -179,7 +185,7 @@
 
       { id: "contact", q: "How do I talk to the team?",
         kw: "contact email phone number reach human person representative sales meeting appointment book located office address headquarters newyork",
-        re: [/\bwhere (are you|is genesis|is gcs|is the company)\b/, /\b(schedule|book|arrange|set up|request) (a |an )?(call|meeting|time|chat|conversation)\b/],
+        re: [/\bwhere (are you|are u|r you|r u|is genesis|is gcs|is the company)\b/, /\b(schedule|book|arrange|set up|request) (a |an )?(call|meeting|time|chat|conversation)\b/],
         a: "The team replies within one business day. Email " + EMAIL + ", call " + PHONE + ", or use the contact form. Genesis is based in New York, NY.",
         link: ["/contact", "Contact the team"], next: ["demo", "designpartner", "what"] },
 
@@ -209,13 +215,13 @@
         a: "Open APIs, open data and an open vendor strategy are principles at Genesis. Lock-in is a cost the bank shouldn't have to carry. Specific data access and exit terms are set in the bank's agreement, and they're worth reading closely with any provider, including deconversion fees.",
         link: ["/about", "Our principles"], next: ["api", "convcost", "contact"] },
 
-      { id: "payments", q: "Which payment rails are supported?",
+      { id: "payments", q: "Which payment rails are available?",
         kw: "payment ach wire card debit fednow rtp instant zelle rail transfer",
         a: "ACH, wire and card processing are supported through established partner connectivity, and instant payment rails are on the roadmap. Design Partners have a direct say in how that roadmap is prioritized.",
         link: ["/solutions", "See the platform"], next: ["api", "designpartner", "features"] },
 
       { id: "compliance", q: "How does Genesis handle regulatory compliance?",
-        kw: "compliance regulatory bsa aml kyc ofac cfpb occ fdic ffiec exam callreport reporting update hmda cecl",
+        kw: "compliance regulatory bsa aml kyc ofac cfpb occ fdic ffiec exam callreport reporting update hmda cecl fraud",
         a: "Genesis tracks regulatory changes that affect community banks and coordinates platform updates with its technology partners, so the bank doesn't run each change as its own project. The platform is designed to support the compliance reporting community banks prepare for examiners. For your specific exam and vendor-management requirements, the team can walk through the controls and evidence directly.",
         link: ["/faq", "Read the FAQ"], next: ["security", "uptime", "contact"] },
 
@@ -251,19 +257,22 @@
         a: "Genesis Core Systems is a core banking company for U.S. community banks, based in New York, NY. It was founded by Ohad Savir with Brian Brunner and Brent Jenos, both former Fiserv leaders, and Danny Galezer. You can reach the team at " + EMAIL + " or " + PHONE + ".",
         link: ["/about", "Meet the team"], next: ["team", "contact"] },
 
-      { id: "references", q: "Can we talk to references?",
+      { id: "references", q: "Do you have client references?",
         kw: "client referral testimonial casestudy",
         re: [/\bwho (are|r) (your|ur|the) (clients|customers|users)\b/, /\breferences\b|\breference (check|call|bank|customer|client)s?\b/, /\btestimonials?\b/, /\bcase stud(y|ies)\b/,
              /\bhow many (banks|clients|customers|institutions) (use|run|are on|are live|do you have|does genesis have)\b/, /\b(banks|anyone|anybody) (live|using)\b/,
-             /\blive (with|at|in) (any )?(banks?|clients?|customers?)\b/, /\b(is|are) (it|this|genesis|the platform|gcs) live\b/, /\bwho uses (this|it|genesis|the platform)\b/,
-             /\b(talk|speak) (to|with) (a |an )?(current |existing )?(customer|client|bank using)/,
+             /\blive (with|at|in) (any )?(banks?|clients?|customers?)\b/, /\b(is|are) (it|this|genesis|the platform|gcs) live\b(?!\s+(or|vs\.?|versus)\b)/, /\bwho uses (this|it|genesis|the platform)\b/,
+             /\b(talk|speak) (to|with) (a |an )?(current |existing )?(customer|client|bank using)/, /\b(talk|speak) (to|with) (a |an )?(banks?|customers?|clients?) (that|thats|that's|who|which|already)\b/,
              /\b(do you have|have you got|are there|got) (any )?(current |existing |paying )?(customers|clients)\b/, /\bany (customers|clients)\s*\??\s*$/],
         a: "Banks considering Genesis get access to referrals, technology briefings and direct contact with our leadership team, and the Design Partner Program runs in small, select cohorts. For reference requests, the team will answer you directly.",
         link: ["/contact", "Talk to the team"], next: ["designpartner", "team", "contact"] },
 
       { id: "consumer", q: "I have a question about my bank account",
-        kw: "routing checking savings balance",
-        re: [/\bmy (bank |checking |savings )?(debit |credit )?(card|account|balance|loan|mortgage|statement)\b(?!s|\s+(data|history|volumes?|structures?|holders?|types?|records?|mapping))/,
+        kw: "routing checking savings",
+        // Retail phrasings only: a banker saying "my loan portfolio" or "my card
+        // program" is asking about Genesis, not about a personal account.
+        re: [/\bmy (checking|savings|bank) account\b/, /\bmy (debit|credit|atm) card\b(?!\s+(programs?|processing|processor|portfolio|issuing|issuer|vendor|platform|system|business|operations?)\b)/,
+             /\bmy (account )?balance\b(?!\s+sheet)/, /\bmy (mortgage|loan) (payment|application|statement|balance|rate)\b/, /\bopen (an |a )?account (with|at) (you|genesis|gcs)\b/,
              /\bmy (debit |credit |atm |bank )?card\b[^.?!]*\b(not working|declined|blocked|lost|stolen|frozen|locked)\b/, /\bopen (a|an) (checking|savings|bank) account\b/, /\brouting number\b/, /\bcan i (get|apply for) (a|an) (loan|mortgage|credit card)\b/, /\b(i|we) need (a|an) (personal )?loan\b/],
         a: "Genesis Core Systems provides core banking technology to banks rather than accounts to individuals. For help with an account, card, balance or loan, please contact your bank directly using the number on your card or statement.",
         link: ["/about", "About Genesis"], next: ["what"] },
@@ -303,7 +312,12 @@
     // Multi-word phrases collapse to one token before splitting.
     var PHRASES = [
       [/\bhow much\b/g, "howmuch"], [/\b(how|hw|hoe|hiw) (long|lng|lon)\b/g, "howlong"], [/\bsign(ing)?[\s-]?up\b/g, "signup"],
-      [/\b24 ?(\/|x) ?7\b/g, "monitoring support"], [/\bcloud[\s-]based\b/g, "cloud"],
+      [/\b24 ?(\/|x|-) ?7\b|\b24 7\b/g, "roundclock"], [/\b(a)?round[\s-]the[\s-]clock\b|\b24[\s-]?(hours?|hrs?) (a|per) day\b/g, "roundclock"],
+      [/\b24[\s-]?(hours?|hrs?) (support|monitoring|coverage)\b/g, "roundclock $2"], [/\bhelp ?desk\b/g, "helpdesk"],
+      [/\b(monitor\w*|support|cover\w*)\b[^.?!]{0,25}\b(nights?|weekends?|holidays?)\b/g, "roundclock $1"], [/\b(nights?|weekends?|holidays?)\b[^.?!]{0,25}\b(support|monitor\w*|cover\w*)\b/g, "roundclock $2"],
+      [/\bsupport hours\b|\bhours of support\b/g, "support"],
+      [/\bsell(s|ing)? (our|my|your|the|customer|personal) (data|information|info)\b/g, "privacy"], [/\bthought machine\b/g, "thoughtmachine"],
+      [/\bcloud[\s-]based\b/g, "cloud"],
       [/\btotal cost of ownership\b|\btco\b/g, "price"], [/\blicens(e|es|ing)\b/g, "price"],
       [/\b(data )?(at rest|in transit)\b/g, "encryption"], [/\bpen(etration)?[\s-]?test(s|ing)?\b/g, "pentest"],
       [/\biso ?27001\b/g, "certification"], [/\bdata (be )?(safe|secure|protected)\b/g, "security"],
@@ -408,7 +422,7 @@
     var HONEST = setOf("investor investment funding funded revenue profit profitable profitability valuation stable stability financially financials backer backed backing headcount rdc");
     var HONEST_RE = /\bhow many (employees|people|staff)( do (you|they) have| does (genesis|the company|gcs) have| work (at|for) (genesis|you|the company|gcs))\b|\bhow long have you been (in business|around|operating)\b/;
 
-    var STOP = setOf("whats hows wheres whos whys thats theres dont doesnt didnt cant isnt arent wasnt wont wouldnt shouldnt couldnt im ive youre theyre happen happens happened happening during while between within without whether since until upon onto through across among regarding concerning maybe perhaps typically usually generally specifically approximately roughly around case example level allowed available see show say mean think find plan exist exists need needs needed run runs running help helps helpful a an the and or but if of to in on at by for with from about as into over under after before than then so too very can could would should will shall may might must do does did done doing is are was were be been being am have has had having i me my mine we us our ours you your yours it its this that these those there here what which who whom whose when where why how any some all each every more most much many other another such only own same just also really still yet already now today currently current new existing actually exactly basically possible able sure yes no not ok okay please thanks thank hi hello hey tell know need want like get got give gives make makes made take takes took use uses used using work works working go going come let lets ask asking question questions answer info information detail details thing things kind type types sort way ways look looking interested wondering curious anything something everything nothing per via etc e g ie one two three first lot lots bit well good great best right ur pls plz yall guys folks handle handles handled handling");
+    var STOP = setOf("whats hows wheres whos whys thats theres dont doesnt didnt cant isnt arent wasnt wont wouldnt shouldnt couldnt im ive youre theyre happen happens happened happening during while between within without whether since until upon onto through across among regarding concerning maybe perhaps typically usually generally specifically approximately roughly around case example level allowed available see show say mean think find plan exist exists need needs needed run runs running help helps helpful a an the and or but if of to in on at by for with from about as into over under after before than then so too very can could would should will shall may might must do does did done doing is are was were be been being am have has had having i me my mine we us our ours you your yours it its this that these those there here what which who whom whose when where why how any some all each every more most much many other another such only own same just also really still yet already now today currently current new existing actually exactly basically possible able sure yes no not ok okay please thanks thank hi hello hey tell know need want like get got give gives make makes made take takes took use uses used using work works working go going come let lets ask asking question questions answer info information detail details thing things kind type types sort way ways look looking interested wondering curious anything something everything nothing per via etc e g ie one two three first lot lots bit well good great best right ur pls plz yall guys folks wat wats wut whut gimme asap r u n ya da dat dis kinda sorta gonna wanna whole entire total overall handle handles handled handling");
 
     function setOf(words) { var o = {}; words.split(" ").forEach(function (w) { if (w) o[w] = true; }); return o; }
 
@@ -507,7 +521,7 @@
     // Arithmetic is refused only when the whole message is a sum ("what is
     // 2+2", "7 x 8?"), so "24/7", "12-18 months", "T+1" and years never trip it.
     var OFFTOPIC = /\b(weather|forecast|recipe|recipes|riddle|horoscope|astrology|super ?bowl|world cup|nba|nfl|mlb|nhl|netflix|movies?|celebrit(y|ies)|homework|translate|translation|bitcoin|ethereum|dating|girlfriend|boyfriend|capital of|meaning of life|hack into|launder (money|funds|cash))\b|\b(bake|baking|eat|eating|chocolate chip|oatmeal|sugar) cookies?\b|\bcookies? (recipe|dough|jar)\b|\b(ceo|cto|founder|president) of (?!(genesis|gcs|the|our|my|your|this|a|an)\b)[a-z]+|\bconvert\w*\b[^.?!]{0,25}\b(miles?|kilometers?|km|pounds?|lbs?|kg|kilograms?|ounces?|oz|grams?|inches|feet|foot|meters?|celsius|fahrenheit|cups?|liters?|gallons?|units?|currency|currencies|pdf|word doc|jpe?g|png)\b|^\s*(what is |whats |what's |calculate |solve )?(?!24\s*[\/x]\s*7\b)\d+(\.\d+)?\s*[+*\/x×-]\s*\d+(\.\d+)?\s*[?=]?\s*$/;
-    var ABUSE = /\b(fuck\w*|shit\w*|bitch\w*|asshole|bastard|cunt|dickhead|retard\w*|stupid bot|dumb bot|useless bot)\b|\b(bot|chatbot|assistant|you|you're|you are|u r|ur) (is |are |r )?(so |really )?(stupid|dumb|useless|garbage|trash|terrible|an idiot|idiot|sucks?)\b/;
+    var ABUSE = /\b(fuck\w*|shit\w*|bitch\w*|asshole|bastard|cunt|dickhead|retard\w*|stupid bot|dumb bot|useless bot)\b|\bpiece of (junk|crap|garbage|trash)\b|\b(bot|chatbot|assistant|you|you're|you are|u r|ur) (is |are |r )?(so |really )?(stupid|dumb|useless|garbage|trash|terrible|an idiot|idiot|sucks?)\b/;
     var IDENTITY = /\b(are you (a |an )?(bot|robot|ai|human|real(?! (company|business|firm|vendor|bank))|person|chatgpt|gpt|claude|machine|computer|automated|live agent))\b|\bwho are you\b|\bwhat are you\b|\bis this (a )?(bot|ai|human|real person|live (chat|agent|person))\b|\bwhat (model|llm|ai) are you\b|\bhow old are you\b|\b(chatgpt|gpt-?\d|openai|llm|large language model)\b/;
     var GREETING = /^(hi|hello|hey|hiya|howdy|yo|greetings|good (morning|afternoon|evening))( there| team| genesis)?$/;
     var THANKS = /^(thanks|thank you|thx|ty|cheers|appreciate it|much appreciated|great thanks|ok thanks|okay thanks)( very much| so much)?$/;
@@ -545,7 +559,11 @@
       tokens(text).forEach(function (t) { exact[t] = true; });
       var hasDomain = toks.some(function (t) { return DOMAIN_ONLY[t]; });
       var honest = toks.some(function (t) { return HONEST[t]; });
-      var content = toks.filter(function (t) { return !DOMAIN_ONLY[t] && !HONEST[t]; });
+      // "Do you support X?" asks about X, so "support" there is a verb, not
+      // the support intent. The question is still about Genesis, so it stays in
+      // scope: an X the site doesn't cover gets the honest "ask the team".
+      var capQ = /\b(do|does|can|will|would) (you|u|genesis|gcs|it|the platform|your platform|the core|the system) support \w/.test(lower);
+      var content = toks.filter(function (t) { return !DOMAIN_ONLY[t] && !HONEST[t] && !(capQ && t === "support"); });
       var known = content.filter(function (t) { return VOCAB[t]; });
       var unknown = content.filter(function (t) { return !VOCAB[t]; });
 
@@ -564,7 +582,7 @@
       // ("how much does it cost"). A generic term next to foreign words is out:
       // "how long is the Nile river" and "how much is a coffee" both refuse.
       var specific = known.filter(function (t) { return !GENERIC[t] && exact[t]; });
-      var inScope = hasDomain || honest || strongPhrase || specific.length > 0 ||
+      var inScope = hasDomain || honest || capQ || strongPhrase || specific.length > 0 ||
                     (known.length > 0 && unknown.length === 0);
       // A recognized term buried in mostly foreign words: don't guess.
       if (inScope && !hasDomain && !strongPhrase && unknown.length > 2 * known.length + 1) return { kind: "unsure" };

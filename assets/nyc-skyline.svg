@@ -71,7 +71,7 @@
     L1580,380 L1640,380 L1640,340 L1700,340 L1700,300 L1760,300 L1760,340 L1820,340 L1820,380 L1920,380
     L1920,720 Z"/>
 
-  <!-- Mid skyline (Midtown — Empire State / Chrysler-inspired) -->
+  <!-- Mid skyline (Midtown, Empire State / Chrysler-inspired) -->
   <g fill="url(#mid)">
     <!-- Building cluster -->
     <path d="M0,720 L0,560
@@ -116,7 +116,7 @@
     L1580,580 L1580,620 L1660,620 L1660,580 L1740,580 L1740,620 L1820,620 L1820,600
     L1920,600 L1920,720 Z"/>
 
-  <!-- Tiny twinkling window lights — subtle warm dots -->
+  <!-- Tiny twinkling window lights: subtle warm dots -->
   <g fill="#FFB774" fill-opacity="0.85">
     <rect x="908" y="340" width="2" height="2"/>
     <rect x="916" y="360" width="2" height="2"/>

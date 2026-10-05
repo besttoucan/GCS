@@ -27,7 +27,9 @@
   /* Color scheme v2: cooler, more "tech-forward fintech." Brand navy + orange
      (sampled from the logo) untouched. Backgrounds, text-mutes, and borders
      shifted from warm cream/brown toward cool off-white/blue-gray. */
-  --bg: #fafbfd;              /* cool off-white */
+  --bg: #ffffff;              /* page white. Until 2026-10 a broken comment above voided this
+                                 declaration, so the live site has always rendered white;
+                                 #fafbfd (cool off-white) was the never-shipped value. */
   --bg-elev: #ffffff;
   --bg-soft: #eff2f7;          /* cool tinted */
   --bg-dark: #080d22;          /* deeper, blacker navy */
@@ -247,6 +249,11 @@ h1, h2, h3, h4 {
 h1, h2, h3, .pullquote { text-wrap: balance; }
 p, .lead { text-wrap: pretty; }
 .nowrap { white-space: nowrap; }
+/* Very small phones: a long compound in a big headline must wrap rather than overflow. */
+@media (max-width: 360px) { h1 .nowrap, h2 .nowrap { white-space: normal; } }
+/* Browsers give form controls their own system font; make every button
+   (cookie banner, contact submit, menu toggle) use the site font. */
+button, input, select, textarea { font-family: inherit; }
 
 /* Visually hidden, still read by screen readers. */
 .visually-hidden,
@@ -304,7 +311,7 @@ section { padding: clamp(4rem, 8vw, 7rem) 0; }
    video instead, which reads cleaner than a shaded band across the top. */
 body.page-home:not(.is-scrolled) .site-header {
   background: transparent;
-  border-bottom: none;   /* width 0, not just transparent, avoids a 1px sliver above the hero */
+  border-bottom: none;   /* width 0 (transparent is not enough): avoids a 1px sliver above the hero */
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
 }
@@ -359,11 +366,11 @@ body.page-home.nav-open:not(.is-scrolled) .site-header {
   background: rgba(255, 255, 255, 0.98);
   backdrop-filter: saturate(160%) blur(12px);
   -webkit-backdrop-filter: saturate(160%) blur(12px);
-  /* border-bottom, not just its colour: the transparent state sets
-     `border-bottom: none`, so overriding the colour alone leaves it 0-width. */
+  /* The whole border-bottom, because the transparent state sets
+     `border-bottom: none`, so overriding the color alone leaves it 0-width. */
   border-bottom: 1px solid var(--border);
 }
-/* The brand/link colours below already flip to dark ink at equal specificity,
+/* The brand/link colors below already flip to dark ink at equal specificity,
    but the transparent state also paints a dark text-shadow for legibility over
    the video. On the white panel that shadow reads as a smudge, so clear it. */
 body.page-home.nav-open .site-header .brand,
@@ -440,7 +447,7 @@ body.page-home.nav-open .site-header .nav-toggle { color: var(--brand); border-c
    it real button padding (nav-link padding would shrink it). */
 .site-header .nav-links .nav-cta .btn-primary,
 .site-header .nav-links .nav-cta .btn-primary:hover,
-/* The nav-open states re-colour `.nav-links a` at (0,4,2)/(0,5,2), which also
+/* The nav-open states re-color `.nav-links a` at (0,4,2)/(0,5,2), which also
    beat the (0,4,0) above and rendered the label muted grey on the blue button
    (~1.0:1 contrast, effectively invisible). Repeat the state qualifiers here so
    white wins in the open menu too. */
@@ -1154,7 +1161,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   background: white;
   color: var(--fg);
   font: inherit;
-  font-size: 0.97rem;
+  font-size: max(16px, 0.97rem);   /* 16px minimum stops iOS Safari zooming the page on focus */
   transition: border-color .15s var(--ease), box-shadow .15s var(--ease);
 }
 .field input:focus, .field textarea:focus, .field select:focus {
@@ -1329,7 +1336,7 @@ body.page-home.nav-open:not(.is-scrolled) .site-header .nav-links .nav-cta .btn-
   padding: 0.5rem 1rem;
   z-index: 100;
 }
-.skip-link:focus { left: 0; color: white; }
+.skip-link:focus { left: 0; color: white; position: fixed; }
 
 ::selection { background: var(--orange-text); color: white; }
 
@@ -1430,8 +1437,15 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
     border-bottom: 1px solid var(--border);
     padding: 0.75rem;
     gap: 0;
+    /* Landscape phones are only ~375px tall: let the panel scroll inside the
+       space under the header so the last links (FAQ, Contact) stay reachable. */
+    max-height: calc(100vh - 86px);
+    max-height: calc(100dvh - 86px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
     transform: translateY(-130%);
-    /* When closed, the panel must be fully unpainted, not just translated
+    /* When closed, the panel must be fully unpainted as well as translated
        offscreen. translateY alone parked the white panel ~40px above the
        viewport, and iOS rubber-band overscroll (pulling down past the top of
        the page) revealed it as a floating white box. visibility flips to
@@ -1858,9 +1872,11 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
 /* Pause / play for the background video (added by script.js). A small flat
    circle in the bottom-right corner of the hero, just above the meta bar
    (--hero-meta-h is measured by script.js). No motion. */
+/* Bottom-left of the hero: the chat button and its pop-up live in the
+   bottom-right corner of the screen and would cover it there. */
 .hero-motion-toggle {
   position: absolute;
-  right: clamp(1rem, 3vw, 2rem);
+  left: clamp(1rem, 3vw, 2rem);
   bottom: calc(var(--hero-meta-h, 72px) + 14px);
   z-index: 5;
   width: 40px;
@@ -1889,6 +1905,10 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
   .hero-cinema .eyebrow { margin-bottom: 1rem; }
   .hero-cinema h1 { margin-bottom: 0.9rem; }
   .hero-cinema .lead { font-size: 1rem; line-height: 1.5; margin-bottom: 1.6rem; }
+}
+@media (max-width: 340px) {
+  .hero-cinema h1 { font-size: 2.25rem; }
+  .hero-cinema .lead { font-size: 0.95rem; }
 }
 /* Full-width solid bar at the bottom of the cinema hero. Acts as the
    intentional bottom edge, the parallax can shift the video upward without
@@ -2044,6 +2064,13 @@ body.page-home:not(.is-scrolled):not(.nav-open) .site-header :focus-visible {
 }
 .footer-microlinks a,
 .footer-microlinks .footer-linkbtn { color: rgba(255,255,255,0.6); }
+/* Phones: the three legal links stack, centered, instead of wrapping with a
+   dot left hanging at the end of a line. */
+@media (max-width: 680px) {
+  .footer-bottom { flex-direction: column; }
+  .footer-microlinks { flex-direction: column; align-items: center; gap: 0.55rem; }
+  .footer-microlinks .footer-sep { display: none; }
+}
 .footer-microlinks a:hover,
 .footer-microlinks .footer-linkbtn:hover { color: var(--orange); }
 /* "Cookie settings" (added by script.js): a button that looks like the
@@ -2456,7 +2483,7 @@ body.nav-open .gcs-chat { display: none; }
   font-size: 0.72rem; line-height: 1.4;
   color: var(--fg-faint);
 }
-.gcs-chat-foot a { color: var(--fg-muted); }
+.gcs-chat-foot a { color: var(--fg-muted); text-decoration: underline; text-underline-offset: 2px; }
 
 /* Keep the footer's last row clear of the button when scrolled to the end. */
 @media (max-width: 1240px) {
@@ -2500,4 +2527,18 @@ body:has(#contact-form:focus-within) .gcs-chat:not([data-state="open"]) .gcs-cha
   .gcs-chat:not([data-state="hidden"]) .gcs-chat-launcher,
   .gcs-chat-teaser:not([hidden]),
   .gcs-chat-panel:not([hidden]) { animation: gcs-chat-in .16s var(--ease) both; }
+}
+
+/* Print (e.g. the conversion guide printed for a committee packet): drop the
+   fixed and decorative layers so nothing covers the text, and print in ink. */
+@media print {
+  #cookie-banner, .scroll-rail, .gcs-chat, .nav-toggle, .nav-links, .skip-link,
+  .hero-skyline, .hero-overlay, .hero-motion-toggle, video { display: none !important; }
+  .site-header { position: static !important; background: #fff !important; box-shadow: none !important; }
+  .hero-cinema { min-height: 0 !important; margin-top: 0 !important; }
+  body, .hero-cinema, .hero-cinema h1, .hero-cinema .lead, .hero-meta,
+  .site-footer, .site-footer a, .site-footer h2, .site-footer p, .footer-microlinks a {
+    color: #000 !important; background: #fff !important; text-shadow: none !important;
+  }
+  .prose a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 0.8em; }
 }
